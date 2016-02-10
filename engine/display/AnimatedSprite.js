@@ -34,7 +34,6 @@ class AnimatedSprite extends Sprite {
         if(this.animationCount === this.speed) {
             this.animationCount = 0;
             this.frame = (this.frame + 1);
-            console.log(this.frame);
             if(this.frame > this.endIndex)
                 this.frame = this.startIndex;
         }

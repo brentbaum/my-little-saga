@@ -25,6 +25,7 @@ class LabTwoGame extends Game {
                 end: 14
             }
         };
+        //instantiate with the id, filename, number of frames, and the animation map.
         var animated = new AnimatedSprite("Mario1", "super-mario-sprite.png", 21, marioAnimations);
         animated.speed = 10;
         animated.animate("run");

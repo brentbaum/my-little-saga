@@ -9,7 +9,12 @@ class DisplayObject {
     constructor(id, filename, onload) {
         this.id = id;
         this.loaded = false;
-        this.loadImage(filename);
+        if(!!filename) {
+            this.loadImage(filename);
+        } else {
+            this.imageWidth = this.width = this.height = 0;
+            this.displayImage = {width: 0, height: 0};
+        }
         this.visible = true;
         this.position = {x: 0, y: 0};
         this.pivotPoint = {x: 0, y: 0};
@@ -18,6 +23,7 @@ class DisplayObject {
         this.alpha = 1;
         this.frame = 0;
         this.onImageLoad = onload;
+        this.parent = null;
     }
 
     /**
