@@ -3,7 +3,7 @@
 /**
  * Floor
  */
-class LabFiveGame extends Game {
+class MarioGame extends Game {
     constructor(canvas) {
         var size = {
             x: 600,
@@ -48,6 +48,8 @@ class LabFiveGame extends Game {
         this.mario.animate("run");
         this.mario.physics.gravity = true;
         this.mario.jumpsRemaining = 2;
+        this.mario.position.x = 50;
+        this.mario.position.y = 150;
         this.coin = new AnimatedSprite("coin", "coin.png", 6, coinAnimations);
         this.coin.position.x = 500;
         this.coin.position.y = 100;
@@ -78,8 +80,12 @@ class LabFiveGame extends Game {
         this.sound = new SoundManager();
         this.sound.loadSoundEffect("jump", "jump.wav");
         this.sound.loadSoundEffect("coin", "coin.wav");
-        this.sound.loadMusic("theme", "theme.mp3");
-        this.sound.playMusic("theme");
+        //this.sound.loadMusic("theme", "theme.mp3");
+        //this.sound.playMusic("theme");
+
+        this.tweener = new TweenJuggler();
+        this.mario.scaleX = 0;
+        this.tweener.add(this.mario, 'ease', 3000, 'scaleX', 1);
 
         this.dispatcher = new EventDispatcher();
         this.questManager = new QuestManager();
@@ -109,9 +115,14 @@ class LabFiveGame extends Game {
                 });
                 this.dispatcher.dispatchEvent(event);
                 if (child.id === "coin" && !this.complete) {
-                    this.sound.playSoundEffect("coin");
-                    this.coin.visible = false;
                     this.complete = true;
+                    this.sound.playSoundEffect("coin");
+                    this.tweener.add(this.coin, 'ease', 1000, 'scaleX', 4, () => {
+                        this.tweener.add(this.coin, 'linear', 500, 'alpha', 0);
+                    });
+                    this.tweener.add(this.coin, 'ease', 1000, 'scaleY', 4);
+                    this.tweener.add(this.coin, 'ease', 1000, 'posX', 230);
+                    this.tweener.add(this.coin, 'ease', 1000, 'posY', 150);
                 }
             }
 
@@ -181,6 +192,7 @@ class LabFiveGame extends Game {
     }
 
     update(pressedKeys) {
+        this.tweener.nextFrame();
         this.physic(this.root);
         this.collideCheck(this.root);
         this.move(pressedKeys);
@@ -215,6 +227,6 @@ function tick() {
 /* Get the drawing canvas off of the  */
 var drawingCanvas = document.getElementById('game');
 if (drawingCanvas.getContext) {
-    var game = new LabFiveGame(drawingCanvas);
+    var game = new MarioGame(drawingCanvas);
     game.start();
 }
