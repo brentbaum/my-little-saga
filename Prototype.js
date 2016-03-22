@@ -19,6 +19,7 @@ class Saga extends Game {
         this.root = new DisplayObjectContainer("Root");
         this.setupMap(this.root);
         this.tweener = new TweenJuggler();
+        this.toasts = new ToastManager();
         this.dispatcher = new EventDispatcher();
         this.questManager = new QuestManager();
         this.dispatcher.addEventListener(this.questManager, "collision");
@@ -120,14 +121,16 @@ class Saga extends Game {
                 return;
             var dir = this.hero.collidesWith(child, offset);
             if (dir && !child.collisionDisable) {
-                debugger;
                 var event = new Event("collision", this.dispatcher, {
                     first: this.hero,
                     second: child,
                     direction: dir,
                     offset: offset
                 });
-                console.log("collision!", child.id);
+                this.toasts.add("rock-collision",
+                                "Collision!",
+                                ["That's a nice rock you've got there.",
+                                 "Can I have it?"], {duration: 2000});
                 this.dispatcher.dispatchEvent(event);
                 if (child.id === "coin" && !this.complete) {
                     this.complete = true;
@@ -204,9 +207,13 @@ class Saga extends Game {
     update(pressedKeys) {
         this.tweener.nextFrame();
         this.physic(this.root);
-        this.collideCheck(this.root, {x: 0, y: 0});
+        this.collideCheck(this.root, {
+            x: 0,
+            y: 0
+        });
         this.move(pressedKeys);
         this.root.updatePositions();
+        this.toasts.update();
         super.update(pressedKeys);
         this.root.update(pressedKeys);
     }
@@ -215,6 +222,7 @@ class Saga extends Game {
         g.clearRect(0, 0, this.width, this.height);
         super.draw(g);
         this.root.draw(g);
+        this.toasts.draw(g);
     }
 }
 
