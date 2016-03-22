@@ -31,13 +31,14 @@ class MapGenerator {
             var row = [];
             for (var y = 0; y < tileCount.y; y++) {
                 var tileType = "";
-                if (y === 3 && (Math.floor(x / 2) % 3 === 0)) {
+                if (y % 3 === 0 && (Math.floor((x + y) / 2) % 3 === 0)) {
                     tileType = "rock";
                 }
                 row.push(tileType);
             }
             map.foreground.push(row);
         }
+        console.log(JSON.stringify(map));
         return map;
     }
 }

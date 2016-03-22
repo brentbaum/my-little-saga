@@ -26,18 +26,25 @@ class Saga extends Game {
             y: this.tileCount.y * this.tileSize
         };
         this.root = new DisplayObjectContainer("Root");
-        var mapGenerator = new MapGenerator();
-        var map = mapGenerator.generate(this.tileCount);
-        this.setupMap(this.root, map);
         this.tweener = new TweenJuggler();
         this.toasts = new ToastManager();
         this.dispatcher = new EventDispatcher();
         this.questManager = new QuestManager();
         this.dispatcher.addEventListener(this.questManager, "collision");
         this.sound = new SoundManager();
+        this.setupHero();
+
+        //var mapGenerator = new MapGenerator();
+        //var map = mapGenerator.generate(this.tileCount);
+        var mapReader = new MapReader();
+        var saga = this;
+        mapReader.get('level1', function(map) {
+            saga.setupMap(saga.root, map);
+        });
+        
     }
 
-    setupMap(root, map) {
+    setupHero(root) {
         var heroAnimations = {
             "stop": {
                 start: 0,
@@ -71,10 +78,15 @@ class Saga extends Game {
         };
 
         this.floor = new DisplayObjectContainer("floor");
+        this.background = new DisplayObjectContainer("background");
+        this.foreground = new DisplayObjectContainer("foreground");
+    }
+
+    setupMap(root, map) {
+
         this.floor.position.x = -50;
         this.floor.position.y = -50;
 
-        this.background = new DisplayObjectContainer("background");
         this.background.collisionDisable = true;
 
         for (var x = 0; x < this.tileCount.x; x++) {
@@ -90,7 +102,6 @@ class Saga extends Game {
             }
         }
 
-        this.foreground = new DisplayObjectContainer("foreground");
 
         for (var x = 0; x < this.tileCount.x; x++) {
             var row = [];
