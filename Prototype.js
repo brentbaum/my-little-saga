@@ -16,8 +16,19 @@ class Saga extends Game {
             x: this.size.x / 2 - 15,
             y: this.size.y / 2 - 25
         };
+        this.tileSize = 32;
+        this.tileCount = {
+            x: 25,
+            y: 20
+        };
+        this.mapSize = {
+            x: this.tileCount.x * this.tileSize,
+            y: this.tileCount.y * this.tileSize
+        };
         this.root = new DisplayObjectContainer("Root");
-        this.setupMap(this.root);
+        var mapGenerator = new MapGenerator();
+        var map = mapGenerator.generate(this.tileCount);
+        this.setupMap(this.root, map);
         this.tweener = new TweenJuggler();
         this.toasts = new ToastManager();
         this.dispatcher = new EventDispatcher();
@@ -26,7 +37,7 @@ class Saga extends Game {
         this.sound = new SoundManager();
     }
 
-    setupMap(root) {
+    setupMap(root, map) {
         var heroAnimations = {
             "stop": {
                 start: 0,
@@ -62,27 +73,14 @@ class Saga extends Game {
         this.floor = new DisplayObjectContainer("floor");
         this.floor.position.x = -50;
         this.floor.position.y = -50;
-        var tileSize = 32;
-        this.tileCount = {
-            x: 25,
-            y: 20
-        };
-        this.mapSize = {
-            x: this.tileCount.x * tileSize,
-            y: this.tileCount.y * tileSize
-        };
+
         this.background = new DisplayObjectContainer("background");
+        this.background.collisionDisable = true;
+
         for (var x = 0; x < this.tileCount.x; x++) {
+            var row = [];
             for (var y = 0; y < this.tileCount.y; y++) {
-                var tile = new Sprite("background-" + x + "-" + y, "grass.png");
-                if (x === 0)
-                    tile = new Sprite("background-" + x + "-" + y, "dirt-grass-right.png");
-                if (x === this.tileCount.x - 1)
-                    tile = new Sprite("background-" + x + "-" + y, "dirt-grass-left.png");
-                if (y === 0)
-                    tile = new Sprite("background-" + x + "-" + y, "dirt-grass-down.png");
-                if (y === this.tileCount.y - 1)
-                    tile = new Sprite("background-" + x + "-" + y, "dirt-grass-up.png");
+                var tile = new Sprite("background-" + x + "-" + y, map.background[x][y] + ".png");
                 tile.position = {
                     x: x * 32,
                     y: y * 32
@@ -91,12 +89,13 @@ class Saga extends Game {
                 this.background.children.push(tile);
             }
         }
+
         this.foreground = new DisplayObjectContainer("foreground");
-        this.background.collisionDisable = true;
 
         for (var x = 0; x < this.tileCount.x; x++) {
+            var row = [];
             for (var y = 0; y < this.tileCount.y; y++) {
-                if (y === 3 && (Math.floor(x / 2) % 3 === 0)) {
+                if (map.foreground[x][y] === "rock") {
                     var tile = new Sprite("foreground-" + x + "-" + y, "rock.png");
                     tile.position = {
                         x: x * 32,
@@ -108,11 +107,9 @@ class Saga extends Game {
             }
         }
 
-
         this.floor.children.push(this.background);
         this.floor.children.push(this.foreground);
         this.root.children = [this.floor, this.hero];
-
     }
 
     collideCheck(node, offset) {
@@ -128,9 +125,11 @@ class Saga extends Game {
                     offset: offset
                 });
                 this.toasts.add("rock-collision",
-                                "Collision!",
-                                ["That's a nice rock you've got there.",
-                                 "Can I have it?"], {duration: 2000});
+                    "Collision!", ["That's a nice rock you've got there.",
+                        "Can I have it?"
+                    ], {
+                        duration: 2000
+                    });
                 this.dispatcher.dispatchEvent(event);
                 if (child.id === "coin" && !this.complete) {
                     this.complete = true;
