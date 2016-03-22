@@ -13,17 +13,12 @@ class QuestManager extends EventListener {
                 var hero = event.params.first;
                 var wall = event.params.second;
                 if (event.params.direction === "left") {
-                    hero.velocityX = Math.min(0, hero.velocityX);
                     hero.position.x = wall.position.x - hero.width * hero.scale.x;
                 } else if (event.params.direction === "right") {
-                    hero.velocityX = Math.max(.05, hero.velocityX);
-                    hero.position.x = wall.position.x + wall.width * wall.scale.x + 5;
+                    hero.position.x = wall.position.x + wall.width * wall.scale.x + 1.5;
                 } else if (event.params.direction === "top") {
-                    hero.velocityY = Math.min(.05, hero.velocityY);
-                    hero.position.y = wall.position.y + wall.height * wall.scale.y + 5;
-                    hero.peaked = true;
+                    hero.position.y = wall.position.y + wall.height * wall.scale.y + 1.5;
                 } else if (event.params.direction === "bottom") {
-                    hero.velocityY = Math.min(0, hero.velocityY);
                     hero.position.y = wall.position.y - hero.height * hero.scale.y;
                 }
             }

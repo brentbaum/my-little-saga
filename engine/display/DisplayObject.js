@@ -206,9 +206,12 @@ class DisplayObject {
         };
     }
 
-    collidesWith(other) {
+    collidesWith(other, offset) {
         var t = this.getHitBox();
         var o = other.getHitBox();
+        o.x = o.x + offset.x;
+        o.y = o.y + offset.y;
+
         //minsowski sum works well, as we want direction too.
         var w = 0.5 * (this.width * this.scale.x + other.width * other.scale.x);
         var h = 0.5 * (this.height * this.scale.y + other.height * other.scale.y);
