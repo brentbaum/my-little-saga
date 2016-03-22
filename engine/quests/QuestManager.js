@@ -3,6 +3,7 @@
 class QuestManager extends EventListener {
     constructor(id) {
         super(id);
+        this.toasts = new ToastManager();
     }
     handleEvent(event) {
         if (event.eventType === "collision") {
@@ -23,6 +24,14 @@ class QuestManager extends EventListener {
                     hero.position.y = offset.y + wall.position.y - hero.height * hero.scale.y;
                 }
             }
+        }
+        if (event.eventType === "proximity-collision") {
+            this.toasts.add("rock-collision",
+                "...", ["You stare at the rock.",
+                    "", "The rock stares back."
+                ], {
+                    duration: 300
+                });
         }
     }
 }

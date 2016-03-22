@@ -214,12 +214,39 @@ class DisplayObject {
         o.y1 += offset.y;
         o.y2 += offset.y;
 
+        var d = this.directCollide(t, o, other);
+        if (d) {
+            return d;
+        }
+        var p = this.proximityCollide(t, o, other);
+        return p ? "proximity" : false;
+    }
+
+    directCollide(t, o, other) {
         //minsowski sum works well, as we want direction too.
         var w = 0.5 * (this.width * this.scale.x + other.width * other.scale.x);
         var h = 0.5 * (this.height * this.scale.y + other.height * other.scale.y);
+
+        return this.collisionDirection(w, h, t, o);
+    }
+
+    proximityCollide(t, o, other) {
+        var range = 2;
+        var w = 0.5 * (this.width * this.scale.x + other.width * other.scale.x * range);
+        var h = 0.5 * (this.height * this.scale.y + other.height * other.scale.y * range);
+        var o1 = {
+            x1: o.x1 - other.width / range,
+            x2: o.x2 + other.width / range,
+            y1: o.y1 - other.height / range,
+            y2: o.y2 + other.width / range
+        };
+
+        return this.collisionDirection(w, h, t, o1);
+    }
+
+    collisionDirection(w, h, t, o) {
         var dx = ((t.x2 - t.x1) / 2 + t.x1) - ((o.x2 - o.x1) / 2 + o.x1);
         var dy = ((t.y2 - t.y1) / 2 + t.y1) - ((o.y2 - o.y1) / 2 + o.y1);
-
         if (Math.abs(dx) <= w && Math.abs(dy) <= h) {
             /* collision! */
             var wy = w * dy;

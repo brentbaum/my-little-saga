@@ -31,6 +31,7 @@ class Saga extends Game {
         this.dispatcher = new EventDispatcher();
         this.questManager = new QuestManager();
         this.dispatcher.addEventListener(this.questManager, "collision");
+        this.dispatcher.addEventListener(this.questManager, "proximity-collision");
         this.sound = new SoundManager();
         this.setupHero();
 
@@ -41,7 +42,7 @@ class Saga extends Game {
         mapReader.get('level1', function(map) {
             saga.setupMap(saga.root, map);
         });
-        
+
     }
 
     setupHero(root) {
@@ -127,33 +128,30 @@ class Saga extends Game {
         for (var child of node.children) {
             if (child.id === "hero")
                 return;
-            var dir = this.hero.collidesWith(child, offset);
-            if (dir && !child.collisionDisable) {
-                var event = new Event("collision", this.dispatcher, {
-                    first: this.hero,
-                    second: child,
-                    direction: dir,
-                    offset: offset
-                });
-                this.toasts.add("rock-collision",
-                    "Collision!", ["That's a nice rock you've got there.",
-                        "Can I have it?"
-                    ], {
-                        duration: 2000
-                    });
-                this.dispatcher.dispatchEvent(event);
-                if (child.id === "coin" && !this.complete) {
-                    this.complete = true;
-                    this.sound.playSoundEffect("coin");
-                    this.tweener.add(this.coin, 'ease', 1000, 'scaleX', 4, () => {
-                        this.tweener.add(this.coin, 'linear', 500, 'alpha', 0);
-                    });
-                    this.tweener.add(this.coin, 'ease', 1000, 'scaleY', 4);
-                    this.tweener.add(this.coin, 'ease', 1000, 'posX', 230);
-                    this.tweener.add(this.coin, 'ease', 1000, 'posY', 150);
+            if (!child.collisionDisable) {
+                var dir = this.hero.collidesWith(child, offset);
+                if (dir) {
+                    var event;
+                    if (dir === "proximity") {
+                        event = new Event("proximity-collision", this.dispatcher, {
+                            first: this.hero,
+                            second: child,
+                            direction: dir,
+                            offset: offset
+                        });
+                    } else {
+                        event = new Event("collision", this.dispatcher, {
+                            first: this.hero,
+                            second: child,
+                            direction: dir,
+                            offset: offset
+                        });
+                    }
+                    this.dispatcher.dispatchEvent(event);
                 }
-            }
 
+
+            }
             if (child.children) {
                 this.collideCheck(child, {
                     x: offset.x + node.position.x,
