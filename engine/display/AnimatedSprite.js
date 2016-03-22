@@ -16,7 +16,7 @@ class AnimatedSprite extends Sprite {
         this.startIndex = 0;
         this.endIndex = 0;
         this.numFrames = numFrames;
-        this.speed = 3;
+        this.animationSpeed = 3;
         this.animationCount = 0;
     }
 
@@ -31,7 +31,7 @@ class AnimatedSprite extends Sprite {
      */
     update() {
         this.animationCount++;
-        if(this.animationCount === this.speed) {
+        if(this.animationCount === this.animationSpeed) {
             this.animationCount = 0;
             this.frame = (this.frame + 1);
             if(this.frame > this.endIndex)

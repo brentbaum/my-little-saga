@@ -15,11 +15,11 @@ class EventDispatcher {
         this.listeners.set(eventType, eventListeners);
     }
     dispatchEvent(event) {
-        var eventListeners = this.listeners.get(event.eventType);
+        var eventListeners = this.listeners.get(event.eventType) || [];
         eventListeners.forEach(l => l.handleEvent(event));
     }
     hasEventListener(listener, eventType) {
-        var eventListeners = this.listeners.get(eventType);
+        var eventListeners = this.listeners.get(eventType) || [];
         return eventListeners.some(l => l.id === listener.id);
     }
 }
