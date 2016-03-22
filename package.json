@@ -1,0 +1,16 @@
+{
+  "name": "my-little-saga",
+  "version": "0.1.0",
+  "description": "Tell the tale of your fathers.",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.13.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
