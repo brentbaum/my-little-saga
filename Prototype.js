@@ -64,7 +64,7 @@ class Saga extends Game {
         var tileSize = 32;
         this.tileCount = {
             x: 25,
-            y: 20 
+            y: 20
         };
         this.mapSize = {
             x: this.tileCount.x * tileSize,
@@ -74,13 +74,13 @@ class Saga extends Game {
         for (var x = 0; x < this.tileCount.x; x++) {
             for (var y = 0; y < this.tileCount.y; y++) {
                 var tile = new Sprite("background-" + x + "-" + y, "grass.png");
-                if(x === 0)
+                if (x === 0)
                     tile = new Sprite("background-" + x + "-" + y, "dirt-grass-right.png");
-                if(x === this.tileCount.x - 1)
+                if (x === this.tileCount.x - 1)
                     tile = new Sprite("background-" + x + "-" + y, "dirt-grass-left.png");
-                if(y === 0)
+                if (y === 0)
                     tile = new Sprite("background-" + x + "-" + y, "dirt-grass-down.png");
-                if(y === this.tileCount.y - 1)
+                if (y === this.tileCount.y - 1)
                     tile = new Sprite("background-" + x + "-" + y, "dirt-grass-up.png");
                 tile.position = {
                     x: x * 32,
@@ -95,7 +95,7 @@ class Saga extends Game {
 
         for (var x = 0; x < this.tileCount.x; x++) {
             for (var y = 0; y < this.tileCount.y; y++) {
-                if(y === 3 && x < 10 && x > 5) {
+                if (y === 3 && (Math.floor(x / 2) % 3 === 0)) {
                     var tile = new Sprite("foreground-" + x + "-" + y, "rock.png");
                     tile.position = {
                         x: x * 32,
@@ -106,7 +106,7 @@ class Saga extends Game {
                 }
             }
         }
-        
+
 
         this.floor.children.push(this.background);
         this.floor.children.push(this.foreground);
@@ -116,14 +116,16 @@ class Saga extends Game {
 
     collideCheck(node, offset) {
         for (var child of node.children) {
-            if(child.id === "hero")
+            if (child.id === "hero")
                 return;
             var dir = this.hero.collidesWith(child, offset);
             if (dir && !child.collisionDisable) {
+                debugger;
                 var event = new Event("collision", this.dispatcher, {
                     first: this.hero,
                     second: child,
-                    direction: dir
+                    direction: dir,
+                    offset: offset
                 });
                 console.log("collision!", child.id);
                 this.dispatcher.dispatchEvent(event);
@@ -140,9 +142,10 @@ class Saga extends Game {
             }
 
             if (child.children) {
-                offset.x += node.position.x;
-                offset.y += node.position.y;
-                this.collideCheck(child, offset);
+                this.collideCheck(child, {
+                    x: offset.x + node.position.x,
+                    y: offset.y + node.position.y
+                });
             }
         }
     }
@@ -160,15 +163,8 @@ class Saga extends Game {
         if (pressedKeys.includes(keycodes.right)) {
             this.hero.animate("run");
 
-            // flip sprite
-            if(this.hero.scale.x < 0){ 
-                this.hero.scale.x = this.hero.scale.x * -1; 
-                this.hero.position.x -= (20 - 20 % movementSpeed);
-            }
-
             //move
-            if(this.mapSize.x + this.floor.position.x > this.size.x
-               && Math.abs(this.hero.position.x - this.centerPoint.x) < 2 * movementSpeed)
+            if (this.mapSize.x + this.floor.position.x > this.size.x && Math.abs(this.hero.position.x - this.centerPoint.x) < 2 * movementSpeed)
                 this.floor.position.x -= movementSpeed;
             else if (this.hero.position.x < this.size.x)
                 this.hero.position.x += movementSpeed;
@@ -176,15 +172,8 @@ class Saga extends Game {
         if (pressedKeys.includes(keycodes.left)) {
             this.hero.animate("run");
 
-            // flip sprite
-            if(this.hero.scale.x > 0) {
-                this.hero.scale.x = this.hero.scale.x * -1;
-                this.hero.position.x += 20 - 20 % movementSpeed;
-            }
-
             //move
-            if (this.floor.position.x < -1.5
-               && Math.abs(this.hero.position.x - this.centerPoint.x) < 2 * movementSpeed)
+            if (this.floor.position.x < -1.5 && Math.abs(this.hero.position.x - this.centerPoint.x) < 2 * movementSpeed)
                 this.floor.position.x += movementSpeed;
             else if (this.hero.position.x > 0) {
                 this.hero.position.x -= movementSpeed;
@@ -192,16 +181,14 @@ class Saga extends Game {
         }
         if (pressedKeys.includes(keycodes.down)) {
             this.hero.animate("run");
-            if(this.mapSize.y + this.floor.position.y > this.size.y
-               && Math.abs(this.hero.position.y - this.centerPoint.y) < 2 * movementSpeed)
+            if (this.mapSize.y + this.floor.position.y > this.size.y && Math.abs(this.hero.position.y - this.centerPoint.y) < 2 * movementSpeed)
                 this.floor.position.y -= movementSpeed;
             else if (this.hero.position.y < this.size.y)
                 this.hero.position.y += movementSpeed;
         }
         if (pressedKeys.includes(keycodes.up)) {
             this.hero.animate("run");
-            if (this.floor.position.y < -1.5
-               && Math.abs(this.hero.position.y - this.centerPoint.y) < 2 * movementSpeed)
+            if (this.floor.position.y < -1.5 && Math.abs(this.hero.position.y - this.centerPoint.y) < 2 * movementSpeed)
                 this.floor.position.y += movementSpeed;
             else if (this.hero.position.y > 0) {
                 this.hero.position.y -= movementSpeed;
