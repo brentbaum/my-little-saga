@@ -4,6 +4,7 @@ class QuestManager extends EventListener {
     constructor(id) {
         super(id);
         this.toasts = new ToastManager();
+        this.actions = new ActionManager();
     }
     handleEvent(event) {
         if (event.eventType === "collision") {
@@ -31,6 +32,8 @@ class QuestManager extends EventListener {
                 ], {
                     duration: 300
                 });
+            var dist = event.params.first.distanceFrom(event.params.second);
+            this.actions.focus(event.params.second, dist, "stone-hit");
         }
     }
 }

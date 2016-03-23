@@ -266,4 +266,13 @@ class DisplayObject {
 
         return t.x1 < o.x2 && t.x2 > o.x1 && t.y1 < o.y2 && t.y2 > o.y1;
     }
+
+    distanceFrom(other) {
+        var x1 = this.position.x + .5 * (this.width * this.scale.x);
+        var y1 = this.position.y + .5 * (this.height * this.scale.y);
+        var x2 = other.position.x + .5 * (other.width * other.scale.x);
+        var y2 = other.position.y + .5 * (other.width * other.scale.y);
+
+        return Math.pow(x1 - x2, 2), Math.pow(y1 - y2, 2);
+    }
 }

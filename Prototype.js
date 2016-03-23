@@ -32,6 +32,8 @@ class Saga extends Game {
         this.questManager = new QuestManager();
         this.dispatcher.addEventListener(this.questManager, "collision");
         this.dispatcher.addEventListener(this.questManager, "proximity-collision");
+        this.actionManager = new ActionManager();
+        this.addActions();
         this.sound = new SoundManager();
         this.setupHero();
 
@@ -66,8 +68,6 @@ class Saga extends Game {
         };
         //instantiate with the id, filename, number of frames, and the animation map.
         this.hero = new AnimatedSprite("hero", "super-mario-sprite.png", 21, heroAnimations);
-
-        this.gravityAcc = -1;
 
         this.hero.animate("stop");
         this.hero.animationSpeed = 10;
@@ -122,6 +122,13 @@ class Saga extends Game {
         this.floor.children.push(this.background);
         this.floor.children.push(this.foreground);
         this.root.children = [this.floor, this.hero];
+    }
+
+    addActions() {
+        this.actionManager.add("stone-hit", (object) => {
+            object.visible = false;
+            object.collisionDisable = true;
+        }) ;
     }
 
     collideCheck(node, offset) {
@@ -206,6 +213,10 @@ class Saga extends Game {
             }
         }
 
+        if (pressedKeys.includes(keycodes.z)) {
+            this.actionManager.act();
+        }
+
         if (pressedKeys.length === 0) {
             //stop and do nothing, all is futile.
             this.hero.animate("stop");
@@ -213,6 +224,7 @@ class Saga extends Game {
     }
 
     update(pressedKeys) {
+        this.actionManager.clear();
         this.tweener.nextFrame();
         this.physic(this.root);
         this.collideCheck(this.root, {
@@ -239,7 +251,8 @@ var keycodes = {
     up: 38,
     right: 39,
     down: 40,
-    m: 77
+    m: 77,
+    z: 90
 };
 
 /**
