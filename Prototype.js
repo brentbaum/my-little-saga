@@ -242,6 +242,7 @@ class Saga extends Game {
         g.clearRect(0, 0, this.width, this.height);
         super.draw(g);
         this.root.draw(g);
+        this.actionManager.draw(g, this.floor.position);
         this.toasts.draw(g);
     }
 }

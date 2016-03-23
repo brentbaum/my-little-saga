@@ -26,7 +26,7 @@ class QuestManager extends EventListener {
                 }
             }
         }
-        if (event.eventType === "proximity-collision") {
+        if (event.eventType === "collision" || event.eventType === "proximity-collision") {
             this.toasts.add("rock-collision",
                 "...", ["You stare at the rock.", "The rock stares back."
                 ], {
