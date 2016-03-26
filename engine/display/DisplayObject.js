@@ -268,11 +268,18 @@ class DisplayObject {
     }
 
     distanceFrom(other) {
-        var x1 = this.position.x + .5 * (this.width * this.scale.x);
-        var y1 = this.position.y + .5 * (this.height * this.scale.y);
-        var x2 = other.position.x + .5 * (other.width * other.scale.x);
-        var y2 = other.position.y + .5 * (other.width * other.scale.y);
+        var tBox = this.getHitBox();
+        var oBox = other.getHitBox();
 
-        return Math.pow(x1 - x2, 2), Math.pow(y1 - y2, 2);
+        var c1 = {
+            x: (tBox.x1 + tBox.x2) / 2,
+            y: (tBox.y1 + tBox.y2) / 2
+        };
+        var c2 = {
+            x: (oBox.x1 + oBox.x2) / 2,
+            y: (oBox.y1 + oBox.y2) / 2
+        };
+
+        return Math.sqrt(Math.pow(c1.x - c2.x, 2) + Math.pow(c2.x - c2.y, 2));
     }
 }

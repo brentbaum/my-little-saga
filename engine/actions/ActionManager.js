@@ -18,7 +18,8 @@ class ActionManager {
     }
 
     focus(displayObject, dist, k, params) {
-        if (!this.actionable || dist < this.actionable.dist) {
+        console.log(dist);
+        if (!this.actionable || dist > this.actionable.dist) {
             this.actionable = {
                 object: displayObject,
                 dist: dist,
