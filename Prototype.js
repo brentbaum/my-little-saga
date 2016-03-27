@@ -7,16 +7,16 @@
 class Saga extends Game {
     constructor(canvas) {
         var size = {
-            x: 600,
-            y: 385
+            x: 1000,
+            y: 600
         };
         super("My Little Saga <3", size.x, size.y, canvas);
         this.size = size;
         this.centerPoint = {
-            x: this.size.x / 2 - 15,
-            y: this.size.y / 2 - 25
+            x: this.size.x / 2,
+            y: this.size.y / 2
         };
-        this.tileSize = 32;
+        this.tileSize = 64;
         this.tileCount = {
             x: 25,
             y: 20
@@ -95,8 +95,8 @@ class Saga extends Game {
             for (var y = 0; y < this.tileCount.y; y++) {
                 var tile = new Sprite("background-" + x + "-" + y, map.background[x][y] + ".png");
                 tile.position = {
-                    x: x * 32,
-                    y: y * 32
+                    x: x * this.tileSize,
+                    y: y * this.tileSize
                 };
                 tile.collisionDisable = true;
                 this.background.children.push(tile);
@@ -110,8 +110,8 @@ class Saga extends Game {
                 if (map.foreground[x][y] === "rock") {
                     var tile = new Sprite("foreground-" + x + "-" + y, "rock.png");
                     tile.position = {
-                        x: x * 32,
-                        y: y * 32
+                        x: x * this.tileSize,
+                        y: y * this.tileSize
                     };
 
                     this.foreground.children.push(tile);
