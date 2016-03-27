@@ -1,0 +1,26 @@
+
+<div class="toolbox">
+  <span class="button button-primary" ng-click="newMap()">New Map</span>
+  <span class="button" ng-click="clearGrid()">Clear Grid</span>
+  <span class="button" ng-click="downloadCurrentMap()">Download Map JSON</span>
+</div>
+<div class="map-view-wrapper"
+     ng-mousedown="mouseDown()"
+     ng-mouseup="mouseUp()">
+  <div class="map-view">
+    <div class="row" ng-repeat="row in grid track by $index">
+      <span class="tile {{tile}}"
+            ng-repeat="tile in row track by $index"
+            ng-mouseenter="setTile(row, $index)"
+            ng-click="set(row, $index)">
+      </span>
+    </div>
+  </div>
+  <div class="tile-selection">
+    <div class="tile {{type}}"
+         ng-class="{'selected': type === pencilTip}"
+         ng-click="setTileType(type)"
+         ng-repeat="type in tileTypes track by $index">
+    </div>
+  </div>
+</div>
