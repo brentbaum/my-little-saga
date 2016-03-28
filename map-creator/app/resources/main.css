@@ -1,0 +1,115 @@
+/* app css stylesheet */
+
+.menu {
+  list-style: none;
+  border-bottom: 0.1em solid black;
+  margin-bottom: 2em;
+  padding: 0 0 0.5em;
+}
+
+.menu:before {
+  content: "[";
+}
+
+.menu:after {
+  content: "]";
+}
+
+.menu > li {
+  display: inline;
+}
+
+.menu > li:before {
+  content: "|";
+  padding-right: 0.3em;
+}
+
+.menu > li:nth-child(1):before {
+  content: "";
+  padding: 0;
+}
+.tile {
+    width: 20px;
+    height: 20px;
+    margin-left: 3px;
+    background: #f00;
+    display: inline-block;
+    cursor: pointer;
+}
+.tile.tree {
+    background: #2E7D32
+}
+.tile.grass {
+    background: #4CAF50;
+}
+
+.tile.rock {
+    background: #999;
+}
+
+.tile.water {
+    background: #64B5F6
+
+}
+
+.row {
+    padding: 0 2px;
+}
+
+.map-view {
+    background: #eee;
+    border: 1px solid #aaa;
+    display: inline-block;
+    padding-top: 3px;
+    padding-right: 3px;
+}
+
+.map-view-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0; 
+    margin-top: 150px;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.button {
+    cursor: pointer;
+    background: #4CAF50;
+    color: white;
+    border-radius: 3px;
+    padding: 8px 16px;
+    margin-right: 6px;
+}
+
+.button.button-primary {
+    background: #64B5F6;
+}
+
+.tile-selection .tile.selected {
+    border: 2px solid black;
+}
+
+.tile-selection .tile.selected::after {
+    content: '<==';
+    margin-left: 25px;
+}
+
+.tile-selection .tile {
+    display: block;
+    margin-bottom: 5px;
+    border: 2px solid white;
+}
+
+.toolbox {
+    background: #f1f1f2;
+    border-bottom: 1px solid #eee;
+    padding: 1em;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
