@@ -4,12 +4,13 @@
   "description": "Tell the tale of your fathers.",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.13.4"
+      "express": "^4.13.4",
+      "bower": "1.6.5"
   },
   "devDependencies": {},
   "scripts": {
       "test": "echo \"Error: no test specified\" && exit 1",
-      "prestart": "bower install",
+      "postinstall": "bower install",
       "start": "node server.js"
   },
   "author": "",
