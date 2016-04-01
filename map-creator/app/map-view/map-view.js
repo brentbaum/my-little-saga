@@ -11,21 +11,53 @@ angular.module('myApp.mapView', ['ngRoute'])
 
 .controller('MapViewCtrl', ["$scope", function($scope) {
     $scope.pencilTip = "tree";
+    $scope.layer = "background";
     $scope.message = "Here is a map. It is blank";
     $scope.size = {
         x: 30,
         y: 20
     };
 
-    function createBlankGrid(rows, cols) {
-        var grid = [];
-        for (var x = 0; x < cols; x++) {
-            var row = [];
-            for (var y = 0; y < rows; y++)
-                row.push("grass");
-            grid.push(row);
+    var range = function(start, max) {
+        var m = [];
+        for(var x = start; x < max; x++) {
+            m.push(x);
         }
-        return grid;
+        return m;
+    };
+
+    $scope.colRange = function() {
+        return range(0, $scope.size.x);
+    };
+
+    $scope.rowRange = function() {
+        return range(0, $scope.size.y);
+    };
+
+    $scope.backType = function(row, col) {
+        return $scope.map.background[row][col];
+    };
+
+    $scope.foreType = function(row, col) {
+        return $scope.map.foreground[row][col];
+    };
+
+    function createBlankMap(rows, cols) {
+        var map = {
+            background: [],
+            foreground: []
+        };
+        for (var x = 0; x < cols; x++) {
+            var bRow = [];
+            var fRow = [];
+            for (var y = 0; y < rows; y++) {
+                bRow.push("grass");
+                fRow.push("");
+            }
+            map.background.push(bRow);
+            map.foreground.push(fRow);
+        }
+        return map;
     };
 
     var isMouseDown = false;
@@ -40,10 +72,12 @@ angular.module('myApp.mapView', ['ngRoute'])
         isMouseDown = false;
     };
 
-    $scope.setTile = function(row, index) {
+    $scope.setTile = function(r, c) {
+        console.log(r, c);
         console.log("Mouse over");
-        if (isMouseDown)
-            $scope.set(row, index);
+        if (isMouseDown) {
+            $scope.map[$scope.layer][r][c] = $scope.pencilTip;
+        }
     };
 
     $scope.clearGrid = function(override) {
@@ -52,19 +86,20 @@ angular.module('myApp.mapView', ['ngRoute'])
             if (!result)
                 return;
         }
-        $scope.grid = createBlankGrid($scope.size.x, $scope.size.y);
+        $scope.map = createBlankMap($scope.size.x, $scope.size.y);
     };
     $scope.clearGrid(true);
-    $scope.set = function(row, index) {
-        row[index] = $scope.pencilTip;
-    };
 
     $scope.setTileType = function(type) {
         $scope.pencilTip = type;
     };
 
+    $scope.setLayer = function(type) {
+        $scope.layer = type;
+    };
+
     $scope.downloadCurrentMap = function() {
-        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({background: $scope.grid}));
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify($scope.map));
         var dlAnchorElem = document.getElementById('downloadAnchorElem');
         dlAnchorElem.setAttribute("href", dataStr);
         dlAnchorElem.setAttribute("download", "map.json");
