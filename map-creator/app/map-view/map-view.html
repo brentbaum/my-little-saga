@@ -13,9 +13,9 @@
       <span class="tile {{backType(r, c)}}"
             ng-repeat="c in colRange()"
             ng-mouseenter="setTile(r, c)"
-            ng-click="setTile(r, c)">
+            ng-mousedown="clickTile(r, c)">
       <span class="tile foreground {{foreType(r, c)}}"
-            ng-click="setTile(r, c)">
+            ng-mousedown="clickTile(r, c)">
       </span>
       </span>
     </div>

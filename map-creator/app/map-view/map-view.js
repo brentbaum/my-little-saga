@@ -73,12 +73,14 @@ angular.module('myApp.mapView', ['ngRoute'])
     };
 
     $scope.setTile = function(r, c) {
-        console.log(r, c);
-        console.log("Mouse over");
         if (isMouseDown) {
             $scope.map[$scope.layer][r][c] = $scope.pencilTip;
         }
     };
+
+    $scope.clickTile = function(r, c) {
+        $scope.map[$scope.layer][r][c] = $scope.pencilTip;
+    }
 
     $scope.clearGrid = function(override) {
         if (!override) {
