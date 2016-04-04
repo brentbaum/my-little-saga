@@ -3,20 +3,36 @@
   <span class="button button-primary" ng-click="newMap()">New Map</span>
   <span class="button" ng-click="clearGrid()">Clear Grid</span>
   <span class="button" ng-click="downloadCurrentMap()">Download Map JSON</span>
+  <input class="button" type="file" ng-model="mapJson" accept="*" app-filereader />
 </div>
 <div class="map-view-wrapper"
      ng-mousedown="mouseDown()"
      ng-mouseup="mouseUp()">
+
   <div class="map-view">
-    <div class="row" ng-repeat="row in grid track by $index">
-      <span class="tile {{tile}}"
-            ng-repeat="tile in row track by $index"
-            ng-mouseenter="setTile(row, $index)"
-            ng-click="set(row, $index)">
+    <div class="row" ng-repeat="r in rowRange() ">
+      <span class="tile {{backType(r, c)}}"
+            ng-repeat="c in colRange()"
+            ng-mouseenter="setTile(r, c)"
+            ng-mousedown="clickTile(r, c)">
+      <span class="tile foreground {{foreType(r, c)}}"
+            ng-mousedown="clickTile(r, c)">
+      </span>
       </span>
     </div>
   </div>
+
   <div class="tile-selection">
+    <div class="layer-selector"
+         ng-class="{'selected': layer === 'background'}"
+         ng-click="setLayer('background')">
+      back
+    </div>
+    <div class="layer-selector"
+         ng-class="{'selected': layer === 'foreground'}"
+         ng-click="setLayer('foreground')">
+      front
+    </div>
     <div class="tile {{type}}"
          ng-class="{'selected': type === pencilTip}"
          ng-click="setTileType(type)"

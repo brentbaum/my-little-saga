@@ -32,9 +32,9 @@
     width: 20px;
     height: 20px;
     margin-left: 3px;
-    background: #f00;
     display: inline-block;
     cursor: pointer;
+    position: relative;
 }
 .tile.tree {
     background: #2E7D32
@@ -49,7 +49,17 @@
 
 .tile.water {
     background: #64B5F6
+}
 
+.tile.foreground {
+    width: 60%;
+    height: 60%;
+    position: absolute;
+    left: 20%;
+    top: 20%;
+    bottom: 20%;
+    right: 20%;
+    margin: 0;
 }
 
 .row {
@@ -89,8 +99,17 @@
     background: #64B5F6;
 }
 
+.layer-selector {
+    padding: 3px 5px;
+    cursor: pointer
+}
+
+.layer-selector.selected {
+    border: 1px solid #666;
+}
+
 .tile-selection .tile.selected {
-    border: 2px solid black;
+    border: 2px solid #666;
 }
 
 .tile-selection .tile.selected::after {
