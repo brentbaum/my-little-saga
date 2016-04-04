@@ -2,12 +2,11 @@
 
 /**
  * A very basic Sprite. For now, does not do anything.
- * 
- * */
+ */
 class Sprite extends DisplayObjectContainer {
 
-    constructor(id, filename, onload) {
-        super(id, filename, onload);
+    constructor(id, gameObjectId, onload) {
+        super(id, gameObjectId, onload);
     }
 
     /**

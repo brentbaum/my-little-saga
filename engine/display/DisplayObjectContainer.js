@@ -5,8 +5,8 @@
  * 
  * */
 class DisplayObjectContainer extends DisplayObject {
-    constructor(id, filename, onload) {
-        super(id, filename, onload);
+    constructor(id, gameObjectId, onload) {
+        super(id, gameObjectId, onload);
         this.children = [];
     }
 

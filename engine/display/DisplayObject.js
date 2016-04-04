@@ -5,12 +5,12 @@
  * 
  * */
 class DisplayObject {
-
-    constructor(id, filename, onload) {
+    constructor(id, gameObjectId, onload) {
         this.id = id;
         this.loaded = false;
-        if (!!filename) {
-            this.loadImage(filename);
+	this.type = gameObjectId;
+        if (!!gameObjectId) {
+            this.loadImage(GameObjects[gameObjectId].filename);
         } else {
             this.imageWidth = this.width = this.height = 0;
             this.displayImage = {

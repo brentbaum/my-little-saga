@@ -7,8 +7,9 @@
 class AnimatedSprite extends Sprite {
 
     //animations expected to be of format: {"animation-name": {start: 0, end: 3}, ...}
-    constructor(id, filename, numFrames, animations) {
-        super(id, filename, function() {
+    constructor(id, gameObjectId, numFrames, animations) {
+	console.log(gameObjectId);
+        super(id, gameObjectId, function() {
             this.width = this.imageWidth / this.numFrames;
         });
         this.frame = 0;

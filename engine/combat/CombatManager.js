@@ -123,6 +123,7 @@ class CombatManager {
 	this.battle.progress += damage;
 
 	// TODO Toast message + damage
+	ToastManager().add("combat_message", message, [message], {startX: 0, startY: 0});
 	console.log(message + "\n" + damage);
     }
 

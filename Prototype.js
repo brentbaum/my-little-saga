@@ -4,43 +4,56 @@
  * Floor
  */
 
-var dev_game_state = {actionsUnlocked: ["berserk", "law", "melee", "weapon", "magic"]};
+var dev_game_state = {actionsUnlocked: ["berserk", "law", "melee", "magic"]};
+
+var GameObjects = {
+    hero: {name: "hero",
+	   filename: "super-mario-sprite.png"},
+    rock: {name: "rock",
+	   filename: "fg/rock.png"},
+    grass: {name: "grass",
+	    filename: "bg/grass.png"},
+    water: {name: "water",
+	    filename: "bg/water.png"},
+    bear: {name: "bear",
+	   filename: "fg/bear.png"}
+};
 
 class Saga extends Game {
     constructor(canvas) {
-        var size = {
-            x: 1000,
-            y: 600
-        };
-        super("My Little Saga <3", size.x, size.y, canvas);
-        this.size = size;
-        this.centerPoint = {
-            x: this.size.x / 2,
-            y: this.size.y / 2
-        };
-        this.tileSize = 64;
-        this.tileCount = {
-            x: 25,
-            y: 20
-        };
-        this.mapSize = {
-            x: this.tileCount.x * this.tileSize,
-            y: this.tileCount.y * this.tileSize
-        };
-        this.root = new DisplayObjectContainer("Root");
+	var size = {
+	    x: 1000,
+	    y: 600
+	};
+	super("My Little Saga <3", size.x, size.y, canvas);
+	this.size = size;
+	this.centerPoint = {
+	    x: this.size.x / 2,
+	    y: this.size.y / 2
+	};
+	this.tileSize = 64;
+	this.tileCount = {
+	    x: 25,
+	    y: 20
+	};
+	this.mapSize = {
+	    x: this.tileCount.x * this.tileSize,
+	    y: this.tileCount.y * this.tileSize
+	};
+	this.root = new DisplayObjectContainer("Root");
 	this.inBattle = false;
-        this.tweener = new TweenJuggler();
-        this.toasts = new ToastManager();
-        this.dispatcher = new EventDispatcher();
-        this.questManager = new QuestManager();
+	this.tweener = new TweenJuggler();
+	this.toasts = new ToastManager();
+	this.dispatcher = new EventDispatcher();
+	this.questManager = new QuestManager();
 	this.combatManager = new CombatManager();
-        this.dispatcher.addEventListener(this.questManager, "collision");
-        this.dispatcher.addEventListener(this.questManager, "proximity-collision");
-        this.actionManager = new ActionManager();
-        this.addActions();
-        this.sound = new SoundManager();
+	this.dispatcher.addEventListener(this.questManager, "collision");
+	this.dispatcher.addEventListener(this.questManager, "proximity-collision");
+	this.actionManager = new ActionManager();
+	this.addActions();
+	this.sound = new SoundManager();
 
-        this.setupHero();
+	this.setupHero();
 
 	this.gameState = dev_game_state;
 	// this.gameState = {actionsUnlocked: [], reputation: 0};
@@ -75,7 +88,7 @@ class Saga extends Game {
 	    }
 	};
 	//instantiate with the id, filename, number of frames, and the animation map.
-	this.hero = new AnimatedSprite("hero", "super-mario-sprite.png", 21, heroAnimations);
+	this.hero = new AnimatedSprite("hero", "hero", 21, heroAnimations);
 
 	this.hero.animate("stop");
 	this.hero.animationSpeed = 10;
@@ -101,7 +114,8 @@ class Saga extends Game {
 	for (var x = 0; x < this.tileCount.x; x++) {
 	    var row = [];
 	    for (var y = 0; y < this.tileCount.y; y++) {
-		var tile = new Sprite("background-" + x + "-" + y, map.background[x][y] + ".png");
+		console.log(x, y);
+		var tile = new Sprite("background-" + x + "-" + y, map.background[x][y]);
 		tile.position = {
 		    x: x * this.tileSize,
 		    y: y * this.tileSize
@@ -116,7 +130,7 @@ class Saga extends Game {
 	    var row = [];
 	    for (var y = 0; y < this.tileCount.y; y++) {
 		if (map.foreground[x][y] === "rock") {
-		    var tile = new Sprite("foreground-" + x + "-" + y, "rock.png");
+		    var tile = new Sprite("foreground-" + x + "-" + y, "rock");
 		    tile.position = {
 			x: x * this.tileSize,
 			y: y * this.tileSize
