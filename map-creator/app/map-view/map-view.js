@@ -80,7 +80,7 @@ angular.module('myApp.mapView', ['ngRoute'])
 
     $scope.clickTile = function(r, c) {
         $scope.map[$scope.layer][r][c] = $scope.pencilTip;
-    }
+    };
 
     $scope.clearGrid = function(override) {
         if (!override) {
@@ -101,12 +101,62 @@ angular.module('myApp.mapView', ['ngRoute'])
     };
 
     $scope.downloadCurrentMap = function() {
-        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify($scope.map));
+        var str = JSON.stringify($scope.map, undefined, 2);
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(str);
         var dlAnchorElem = document.getElementById('downloadAnchorElem');
         dlAnchorElem.setAttribute("href", dataStr);
         dlAnchorElem.setAttribute("download", "map.json");
         dlAnchorElem.click();
     };
 
+    $scope.mapJson = "";
+
+    $scope.$watch("mapJson", function(val) {
+        if(!!val) {
+            $scope.map = JSON.parse(val);
+            $scope.mapJSON = "";
+        }
+    });
+
     $scope.tileTypes = ["grass", "tree", "rock", "water"];
-}]);
+}])
+.directive('appFilereader', function($q) {
+    var slice = Array.prototype.slice;
+
+    return {
+        restrict: 'A',
+        require: '?ngModel',
+        link: function(scope, element, attrs, ngModel) {
+                if (!ngModel) return;
+
+                ngModel.$render = function() {};
+
+                element.bind('change', function(e) {
+                    var element = e.target;
+
+                    $q.all(slice.call(element.files, 0).map(readFile))
+                        .then(function(values) {
+                            if (element.multiple) ngModel.$setViewValue(values);
+                            else ngModel.$setViewValue(values.length ? values[0] : null);
+                        });
+
+                    function readFile(file) {
+                        var deferred = $q.defer();
+
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            deferred.resolve(e.target.result);
+                        };
+                        reader.onerror = function(e) {
+                            deferred.reject(e);
+                        };
+                        reader.readAsText(file);
+
+                        return deferred.promise;
+                    }
+
+                }); //change
+
+            } //link
+    }; //return
+});

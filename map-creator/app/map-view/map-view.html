@@ -3,6 +3,7 @@
   <span class="button button-primary" ng-click="newMap()">New Map</span>
   <span class="button" ng-click="clearGrid()">Clear Grid</span>
   <span class="button" ng-click="downloadCurrentMap()">Download Map JSON</span>
+  <input class="button" type="file" ng-model="mapJson" accept="*" app-filereader />
 </div>
 <div class="map-view-wrapper"
      ng-mousedown="mouseDown()"
