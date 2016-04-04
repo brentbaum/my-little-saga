@@ -3,16 +3,19 @@
 let toastInstance = null;
 
 class ToastManager {
+
     constructor() {
-        if(!toastInstance) {
-            toastInstance = this;
+        if(toastInstance) {
+	    return toastInstance;
         }
+
         var canvas = document.getElementById('game');
         this.g = canvas.getContext('2d'); //the graphics object
 
         this.toasts = [];
 
-        return toastInstance;
+	toastInstance = this;
+        return this;
     }
 
     add(id, title, lines, config) {
