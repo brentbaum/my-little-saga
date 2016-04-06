@@ -123,7 +123,6 @@ angular.module('myApp.mapView', ['ngRoute'])
                 }
                 $scope.map = createBlankMap($scope.size.x, $scope.size.y);
             };
-            $scope.clearGrid(true);
 
             $scope.setTileType = function(type) {
                 $scope.pencilTip = type.key;
@@ -222,7 +221,21 @@ angular.module('myApp.mapView', ['ngRoute'])
                     $scope.tileTypes = JSON.parse(stored).list;
                 }
             }
+            function loadMap() {
+                var stored = localStorage.getItem("map");
+                if(stored)
+                    $scope.map = JSON.parse(stored);
+                else
+                    $scope.clearGrid(true);
+            }
             loadTileTypes();
+            loadMap();
+            $scope.$watch("map", function(val, old) {
+                if (old) {
+                    var json = JSON.stringify(val);
+                    localStorage.setItem("map", json);
+                }
+            }, true);
             $scope.$watch("tileTypes", function(val, old) {
                 if (old) {
                     var json = JSON.stringify({list: val});
