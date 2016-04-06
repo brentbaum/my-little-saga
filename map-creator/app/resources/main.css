@@ -31,10 +31,16 @@
 .tile {
     width: 20px;
     height: 20px;
-    margin-left: 5px;
     display: inline-block;
     cursor: pointer;
     position: relative;
+    margin: 0;
+}
+
+.tile img {
+    position: absolute;
+    height: 20px;
+    width: 20px;
 }
 .tile.tree {
     background: #2E7D32
@@ -63,7 +69,8 @@
 }
 
 .row {
-    padding: 0 2px;
+    padding: 0 0px;
+    line-height: 0;
 }
 
 .map-view {
@@ -104,6 +111,10 @@
 
 .layer-selector.selected {
     border: 1px solid #666;
+}
+
+.tile-selection {
+    padding-left: 10px;
 }
 
 .tile-selection .tile.selected {
@@ -157,4 +168,18 @@
     color: white;
     padding: 3px 6px;
     cursor: pointer;
+}
+.view-control.disabled {
+    background: #ccc;
+    color: #333;
+}
+.map-view img, .map-view * {
+  user-select: none;           
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* IE/Edge */
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
 }
