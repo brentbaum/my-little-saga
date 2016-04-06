@@ -10,14 +10,27 @@
      ng-mouseup="mouseUp()">
 
   <div class="map-view">
+    <div class="view-info">
+      <span class="coordinates">({{view.x}}, {{view.y}}) ~ ({{view.x + viewSize.x}}, {{view.y + viewSize.y}})</span>
+      <span class="view-controls">
+        <span class="view-control"
+              ng-click="shiftView('left')">left</span>
+        <span class="view-control"
+              ng-click="shiftView('right')">right</span>
+        <span class="view-control"
+              ng-click="shiftView('up')">up</span>
+        <span class="view-control"
+              ng-click="shiftView('down')">down</span>
+      </span>
+    </div>
     <div class="row" ng-repeat="r in rowRange() ">
       <span class="tile {{backType(r, c)}}"
             ng-repeat="c in colRange()"
             ng-mouseenter="setTile(r, c)"
             ng-mousedown="clickTile(r, c)">
-      <span class="tile foreground {{foreType(r, c)}}"
-            ng-mousedown="clickTile(r, c)">
-      </span>
+        <span class="tile foreground {{foreType(r, c)}}"
+              ng-mousedown="clickTile(r, c)">
+        </span>
       </span>
     </div>
   </div>
@@ -38,5 +51,9 @@
          ng-click="setTileType(type)"
          ng-repeat="type in tileTypes track by $index">
     </div>
+    <span class="tile add"
+          ng-click="addTileType()">
+      +
+    </span>
   </div>
 </div>

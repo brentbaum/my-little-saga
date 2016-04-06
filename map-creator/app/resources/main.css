@@ -31,7 +31,7 @@
 .tile {
     width: 20px;
     height: 20px;
-    margin-left: 3px;
+    margin-left: 5px;
     display: inline-block;
     cursor: pointer;
     position: relative;
@@ -70,8 +70,6 @@
     background: #eee;
     border: 1px solid #aaa;
     display: inline-block;
-    padding-top: 3px;
-    padding-right: 3px;
 }
 
 .map-view-wrapper {
@@ -123,6 +121,13 @@
     border: 2px solid white;
 }
 
+.tile-selection .tile.add {
+    border: 2px solid #555;
+    text-align: center;
+    line-height: 18px;
+}
+
+
 .toolbox {
     background: #f1f1f2;
     border-bottom: 1px solid #eee;
@@ -131,4 +136,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.view-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f1f1f2;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 5px;
+    padding: 5px 10px;
+}
+
+.view-controls {
+    cursor: default;
+}
+
+.view-control {
+    background: #64B5F6;
+    color: white;
+    padding: 3px 6px;
+    cursor: pointer;
 }
