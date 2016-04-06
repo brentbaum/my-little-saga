@@ -101,6 +101,7 @@
     border-radius: 3px;
     padding: 8px 16px;
     margin-right: 6px;
+    display: inline-block;
 }
 
 .button.button-primary {
@@ -191,4 +192,9 @@
 }
 .tile-edit {
     font-size: .8em;
+}
+.input-label {
+    width: 50px;
+    display: inline-block;
+    line-height: .8e;
 }

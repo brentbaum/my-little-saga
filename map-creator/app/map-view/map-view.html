@@ -25,18 +25,34 @@
     <div class="view-info">
       <span class="coordinates">({{view.x}}, {{view.y}}) ~ ({{view.x + viewSize.x}} / {{size.x}}, {{view.y + viewSize.y}} / {{size.y}})</span>
       <span class="view-controls">
-        <span class="view-control"
-              ng-class="{'disabled': view.x === 0}"
-              ng-click="shiftView('left')">left</span>
-        <span class="view-control"
-              ng-class="{'disabled': view.y === 0}"
-              ng-click="shiftView('up')">up</span>
-        <span class="view-control"
-              ng-class="{'disabled': view.y + viewSize.y === size.y}"
-              ng-click="shiftView('down')">down</span>
-        <span class="view-control"
-              ng-class="{'disabled': view.x + viewSize.x === size.x}"
-              ng-click="shiftView('right')">right</span>
+        <span>
+          <span class="view-control"
+                ng-class="{'disabled': view.x === 0}"
+                ng-click="shiftView('left')">left</span>
+          <span class="view-control add-tiles"
+                ng-click="addTiles('left')">+</span>
+        </span>
+        <span>
+          <span class="view-control"
+                ng-class="{'disabled': view.y === 0}"
+                ng-click="shiftView('up')">up</span>
+          <span class="view-control add-tiles"
+                ng-click="addTiles('up')">+</span>
+        </span>
+        <span>
+          <span class="view-control"
+                ng-class="{'disabled': view.y + viewSize.y === size.y}"
+                ng-click="shiftView('down')">down</span>
+          <span class="view-control add-tiles"
+                ng-click="addTiles('down')">+</span>
+        </span>
+        <span>
+          <span class="view-control"
+                ng-class="{'disabled': view.x + viewSize.x === size.x}"
+                ng-click="shiftView('right')">right</span>
+          <span class="view-control add-tiles"
+                ng-click="addTiles('right')">+</span>
+        </span>
       </span>
     </div>
     <div class="row" ng-repeat="r in rowRange() ">
@@ -48,49 +64,49 @@
              ng-show="backType(r, c) !== ''">
         <img src="{{tileImage(foreType(r, c))}}"
              ng-show="foreType(r, c) !== ''">
-        </span>
       </span>
-    </div>
-  </div>
+</span>
+</div>
+</div>
 
-  <div class="tile-selection">
-    <div class="layer-selector"
-         ng-class="{'selected': layer === 'background'}"
-         ng-click="setLayer('background')">
-      back
-    </div>
-    <div class="layer-selector"
-         ng-class="{'selected': layer === 'foreground'}"
-         ng-click="setLayer('foreground')">
-      front
-    </div>
-    <div ng-repeat="type in tileTypes track by $index">
-      <span class="tile {{type.key}}"
-           ng-class="{'selected': type.id === pencilId}"
-           ng-click="setTileType(type)"
-           ng-dblclick="editType(type)">
-        <img src="/resources/{{type.img}}">
-      </span>
-      <div ng-show="editingType(type)"
-           class="tile-edit">
-        <div>
-          <span style="width: 30px;">Key:</span>
-          <input type="text" placeholder="key"
-                 ng-model="type.key">
-        </div>
-        <div>
-          <span style="width: 30px;">Image:</span>
-          <input type="text" placeholder="image.png"
-                 ng-model="type.img">
-        </div>
-        <div>
-          <a class="button" ng-click="doneEditing()">Done</a>
-        </div>
+<div class="tile-selection">
+  <div class="layer-selector"
+       ng-class="{'selected': layer === 'background'}"
+       ng-click="setLayer('background')">
+    back
+  </div>
+  <div class="layer-selector"
+       ng-class="{'selected': layer === 'foreground'}"
+       ng-click="setLayer('foreground')">
+    front
+  </div>
+  <div ng-repeat="type in tileTypes track by $index">
+    <span class="tile {{type.key}}"
+          ng-class="{'selected': type.id === pencilId}"
+          ng-click="setTileType(type)"
+          ng-dblclick="editType(type)">
+      <img src="/resources/{{type.img}}">
+    </span>
+    <div ng-show="editingType(type)"
+         class="tile-edit">
+      <div>
+        <span class="input-label" >Key:</span>
+        <input type="text" placeholder="key"
+               ng-model="type.key">
+      </div>
+      <div>
+        <span class="input-label">Image:</span>
+        <input type="text" placeholder="image.png"
+               ng-model="type.img">
+      </div>
+      <div>
+        <a class="button" ng-click="doneEditing()">Done</a>
       </div>
     </div>
-    <span class="tile add"
-          ng-click="addTileType()">
-      +
-    </span>
   </div>
+  <span class="tile add"
+        ng-click="addTileType()">
+    +
+  </span>
+</div>
 </div>

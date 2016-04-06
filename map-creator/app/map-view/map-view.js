@@ -75,6 +75,44 @@ angular.module('myApp.mapView', ['ngRoute'])
                 }
             };
 
+            $scope.addTiles = function(dir) {
+                if (dir === 'up') {
+                    $scope.size.y += 10;
+                    $scope.view.y += 10;
+                    var newTiles = createBlankMap($scope.size.x, 10);
+                    $scope.map.background = newTiles.background.concat($scope.map.background);
+                    $scope.map.foreground = newTiles.foreground.concat($scope.map.foreground);
+                }
+                if (dir === 'down') {
+                    $scope.size.y += 10;
+                    var newTiles = createBlankMap($scope.size.x, 10);
+                    $scope.map.background = $scope.map.background.concat(newTiles.background);
+                    $scope.map.foreground = $scope.map.foreground.concat(newTiles.foreground);
+                }
+                if (dir === 'left') {
+                    $scope.size.x += 10;
+                    $scope.view.x += 10;
+                    var newTiles = createBlankMap(10, $scope.size.y);
+                    $scope.map.background = _.map($scope.map.background, function(row, index) {
+                        return newTiles.background[index].concat(row);
+                    });
+                    $scope.map.foreground = _.map($scope.map.foreground, function(row, index) {
+                        return newTiles.foreground[index].concat(row);
+                    });
+                }
+                if (dir === 'right') {
+                    $scope.size.x += 10;
+                    var newTiles = createBlankMap(10, $scope.size.y);
+                    $scope.map.background = _.map($scope.map.background, function(row, index) {
+                        return row.concat(newTiles.background[index]);
+                    });
+                    $scope.map.foreground = _.map($scope.map.foreground, function(row, index) {
+                        return row.concat(newTiles.foreground[index]);
+                    });
+                }
+
+            };
+
             function createBlankMap(rows, cols) {
                 var map = {
                     background: [],
@@ -183,10 +221,13 @@ angular.module('myApp.mapView', ['ngRoute'])
             };
 
             $scope.addTileType = function() {
-                $scope.tileTypes.push({
+                var type = {
                     img: "",
-                    key: ""
-                });
+                    key: "",
+                    id: guid.make()
+                };
+                $scope.tileTypes.push(type);
+                editing.typeId = type.id;
             };
 
             $scope.tileImage = function(type) {
@@ -223,8 +264,11 @@ angular.module('myApp.mapView', ['ngRoute'])
             }
             function loadMap() {
                 var stored = localStorage.getItem("map");
-                if(stored)
+                if(stored) {
                     $scope.map = JSON.parse(stored);
+                    $scope.size.x = $scope.map.background[0].length;
+                    $scope.size.y = $scope.map.background.length;
+                }
                 else
                     $scope.clearGrid(true);
             }
