@@ -1,4 +1,7 @@
 /* app css stylesheet */
+* {
+    overflow: hidden;
+}
 
 .menu {
   list-style: none;
@@ -105,6 +108,8 @@
 }
 
 .layer-selector {
+    width: 60px;
+    text-align: center;
     padding: 3px 5px;
     cursor: pointer
 }
@@ -171,7 +176,8 @@
 }
 .view-control.disabled {
     background: #ccc;
-    color: #333;
+    color: #aaa;
+    cursor: default;
 }
 .map-view img, .map-view * {
   user-select: none;           
@@ -182,4 +188,7 @@
   -webkit-user-drag: none;
   user-drag: none;
   -webkit-touch-callout: none;
+}
+.tile-edit {
+    font-size: .8em;
 }

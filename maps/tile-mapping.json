@@ -1,0 +1,28 @@
+{
+  "list": [
+    {
+      "img": "bg/sand.png",
+      "key": "sand",
+      "id": "2a526c81-4e9e-8e72-80b1-2897f6a3171e"
+    },
+    {
+      "img": "grass.png",
+      "key": "grass",
+      "id": "2bdc65f0-f389-c75d-5358-99eae9a4e1a3"
+    },
+    {
+      "img": "rock.png",
+      "key": "rock",
+      "id": "f369635a-9439-32e3-e005-8eb1f244374a"
+    },
+    {
+      "img": "bg/water.png",
+      "key": "water",
+      "id": "b6f09e4b-424f-b112-81b6-d57b5f481be3"
+    },
+    {
+      "img": "dirt-grass-up.png",
+      "key": "hey"
+    }
+  ]
+}

@@ -40,9 +40,17 @@ class Saga extends Game {
         //var mapGenerator = new MapGenerator();
         //var map = mapGenerator.generate(this.tileCount);
         var mapReader = new MapReader();
+        var tileReader = new TileMappingReader();
         var saga = this;
-        mapReader.get('level1', function(map) {
-            saga.setupMap(saga.root, map);
+        this.tileMapping = {};
+        var t = this;
+        tileReader.get(function(mapping) {
+            mapping.list.forEach(function(tile) {
+                t.tileMapping[tile.key] = tile.img;
+            });
+            mapReader.get('custom', function(map) {
+                saga.setupMap(saga.root, map);
+            });
         });
 
     }
@@ -93,7 +101,7 @@ class Saga extends Game {
         for (var x = 0; x < this.tileCount.x; x++) {
             var row = [];
             for (var y = 0; y < this.tileCount.y; y++) {
-                var tile = new Sprite("background-" + x + "-" + y, map.background[x][y] + ".png");
+                var tile = new Sprite("background-" + x + "-" + y, this.tileMapping[map.background[x][y]]);
                 tile.position = {
                     x: x * this.tileSize,
                     y: y * this.tileSize
@@ -107,8 +115,8 @@ class Saga extends Game {
         for (var x = 0; x < this.tileCount.x; x++) {
             var row = [];
             for (var y = 0; y < this.tileCount.y; y++) {
-                if (map.foreground[x][y] === "rock") {
-                    var tile = new Sprite("foreground-" + x + "-" + y, "rock.png");
+                if (map.foreground[x][y] !== "") {
+                    var tile = new Sprite("foreground-" + x + "-" + y, this.tileMapping[map.foreground[x][y]]);
                     tile.position = {
                         x: x * this.tileSize,
                         y: y * this.tileSize

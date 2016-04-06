@@ -7,14 +7,14 @@
     <input id="file"  type="file" ng-model="mapJson"
            ng-change="parseMap(mapJson)" accept="*.json"
            style="display: none;"app-filereader />
-    <label class="button" for="file">Load map JSON</label>
+    <label class="button" for="file">Load Map JSON</label>
   </span>
-  <span class="button" ng-click="downloadMapping">Download Tile Mapping</span>
+  <span class="button" ng-click="downloadMapping()">Download Tile Mapping</span>
   <span>
-    <input id="file"  type="file" ng-model="mappingJson"
+    <input id="mapping"  type="file" ng-model="mappingJson"
            ng-change="parseMapping(mappingJson)" accept="*"
            style="display: none;"app-filereader />
-    <label class="button" for="file">Load Tile Mapping</label>
+    <label class="button" for="mapping">Load Tile Mapping</label>
   </span>
 </div>
 <div class="map-view-wrapper"
@@ -71,14 +71,21 @@
            ng-dblclick="editType(type)">
         <img src="/resources/{{type.img}}">
       </span>
-      <div ng-show="editingType(type)">
-        Key:
-        <input type="text" placeholder="key"
-               ng-model="type.key">
-        Image:
-        <input type="text" placeholder="image.png"
-               ng-model="type.img">
-        <a class="button" ng-click="doneEditing()">Done</a>
+      <div ng-show="editingType(type)"
+           class="tile-edit">
+        <div>
+          <span style="width: 30px;">Key:</span>
+          <input type="text" placeholder="key"
+                 ng-model="type.key">
+        </div>
+        <div>
+          <span style="width: 30px;">Image:</span>
+          <input type="text" placeholder="image.png"
+                 ng-model="type.img">
+        </div>
+        <div>
+          <a class="button" ng-click="doneEditing()">Done</a>
+        </div>
       </div>
     </div>
     <span class="tile add"

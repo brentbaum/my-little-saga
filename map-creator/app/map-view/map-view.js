@@ -135,16 +135,20 @@ angular.module('myApp.mapView', ['ngRoute'])
             };
 
             $scope.downloadCurrentMap = function() {
-                downloadObject("map.json", $scope.map);
+                var filename = prompt("Filename?", "map.json");
+                if(filename)
+                    downloadObject(filename, $scope.map);
             };
 
             $scope.downloadMapping = function() {
-                downloadObject("tile-mappings.json", {list: $scope.tileTypes});
+                var filename = prompt("Filename?", "mapping.json");
+                if(filename)
+                    downloadObject(filename, {list: $scope.tileTypes});
             };
 
             $scope.parseMapping = function(json) {
-                    $scope.tileTypes = JSON.parse(json).list;
-                    $scope.mappingJson = "";
+                $scope.tileTypes = JSON.parse(json).list;
+                $scope.mappingJson = "";
             };
 
             var downloadObject = function(filename, obj) {
@@ -152,7 +156,7 @@ angular.module('myApp.mapView', ['ngRoute'])
                 var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(str);
                 var dlAnchorElem = document.getElementById('downloadAnchorElem');
                 dlAnchorElem.setAttribute("href", dataStr);
-                dlAnchorElem.setAttribute("download", "map.json");
+                dlAnchorElem.setAttribute("download", filename);
                 dlAnchorElem.click();
             };
 
@@ -225,6 +229,27 @@ angular.module('myApp.mapView', ['ngRoute'])
                     localStorage.setItem("types", json);
                 }
             }, true);
+            window.addEventListener('keyup', function(event) {
+                if(event.keyCode === 37) {
+                    $scope.shiftView('left');
+                }
+                if(event.keyCode === 38) {
+                    $scope.shiftView('up');
+                }
+                if(event.keyCode === 39) {
+                    $scope.shiftView('right');
+                }
+                if(event.keyCode === 40) {
+                    $scope.shiftView('down');
+                }
+                if(event.keyCode === 70) {
+                    $scope.setLayer('foreground');
+                }
+                if(event.keyCode === 66) {
+                    $scope.setLayer('background');
+                }
+                $scope.$apply();
+            });
         }
     ])
     .directive('appFilereader', function($q) {
