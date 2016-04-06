@@ -59,17 +59,17 @@ angular.module('myApp.mapView', ['ngRoute'])
                         $scope.view.y = 0;
                 }
                 if (dir === 'down') {
-                    $scope.view.y += 20;
+                    $scope.view.y += 10;
                     if ($scope.view.y + $scope.viewSize.y > $scope.size.y)
                         $scope.view.y = $scope.size.y - $scope.viewSize.y;
                 }
                 if (dir === 'left') {
-                    $scope.view.x -= 20;
+                    $scope.view.x -= 10;
                     if ($scope.view.x < 0)
                         $scope.view.x = 0;
                 }
                 if (dir === 'right') {
-                    $scope.view.x += 20;
+                    $scope.view.x += 10;
                     if ($scope.view.x + $scope.viewSize.x > $scope.size.x)
                         $scope.view.x = $scope.size.x - $scope.viewSize.x;
                 }
@@ -135,7 +135,20 @@ angular.module('myApp.mapView', ['ngRoute'])
             };
 
             $scope.downloadCurrentMap = function() {
-                var str = JSON.stringify($scope.map, undefined, 2);
+                downloadObject("map.json", $scope.map);
+            };
+
+            $scope.downloadMapping = function() {
+                downloadObject("tile-mappings.json", {list: $scope.tileTypes});
+            };
+
+            $scope.parseMapping = function(json) {
+                    $scope.tileTypes = JSON.parse(json).list;
+                    $scope.mappingJson = "";
+            };
+
+            var downloadObject = function(filename, obj) {
+                var str = JSON.stringify(obj, undefined, 2);
                 var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(str);
                 var dlAnchorElem = document.getElementById('downloadAnchorElem');
                 dlAnchorElem.setAttribute("href", dataStr);
@@ -145,12 +158,11 @@ angular.module('myApp.mapView', ['ngRoute'])
 
             $scope.mapJson = "";
 
-            $scope.$watch("mapJson", function(val) {
-                if (!!val) {
-                    $scope.map = JSON.parse(val);
-                    $scope.mapJSON = "";
-                }
-            });
+            $scope.parseMap = function(json) {
+                $scope.map = JSON.parse(json);
+                $scope.mapJSON = "";
+            };
+
             var editing = {
                 typeId: ""
             };
@@ -178,31 +190,39 @@ angular.module('myApp.mapView', ['ngRoute'])
                 var type = _.find($scope.tileTypes, function(t) {
                     return t.key === type;
                 });
-                if(type)
+                if (type)
                     return "/resources/" + type.img;
                 return "";
             };
 
-            $scope.tileTypes = [{
-                img: "bg/sand.png",
-                key: "sand",
-                id: guid.make()
-            }, {
-                img: "grass.png",
-                key: "grass",
-                id: guid.make()
-            }, {
-                img: "rock.png",
-                key: "rock",
-                id: guid.make()
-            }, {
-                img: "bg/water.png",
-                key: "water",
-                id: guid.make()
-            }];
+            function loadTileTypes() {
+                $scope.tileTypes = [{
+                    img: "bg/sand.png",
+                    key: "sand",
+                    id: guid.make()
+                }, {
+                    img: "grass.png",
+                    key: "grass",
+                    id: guid.make()
+                }, {
+                    img: "rock.png",
+                    key: "rock",
+                    id: guid.make()
+                }, {
+                    img: "bg/water.png",
+                    key: "water",
+                    id: guid.make()
+                }];
+                var stored = localStorage.getItem("types");
+                if(stored) {
+                    $scope.tileTypes = JSON.parse(stored).list;
+                }
+            }
+            loadTileTypes();
             $scope.$watch("tileTypes", function(val, old) {
-                if(old) {
-                    console.log(JSON.stringify(val));
+                if (old) {
+                    var json = JSON.stringify({list: val});
+                    localStorage.setItem("types", json);
                 }
             }, true);
         }
