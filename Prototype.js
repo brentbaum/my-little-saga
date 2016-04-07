@@ -63,7 +63,7 @@ class Saga extends Game {
             mapping.list.forEach(function(tile) {
                 t.tileMapping[tile.key] = tile.img;
             });
-            mapReader.get('custom', function(map) {
+            mapReader.get('level1', function(map) {
                 saga.setupMap(saga.root, map);
             });
         });
@@ -107,32 +107,9 @@ class Saga extends Game {
 
     setupMap(root, map) {
 
-<<<<<<< HEAD
 	this.floor.position.x = -50;
 	this.floor.position.y = -50;
-=======
-        this.floor.position.x = -50;
-        this.floor.position.y = -50;
 
-        this.background.collisionDisable = true;
-
-        for (var x = 0; x < this.tileCount.x; x++) {
-            var row = [];
-            for (var y = 0; y < this.tileCount.y; y++) {
-                var tile = new Sprite("background-" + x + "-" + y, this.tileMapping[map.background[x][y]]);
-                tile.position = {
-                    x: x * this.tileSize,
-                    y: y * this.tileSize
-                };
-                tile.collisionDisable = true;
-                this.background.children.push(tile);
-            }
-        }
->>>>>>> master
-
-	this.background.collisionDisable = true;
-
-<<<<<<< HEAD
 	for (var y = 0; y < this.tileCount.y; y++) {
 	    var row = [];
 	    for (var x = 0; x < this.tileCount.x; x++) {
@@ -151,18 +128,8 @@ class Saga extends Game {
 		this.foreground.children.push(fgTile);
 	    }
 	}
-=======
-        for (var x = 0; x < this.tileCount.x; x++) {
-            var row = [];
-            for (var y = 0; y < this.tileCount.y; y++) {
-                if (map.foreground[x][y] !== "") {
-                    var tile = new Sprite("foreground-" + x + "-" + y, this.tileMapping[map.foreground[x][y]]);
-                    tile.position = {
-                        x: x * this.tileSize,
-                        y: y * this.tileSize
-                    };
->>>>>>> master
-
+        
+	this.background.collisionDisable = true;
 	this.floor.children.push(this.background);
 	this.floor.children.push(this.foreground);
 	this.root.children = [this.floor, this.hero];
