@@ -1,4 +1,7 @@
 /* app css stylesheet */
+* {
+    overflow: hidden;
+}
 
 .menu {
   list-style: none;
@@ -31,10 +34,16 @@
 .tile {
     width: 20px;
     height: 20px;
-    margin-left: 3px;
     display: inline-block;
     cursor: pointer;
     position: relative;
+    margin: 0;
+}
+
+.tile img {
+    position: absolute;
+    height: 20px;
+    width: 20px;
 }
 .tile.tree {
     background: #2E7D32
@@ -63,15 +72,14 @@
 }
 
 .row {
-    padding: 0 2px;
+    padding: 0 0px;
+    line-height: 0;
 }
 
 .map-view {
     background: #eee;
     border: 1px solid #aaa;
     display: inline-block;
-    padding-top: 3px;
-    padding-right: 3px;
 }
 
 .map-view-wrapper {
@@ -93,6 +101,7 @@
     border-radius: 3px;
     padding: 8px 16px;
     margin-right: 6px;
+    display: inline-block;
 }
 
 .button.button-primary {
@@ -100,12 +109,18 @@
 }
 
 .layer-selector {
+    width: 60px;
+    text-align: center;
     padding: 3px 5px;
     cursor: pointer
 }
 
 .layer-selector.selected {
     border: 1px solid #666;
+}
+
+.tile-selection {
+    padding-left: 10px;
 }
 
 .tile-selection .tile.selected {
@@ -123,6 +138,13 @@
     border: 2px solid white;
 }
 
+.tile-selection .tile.add {
+    border: 2px solid #555;
+    text-align: center;
+    line-height: 18px;
+}
+
+
 .toolbox {
     background: #f1f1f2;
     border-bottom: 1px solid #eee;
@@ -131,4 +153,48 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.view-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f1f1f2;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 5px;
+    padding: 5px 10px;
+}
+
+.view-controls {
+    cursor: default;
+}
+
+.view-control {
+    background: #64B5F6;
+    color: white;
+    padding: 3px 6px;
+    cursor: pointer;
+}
+.view-control.disabled {
+    background: #ccc;
+    color: #aaa;
+    cursor: default;
+}
+.map-view img, .map-view * {
+  user-select: none;           
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* IE/Edge */
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
+}
+.tile-edit {
+    font-size: .8em;
+}
+.input-label {
+    width: 50px;
+    display: inline-block;
+    line-height: .8e;
 }
