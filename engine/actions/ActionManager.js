@@ -18,37 +18,36 @@ class ActionManager {
     }
 
     focus(displayObject, dist, k, params) {
-        console.log(dist);
-        if (!this.actionable || dist > this.actionable.dist) {
-            this.actionable = {
-                object: displayObject,
-                dist: dist,
-                params,
-                k: k || displayObject.actionKey
-            };
-        }
+	if (!this.actionable || dist > this.actionable.dist) {
+	    this.actionable = {
+		object: displayObject,
+		dist: dist,
+		params,
+		k: k || displayObject.actionKey
+	    };
+	}
     }
 
     act() {
-        if (!this.actionable)
-            return;
-        var fn = this.actions[this.actionable.k];
-        if (fn)
-            fn(this.actionable.object, this.actionable.params);
+	if (!this.actionable)
+	    return;
+	var fn = this.actions[this.actionable.k];
+	if (fn)
+	    fn(this.actionable.object, this.actionable.params);
     }
 
     clear() {
-        this.actionable = null;
+	this.actionable = null;
     }
 
     draw(g, offset) {
-        if(!this.actionable)
-            return;
-        var start = {
-            x: offset.x + this.actionable.object.position.x + this.actionable.object.width * .5 - 10,
-            y: offset.y + this.actionable.object.position.y - 10
-        };
-        drawSelector(g, start);
+	if(!this.actionable)
+	    return;
+	var start = {
+	    x: offset.x + this.actionable.object.position.x + this.actionable.object.width * .5 - 10,
+	    y: offset.y + this.actionable.object.position.y - 10
+	};
+	drawSelector(g, start);
     }
 }
 
