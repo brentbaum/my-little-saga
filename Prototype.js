@@ -12,6 +12,8 @@ var GameObjects = {
 	    filename: "bg/grass.png"},
     water: {name: "water",
 	    filename: "bg/water.png"},
+    sand: {name: "sand",
+	   filename: "bg/sand.png"},
     bear: {name: "bear",
 	   filename: "fg/bear.png"}
 };
@@ -63,7 +65,7 @@ class Saga extends Game {
             mapping.list.forEach(function(tile) {
                 t.tileMapping[tile.key] = tile.img;
             });
-            mapReader.get('level1', function(map) {
+            mapReader.get('berserkerforest', function(map) {
                 saga.setupMap(saga.root, map);
             });
         });

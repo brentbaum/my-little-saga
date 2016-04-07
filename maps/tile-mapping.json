@@ -3,26 +3,27 @@
     {
       "img": "bg/sand.png",
       "key": "sand",
-      "id": "2a526c81-4e9e-8e72-80b1-2897f6a3171e"
+      "id": "d82205d9-df6b-eff6-7107-d830f4c6fa35"
     },
     {
-      "img": "grass.png",
+      "img": "bg/grass.png",
       "key": "grass",
-      "id": "2bdc65f0-f389-c75d-5358-99eae9a4e1a3"
+      "id": "0a56a608-8962-e673-9de3-ec62a05f2a94"
     },
     {
-      "img": "rock.png",
+      "img": "fg/rock.png",
       "key": "rock",
-      "id": "f369635a-9439-32e3-e005-8eb1f244374a"
+      "id": "f1220adb-d755-97af-25c2-6d2e15634093"
     },
     {
       "img": "bg/water.png",
       "key": "water",
-      "id": "b6f09e4b-424f-b112-81b6-d57b5f481be3"
+      "id": "d6825e40-b046-1fc9-b68b-3e33b5920921"
     },
     {
-      "img": "dirt-grass-up.png",
-      "key": "hey"
+      "img": "fg/bear.png",
+      "key": "bear",
+      "id": "f6863747-b32c-f888-5168-40c8eb2e84c9"
     }
   ]
 }
