@@ -1,10 +1,7 @@
 "use strict";
 
-/**
- * Floor
- */
-
 var dev_game_state = {actionsUnlocked: ["berserk", "law", "melee", "magic"]};
+var game_size = {x: 1000, y: 600};
 
 var GameObjects = {
     hero: {name: "hero",
@@ -21,10 +18,7 @@ var GameObjects = {
 
 class Saga extends Game {
     constructor(canvas) {
-	var size = {
-	    x: 1000,
-	    y: 600
-	};
+	var size = game_size;
 	super("My Little Saga <3", size.x, size.y, canvas);
 	this.size = size;
 	this.centerPoint = {
@@ -111,32 +105,22 @@ class Saga extends Game {
 
 	this.background.collisionDisable = true;
 
-	for (var x = 0; x < this.tileCount.x; x++) {
+	for (var y = 0; y < this.tileCount.y; y++) {
 	    var row = [];
-	    for (var y = 0; y < this.tileCount.y; y++) {
-		console.log(x, y);
-		var tile = new Sprite("background-" + x + "-" + y, map.background[x][y]);
-		tile.position = {
+	    for (var x = 0; x < this.tileCount.x; x++) {
+		var bgTile = new Sprite("bg_(" + x + ", " + y + ")", map.background[x][y]);
+		var fgTile = new Sprite(map.foreground[x][y] + "_(" + x + ", " + y + ")", map.foreground[x][y]); 
+		bgTile.position = {
 		    x: x * this.tileSize,
 		    y: y * this.tileSize
 		};
-		tile.collisionDisable = true;
-		this.background.children.push(tile);
-	    }
-	}
-
-
-	for (var x = 0; x < this.tileCount.x; x++) {
-	    var row = [];
-	    for (var y = 0; y < this.tileCount.y; y++) {
-		if (map.foreground[x][y] === "rock") {
-		    var tile = new Sprite("foreground-" + x + "-" + y, "rock");
-		    tile.position = {
-			x: x * this.tileSize,
-			y: y * this.tileSize
-		    };
-		    this.foreground.children.push(tile);
-		}
+		fgTile.position = {
+		    x: x * this.tileSize,
+		    y: y * this.tileSize
+		};
+		bgTile.collisionDisable = true;
+		this.background.children.push(bgTile);
+		this.foreground.children.push(fgTile);
 	    }
 	}
 
@@ -152,7 +136,7 @@ class Saga extends Game {
 	});
 	this.actionManager.add("bear-fight", (bear) => {
 	    this.combatManager.beginBattle(bear, this.gameState.actionsUnlocked, null);
-	    this.battle = true;
+	    this.inBattle = true;
 	});
     }
 
@@ -237,7 +221,7 @@ class Saga extends Game {
 	    }
 	}
 
-	if (pressedKeys.includes(keycodes.z)) {
+	if (pressedKeys.includes(keycodes.space)) {
 	    this.actionManager.act();
 	}
 
@@ -255,8 +239,8 @@ class Saga extends Game {
 	    x: 0,
 	    y: 0
 	});
-	if (this.battle) {
-	    CombatManager().update(pressedKeys);
+	if (this.inBattle) {
+	    this.combatManager.update(pressedKeys);
 	} else {
 	    this.move(pressedKeys);
 	}
@@ -281,7 +265,8 @@ var keycodes = {
     right: 39,
     down: 40,
     m: 77,
-    z: 90
+    z: 90,
+    space: 32
 };
 
 /**

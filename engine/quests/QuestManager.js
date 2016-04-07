@@ -30,11 +30,11 @@ class QuestManager extends EventListener {
 	if (event.eventType === "proximity-collision") {
 	    let params = event.params;
 	    if (params.second.type === "rock") {
-		this.toasts.add("rock-collision", "...", ["You stare at the rock.", "The rock stares back."], {duration: 300});
+		this.toasts.put("proximity-context", "...", ["You stare at the rock.", "The rock stares back.", "<SPC>"], {duration: 300});
 		var dist = params.first.distanceFrom(params.second);
 		this.actions.focus(params.second, dist, "stone-hit");
 	    } else if (params.second.type === "bear") {
-		this.toasts.add("combat-option", "...", ["Yeah. Big ass-bear.", "Fight him?"], {duration: 300});
+		this.toasts.put("proximity-context", "...", ["Yeah. Big ass-bear.", "Fight him?", "<SPC>"], {duration: 300});
 		var dist = params.first.distanceFrom(params.second);
 		this.actions.focus(params.second, dist, "bear-fight");
 	    }
