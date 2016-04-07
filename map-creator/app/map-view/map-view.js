@@ -245,11 +245,11 @@ angular.module('myApp.mapView', ['ngRoute'])
                     key: "sand",
                     id: guid.make()
                 }, {
-                    img: "grass.png",
+                    img: "bg/grass.png",
                     key: "grass",
                     id: guid.make()
                 }, {
-                    img: "rock.png",
+                    img: "fg/rock.png",
                     key: "rock",
                     id: guid.make()
                 }, {
