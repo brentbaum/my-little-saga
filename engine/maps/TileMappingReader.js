@@ -6,6 +6,6 @@ class TileMappingReader extends AjaxReader {
     }
 
     get(cb) {
-        return super.get("/maps/tile-mapping.json", cb);
+        return super.get("./maps/tile-mapping.json", cb);
     }
 }

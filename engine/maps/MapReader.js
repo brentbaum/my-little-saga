@@ -6,6 +6,6 @@ class MapReader extends AjaxReader {
     }
 
     get(filename, cb) {
-        return super.get('/maps/' + filename + ".json", cb);
+        return super.get('./maps/' + filename + ".json", cb);
     }
 }
