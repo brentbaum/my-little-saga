@@ -10,8 +10,6 @@ class DisplayObject {
 	this.loaded = false;
 
 	this.type = gameObjectId;
-	console.log(gameObjectId);
-	console.log(GameObjects);
 	if (!!gameObjectId) {
 	    this.loadImage(GameObjects[gameObjectId].filename);
 	} else {

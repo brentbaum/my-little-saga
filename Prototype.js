@@ -1,6 +1,11 @@
 "use strict";
 
-var dev_game_state = {actionsUnlocked: ["berserk", "law", "melee", "magic"]};
+var dev_inventory = [{id: "rock", name: "Rock", description: "For smashing", count: 3},
+		     {id: "tree", name: "Tree", description: "For building", count: 3}];
+var dev_game_state = {actionsUnlocked: ["berserk", "law", "melee", "magic"],
+		      inBattle: false,
+		      inventory: []
+		     };
 var game_size = {x: 1000, y: 600};
 
 var GameObjects = {
@@ -54,21 +59,21 @@ class Saga extends Game {
 	this.gameState = dev_game_state;
 	// this.gameState = {actionsUnlocked: [], reputation: 0};
 
-        //var mapGenerator = new MapGenerator();
-        //var map = mapGenerator.generate(this.tileCount);
-        var mapReader = new MapReader();
-        var tileReader = new TileMappingReader();
-        var saga = this;
-        this.tileMapping = {};
-        var t = this;
-        tileReader.get(function(mapping) {
-            mapping.list.forEach(function(tile) {
-                t.tileMapping[tile.key] = tile.img;
-            });
-            mapReader.get('berserkerforest', function(map) {
-                saga.setupMap(saga.root, map);
-            });
-        });
+	//var mapGenerator = new MapGenerator();
+	//var map = mapGenerator.generate(this.tileCount);
+	var mapReader = new MapReader();
+	var tileReader = new TileMappingReader();
+	var saga = this;
+	this.tileMapping = {};
+	var t = this;
+	tileReader.get(function(mapping) {
+	    mapping.list.forEach(function(tile) {
+		t.tileMapping[tile.key] = tile.img;
+	    });
+	    mapReader.get('berserkerforest', function(map) {
+		saga.setupMap(saga.root, map);
+	    });
+	});
     }
 
     setupHero(root) {
@@ -130,7 +135,7 @@ class Saga extends Game {
 		this.foreground.children.push(fgTile);
 	    }
 	}
-        
+	
 	this.background.collisionDisable = true;
 	this.floor.children.push(this.background);
 	this.floor.children.push(this.foreground);

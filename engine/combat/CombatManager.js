@@ -4,32 +4,8 @@ let combatInstance = null;
 
 
 // Sax - a kind of short, heavy sword or sabre, with only one sharp edge
-var BATTLE_STATE_IP = "in_progress";
-var BATTLE_STATE_COMPLETE = "complete";
 var INPUT_BUF_SIZE = 10;
 var playerName = "Ragnar";
-
-var combatActions = {
-    berserk: {activationMsg: "is going BEARserk",
-	      moves: [{name: "Claw", message: "claws at the enemy", damage: 0.2},
-		      {name: "Hibernate", message: "is hibernating", damage: 0.1},
-		      {name: "Takedown", message: "performs a full takedown", damage: 0.2}]},
-    law: {activationMsg: "has begun a lawsuit",
-	  moves: [{message: "presents a list of grievances", damage: 0.3},
-		  {message: "calls witnesses to testify", damage: 0.2}]},
-    melee: {activationMsg: "put up his dukes",
-	    moves: [{message: "throws a mean left hook", damage: 0.2},
-		    {message: "throws his foe to the ground", damage: 0.5},
-		    {message: "tears his foes' arms off", damage: 1.0}]},
-    magic: {activationMsg: "has begun a terrifying chant",
-	    moves: [{message: "*the chanting intensifies*", damage: 0.0},
-		    {message: "the wrath of the Gods is felt", damage: 1.0}]}
-};
-
-// Hash for damage multipliers and unique messages
-var combatOpponents = {
-    bear: {law: {message: "Bear is immune to the Law!", damage: 0}}
-};
 
 class CombatManager {
 
@@ -83,30 +59,17 @@ class CombatManager {
 	return playerName + action;
     }
 
-    beginBattle(opponent, actions, scene) {
-	this.battle = {opponent: opponent,
-		       progress: 0,
-		       winner: null,
-		       turn: 0,
-		       selectedAction: 0,
-		       state: BATTLE_STATE_IP,
-		       actions: actions};
+    beginBattle(opponent, heroHealth, actions, scene) {
 	// this.updateBattleMenu();
 	this.phase = "prompt";
+	this.battle = new Battle(opponent, heroHealth, actions);
 	this.updateCombatMessage("Prepare to Battle!", [playerName + " is battling " + opponent.type]);
     }
+
 
     updateCombatMessage(title, lines) {
 	lines.push("<SPC>");
 	this.toastManager.putToggle("combat_message", title, lines, ToastManager.top_middle());
-    }
-
-    selectMove(action) {
-	console.log("action", action);
-	let max = action.length;
-	let randomIndex = 0;
-	let selectedMove = action.moves[randomIndex];
-	return selectedMove;
     }
 
     disableBattleMenu() {
@@ -114,32 +77,19 @@ class CombatManager {
     }
 
     performAction() {
-
-	let selectedActionName = this.battle.actions[this.battle.selectedAction];
-	let action = combatActions[selectedActionName];
-	let move = this.selectMove(action);
-	var damage = move.damage;
 	if (this.battle.turn === 0) {
 	    // Toast activation message
-	    console.log("Toast:" + action.activationMsg);
+	    // console.log("Toast:" + action.activationMsg);
 	}
+	let results = this.battle.performAction();
 
-	var message = playerName + " " + move.message;
-
-	this.battle.turn += 1;
-	console.log(this.battle.opponent.type);
-	let specialInteraction = combatOpponents[this.battle.opponent.type][selectedActionName];
-	if (specialInteraction) {
-	    message += ": " + specialInteraction.message;
-	    damage *= specialInteraction.damage;
-	}
-	this.battle.progress += damage;
-
-	// TODO Toast message + damage
-	this.updateCombatMessage(message, ["Dealt " + damage + " damage"]);
+	this.updateCombatMessage(playerName + " " + results.message, results.lines);
 	
-	if (this.battle.progress >= 1.0) {
-	    this.concludeBattle();
+	if (results.result === "win") {
+	    this.concludeBattle("win");
+	}
+	if (results.result === "loss") {
+	    this.concludeBattle("loss"); 
 	} else {
 	    this.goToPrompt();
 	}
