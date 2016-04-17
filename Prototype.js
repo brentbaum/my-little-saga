@@ -44,7 +44,7 @@ class Saga extends Game {
 	this.root = new DisplayObjectContainer("Root");
 	this.inBattle = false;
 	this.tweener = new TweenJuggler();
-	this.toasts = new ToastManager();
+	this.toastManager = new ToastManager();
 	this.dispatcher = new EventDispatcher();
 	this.questManager = new QuestManager();
 	this.combatManager = new CombatManager();
@@ -98,6 +98,7 @@ class Saga extends Game {
 	};
 	//instantiate with the id, filename, number of frames, and the animation map.
 	this.hero = new AnimatedSprite("hero", "hero", 21, heroAnimations);
+	this.hero.name = "Ragnar";
 
 	this.hero.animate("stop");
 	this.hero.animationSpeed = 10;
@@ -149,9 +150,28 @@ class Saga extends Game {
 	    object.collisionDisable = true;
 	});
 	this.actionManager.add("bear-fight", (bear) => {
-	    this.combatManager.beginBattle(bear, this.gameState.actionsUnlocked, null);
+	    this.combatManager.beginBattle(bear, this.hero, this.gameState.actionsUnlocked, null);
 	    this.inBattle = true;
 	});
+    }
+
+    concludeBattle(result, opponent) {
+	this.inBattle = false;
+	console.log("[Saga] Conclude battle: " + result);
+	var config = ToastManager.top_right();
+	config.duration = 5000;
+	if (result === "win") {
+	    this.toastManager.put("proximity-context", 
+				  "You defeated the " + opponent.type + "!", 
+				  ["Gained 3 reputation"],
+				  config);
+	}
+	else {
+	    // TODO handle loss
+	}
+	// TODO delete sprite
+	opponent.visible = false;
+	opponent.collisionDisable = true;
     }
 
     collideCheck(node, offset) {
@@ -279,7 +299,7 @@ class Saga extends Game {
             this.move(pressedKeys, newKeys);
         }
         this.root.updatePositions();
-        this.toasts.update();
+        this.toastManager.update();
         super.update(pressedKeys);
         this.root.update(pressedKeys);
     }
@@ -289,7 +309,7 @@ class Saga extends Game {
         super.draw(g);
         this.root.draw(g);
         this.actionManager.draw(g, this.floor.position);
-        this.toasts.draw(g);
+        this.toastManager.draw(g);
     }
 }
 

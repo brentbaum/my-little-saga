@@ -53,7 +53,8 @@ class ToastManager {
 	    toast.on = true;
 	    toast.title = title;
 	    toast.lines = lines;
-	    toast.config = config;
+	    if (config)
+		toast.config = config;
 	}
     }
 

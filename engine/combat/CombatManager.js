@@ -14,7 +14,6 @@ class CombatManager {
      * - Healthbars
      * - Sounds
      * - Animations
-     * Maybe Law is a way to avoid battle instead of a combat mode
      */
 
     constructor() {
@@ -59,10 +58,14 @@ class CombatManager {
 	return playerName + action;
     }
 
-    beginBattle(opponent, heroHealth, actions, scene) {
+    beginBattle(opponent, hero, actions, scene) {
 	// this.updateBattleMenu();
+	console.log("[CombatManager]: Begin battle");
 	this.phase = "prompt";
-	this.battle = new Battle(opponent, heroHealth, actions);
+	this.opponent = opponent;
+	this.active = true;
+	this.battle = new Battle(opponent.type, hero, actions);
+	this.turn = true;
 	this.updateCombatMessage("Prepare to Battle!", [playerName + " is battling " + opponent.type]);
     }
 
@@ -81,42 +84,30 @@ class CombatManager {
 	    // Toast activation message
 	    // console.log("Toast:" + action.activationMsg);
 	}
-	let results = this.battle.performAction();
+	let results = this.battle.heroAction();
 
-	this.updateCombatMessage(playerName + " " + results.message, results.lines);
+	this.updateCombatMessage(results.message, results.lines);
 	
-	if (results.result === "win") {
-	    this.concludeBattle("win");
-	}
-	if (results.result === "loss") {
-	    this.concludeBattle("loss"); 
+	if (results.result === "win" || results.result === "loss") {
+	    this.concludeBattle(results.result);
 	} else {
+	    this.turn = false;
 	    this.goToPrompt();
 	}
     }
 
-    concludeBattle() {
-	var config = ToastManager.top_right();
-	config.duration = 5000;
-	this.toastManager.put("proximity-context", 
-			      "You defeated the " + this.battle.opponent.type + "!", 
-			      ["Gained 3 reputation"],
-			      config);
+    concludeBattle(result) {
 	let saga = Game.getInstance();
-	saga.inBattle = false;
-	this.inputBuffer = 0;
-	this.battle.opponent.visible = false;
-	this.battle.opponent.collisionDisable = true;
+	this.active = false;
 	this.toastManager.hide("combat_menu");
 	this.toastManager.hide("combat_message");
 	this.battle = {};
+	saga.concludeBattle(result, this.opponent);
     }
 
     updateBattleMenu() {
 	let x = game_size.x / 2;
 	let y = game_size.y / 2;
-	console.log(x, y);
-	console.log(this.battle);
 	var actionLines = [];
 	for (var i = 0; i < this.battle.actions.length; i++) {
 	    actionLines[i] = (i == this.battle.selectedAction) ? ">> " + this.battle.actions[i] : this.battle.actions[i];
@@ -128,8 +119,6 @@ class CombatManager {
 
     updateBattleUI() {
 	this.updateBattleMenu();
-	// TODO toast progress
-	console.log(this.battle.progress);
     }
 
     goToPrompt() {
@@ -138,7 +127,15 @@ class CombatManager {
 	this.toastManager.show("combat_message");
     }
 
+    doEnemyMove() {
+	this.toastManager.hide("combat_menu");
+	let result = this.battle.opponentAction();
+	this.updateCombatMessage(result.message, result.lines);
+	this.turn = true;
+    }
+
     backToBattle() {
+	console.log("back to battle");
 	this.phase = "action";
 	this.updateBattleUI();
 	this.toastManager.show("combat_menu");
@@ -146,6 +143,8 @@ class CombatManager {
     }
 
     update(pressedKeys) {
+	if (!this.active)
+	    return;
 	if (this.inputBuffer++ < INPUT_BUF_SIZE) {
 	    return;
 	}
@@ -173,11 +172,13 @@ class CombatManager {
 	} else if (this.phase === "prompt") {
 	    if (pressedKeys.includes(keycodes.space)) {
 		this.inputBuffer = 0;
-		this.backToBattle();
+		if (this.turn) {
+		    this.backToBattle();
+		} else {
+		    this.doEnemyMove();
+		}
 	    }
 	}
-	
-	
     }
 
 }

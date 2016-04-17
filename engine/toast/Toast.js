@@ -28,7 +28,6 @@ class Toast {
 	var widths = this.lines.map(txt => ctx.measureText(txt).width);
 	ctx.font = this.titleSize + "px Arial";
 	widths.push(ctx.measureText(this.title).width);
-	console.log(widths);
 	return Math.max.apply(null, widths);
     }
 
