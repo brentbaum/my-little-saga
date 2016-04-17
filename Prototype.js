@@ -48,6 +48,7 @@ class Saga extends Game {
 	this.dispatcher = new EventDispatcher();
 	this.questManager = new QuestManager();
 	this.combatManager = new CombatManager();
+	this.inventoryManager = new InventoryManager();
 	this.dispatcher.addEventListener(this.questManager, "collision");
 	this.dispatcher.addEventListener(this.questManager, "proximity-collision");
 	this.actionManager = new ActionManager();
@@ -197,7 +198,7 @@ class Saga extends Game {
 	}
     }
 
-    move(pressedKeys) {
+    move(pressedKeys, newKeys) {
 	var movementSpeed = 1.5;
 	if (pressedKeys.includes(keycodes.right)) {
 	    this.hero.animate("run");
@@ -234,41 +235,61 @@ class Saga extends Game {
 	    }
 	}
 
-	if (pressedKeys.includes(keycodes.space)) {
-	    this.actionManager.act();
-	}
+	if (newKeys.includes(keycodes.i)) {
+            this.inventoryManager.open(dev_inventory);
+        }
 
-	if (pressedKeys.length === 0) {
-	    //stop and do nothing, all is futile.
-	    this.hero.animate("stop");
-	}
+        if (pressedKeys.includes(keycodes.space)) {
+            this.actionManager.act();
+        }
+
+        if (pressedKeys.length === 0) {
+            //stop and do nothing, all is futile.
+            this.hero.animate("stop");
+        }
+    }
+
+    pressedKeyDiff(pressedKeys) {
+        if(!this.lastPressed)
+            this.lastPressed = [];
+        var t = this;
+        var newKeys = pressedKeys.filter(function(k1) {
+            return !t.lastPressed.some(function(k2) {
+                return k1 === k2;
+            });
+        });
+        this.lastPressed = pressedKeys.slice(0);
+        return newKeys;
     }
 
     update(pressedKeys) {
-	this.actionManager.clear();
-	this.tweener.nextFrame();
-	this.physic(this.root);
-	this.collideCheck(this.root, {
-	    x: 0,
-	    y: 0
-	});
-	if (this.inBattle) {
-	    this.combatManager.update(pressedKeys);
-	} else {
-	    this.move(pressedKeys);
-	}
-	this.root.updatePositions();
-	this.toasts.update();
-	super.update(pressedKeys);
-	this.root.update(pressedKeys);
+        var newKeys = this.pressedKeyDiff(pressedKeys);
+        this.actionManager.clear();
+        this.tweener.nextFrame();
+        this.physic(this.root);
+        this.collideCheck(this.root, {
+            x: 0,
+            y: 0
+        });
+        if (this.inBattle) {
+            this.combatManager.update(newKeys);
+        } else if(this.inInventory) {
+            this.inventoryManager.update(newKeys);
+        } else {
+            this.move(pressedKeys, newKeys);
+        }
+        this.root.updatePositions();
+        this.toasts.update();
+        super.update(pressedKeys);
+        this.root.update(pressedKeys);
     }
 
     draw(g) {
-	g.clearRect(0, 0, this.width, this.height);
-	super.draw(g);
-	this.root.draw(g);
-	this.actionManager.draw(g, this.floor.position);
-	this.toasts.draw(g);
+        g.clearRect(0, 0, this.width, this.height);
+        super.draw(g);
+        this.root.draw(g);
+        this.actionManager.draw(g, this.floor.position);
+        this.toasts.draw(g);
     }
 }
 
@@ -279,6 +300,7 @@ var keycodes = {
     down: 40,
     m: 77,
     z: 90,
+    i: 73,
     space: 32
 };
 
