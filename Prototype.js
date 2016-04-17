@@ -222,28 +222,28 @@ class Saga extends Game {
                         });
                         switch (dir) {
                             case "left":
-                            if (this.isCentered("left")) {
+                                if (this.isCentered("left")) {
                                     this.floor.position.x += 1.5;
                                 } else {
                                     this.hero.position.x -= 1.5;
                                 }
                                 break;
                             case "right":
-                            if (this.isCentered("right")) {
+                                if (this.isCentered("right")) {
                                     this.floor.position.x -= 1.5;
                                 } else {
                                     this.hero.position.x += 1.5;
                                 }
                                 break;
                             case "top":
-                            if (this.isCentered("up")) {
+                                if (this.isCentered("up")) {
                                     this.floor.position.y -= 1.5;
                                 } else {
                                     this.hero.position.y += 1.5;
                                 }
                                 break;
                             case "bottom":
-                            if (this.isCentered("down")) {
+                                if (this.isCentered("down")) {
                                     this.floor.position.y += 1.5;
 
                                 } else {
