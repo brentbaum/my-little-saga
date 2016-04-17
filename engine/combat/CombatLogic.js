@@ -1,6 +1,8 @@
 var flatDmg = function(x) { return () => x; };
 
-var chantMove = {name: "chant", message: "*the chanting intensifies*", damage: 0.0}
+var chantOneMove = {name: "chant", stateAddition: "chanting", message: "*the chanting intensifies*", damage: 0};
+var chantTwoMove = {name: "chant", stateAddition: "chanting2", message: "*the chanting intensifies*", damage: 0};
+var chantFinishMove = {name: "chant_conclude", message: "the wrath of the Gods is felt", damage: 1000};
 var CombatActions = {
     berserk: {activationMsg: "is going BEARserk",
 	      moves: [{name: "Claw", message: "claws at the enemy", damage: 50, chance: 0.3},
@@ -15,8 +17,9 @@ var CombatActions = {
 		    {message: "throws his foe to the ground", damage: 0.5},
 		    {message: "tears his foes' arms off", damage: 1.0}]},
     magic: {activationMsg: "has begun a terrifying chant",
-	    moves: [chantMove,
-		    {name: "chant_conclude", message: "the wrath of the Gods is felt", damage: 1.0}]}
+	    moves: [chantOneMove,
+		    chantTwoMove,
+		    chantFinishMove]}
 };
 
 // Hash for damage multipliers and unique messages
@@ -34,15 +37,15 @@ var BATTLE_STATE_COMPLETE = "complete";
 
 class Battle {
     constructor(opponent, hero, actions) {
-	this.opponent = opponent;
+	this.opponent = {type: opponent, health: CombatOpponents[opponent].health};
 	this.hero = hero;
 	this.progress = 0;
-	this.comboState = {hero: [], opponent: []};
+	this.combatState = {hero: [], opponent: []};
 	this.winner = null;
-	this.turn = 0;
 	this.selectedAction = 0;
 	this.state = BATTLE_STATE_IP;
 	this.actions = actions;
+	console.log("battle", this);
     }
 
     selectMove(moves) {
@@ -53,7 +56,7 @@ class Battle {
 	};
 
 	let randomIndex = Math.round(rand(0, max));
-	let selectedMove = moves[randomIndex];
+	let selectedMove = moves[0];
 	return selectedMove;
     }
 
@@ -61,39 +64,48 @@ class Battle {
 	let selectedActionName = this.actions[this.selectedAction];
 	let action = CombatActions[selectedActionName];
 
-	// Draw a move at random
-
-	// Determine move for real based on combo
-	var move;
-	if (this.comboState.hero.includes("chanting") && action.name === "magic") {
-	    this.comboState.hero.remove("chanting");
-	    this.comboState.hero.push("chanting2");
-	    move
-	} else if (this.comboState.hero.includes("chanting2") {
-
-	    damage += 200;
-	}
-	let move = this.selectMove(action);
-	
-	var damage = move.damage;
-	var heal = move.heal;
-	var message = "";
-	if (this.battle.turn === 0) {
-	    // Toast activation message
+	if (false) {
 	    console.log("Toast:" + action.activationMsg);
 	}
 
-	this.turn += 1;
-	console.log(this.battle.opponent.type);
-	let specialInteraction = CombatOpponents[this.battle.opponent.type][selectedActionName];
+	console.log(this.opponent.type);
+
+	// Determine move for real based on combat state
+	var move;
+	if (selectedActionName === "magic") {
+	    if (this.combatState.hero.includes("chanting") && action.name === "magic") {
+		this.combatState.hero.remove("chanting");
+		move = chantTwoMove;
+	    } else if (this.combatState.hero.includes("chanting2")) {
+		this.combatState.hero.remove("chanting2");
+		move = chantFinishMove;
+	    } else {
+		// Draw a move at random
+		move = chantOneMove;
+	    }
+	} else {
+	    console.log("selecting random move");
+	    move = this.selectMove(action.moves);
+	}
+
+	console.log(move);
+	
+	var damage = move.damage;
+	var heal = move.heal;
+	var message = this.hero.name + " " + move.message;
+
+	let specialInteraction = CombatOpponents[this.opponent.type][selectedActionName];
 	if (specialInteraction) {
 	    message += ": " + specialInteraction.message;
 	    damage *= specialInteraction.damage;
 	}
 
 	this.opponent.health -= damage;
-	this.hero.health += heal;
+	if (heal) this.hero.health += heal;
 
+	if (move.stateAddition) {
+	    this.combatState.hero.push(move.stateAddition);
+	}
 
 	var result;
 	if (this.hero.health <= 0) {
@@ -107,30 +119,18 @@ class Battle {
 	if (move.heal)
 	    lines.push("Healed self for " + move.heal + " HP!");
 	
+	console.log("opponent health", this.opponent.health);
 	return {message: message, lines: lines, damage: damage, result: result};
     }
 
     opponentAction() {
-	let action = CombatActions[selectedActionName];
-	let move = this.selectMove(action);
+	let move = this.selectMove(CombatOpponents[this.opponent.type].moves);
 	var damage = move.damage;
 	var heal = move.heal;
-	var message = "";
-	if (this.battle.turn === 0) {
-	    // Toast activation message
-	    console.log("Toast:" + action.activationMsg);
-	}
-
-	this.turn += 1;
-	console.log(this.battle.opponent.type);
-	let specialInteraction = CombatOpponents[this.battle.opponent.type][selectedActionName];
-	if (specialInteraction) {
-	    message += ": " + specialInteraction.message;
-	    damage *= specialInteraction.damage;
-	}
 
 	this.hero.health -= damage;
-	this.hero.health += heal;
+	if (heal)
+	    this.opponent.health += heal;
 
 	var result;
 	if (this.hero.health <= 0) {
@@ -139,6 +139,7 @@ class Battle {
 	    result = "win"; 
 	}
 
+	var message = this.opponent.type + " " + move.message;
 
 	// TODO Toast message + damage
 	var lines = ["Dealt " + damage + " damage"];
@@ -148,13 +149,4 @@ class Battle {
 	return {message: message, lines: lines, damage: damage, result: result};
 
     }
-
-    performAction() {
-	if (this.turn % 2 == 0) {
-	    this.heroAction();
-	} else {
-	    this.opponentAction();
-	}
-    }
-
 }
