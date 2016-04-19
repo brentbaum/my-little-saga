@@ -17,8 +17,8 @@ var dev_game_state = {
     inventory: []
 };
 var game_size = {
-    x: 1000,
-    y: 600
+    x: 970,
+    y: 650
 };
 
 var GameObjects = {
@@ -74,9 +74,8 @@ class Saga extends Game {
         this.questManager = new QuestManager();
         this.combatManager = new CombatManager();
         this.inventoryManager = new InventoryManager();
-        this.dispatcher.addEventListener(this.questManager, "collision");
-        this.dispatcher.addEventListener(this.questManager, "proximity-collision");
         this.actionManager = new ActionManager();
+        this.dispatcher.addEventListener(this.actionManager, "proximity-collision");
         this.addActions();
         this.sound = new SoundManager();
 
@@ -100,6 +99,9 @@ class Saga extends Game {
                 saga.setupMap(saga.root, map);
             });
         });
+
+	// TODO just for testing:
+	this.questManager.registerBerserkerForestEntered();
     }
 
     setupHero(root) {
@@ -188,6 +190,11 @@ class Saga extends Game {
         console.log("[Saga] Conclude battle: " + result);
         if (result === "win") {
             this.toastManager.updateActionPrompt("You defeated the " + opponent.type + "!", ["Gained 3 reputation"]);
+
+	    // Quest Stuff!
+	    if (opponent.type == "bear") {
+		this.questManager.registerBearKilled();
+	    }
         } else {
             // TODO handle loss
         }

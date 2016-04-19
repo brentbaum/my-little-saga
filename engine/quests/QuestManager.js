@@ -1,23 +1,57 @@
 "use strict";
 
-class QuestManager extends EventListener {
+var LawQuest = {name: "Master of the Old Law", quote: "Hard things have happened here, both in loss of life and in lawsuits. (Njal’s saga, 274)",
+		stages: ["Find Njal at Law Rock", "Learn the ways of the Old Law", "Win a settlement"]};
+var BerserkerQuest = {name: "I am become Bear", quote: "Odin's men rushed forwards without armour, were as mad as dogs or wolves, bit their shields, and were strong as bears or wild oxen, and killed people at a blow, but neither fire nor iron told upon them. This was called Berserkergang.",
+		      bearsToKill: 5,
+		      stages: ["Venture into the Berserker forest", "Defeat the Bears", "Go berserk on some poor outlaw"]};
+
+
+class QuestManager {
+
     constructor(id) {
-        super(id);
-        this.toasts = new ToastManager();
-        this.actions = new ActionManager();
+        this.toastManager = new ToastManager();
+        this.actionManager = new ActionManager();
+	this.berserkerState = {stage: 0, bearsKilled: 0};
+	this.lawState = 0;
+	this.swimState = 0;
+	this.magicState = 0;
     }
-    handleEvent(event) {
-        if (event.eventType === "proximity-collision") {
-            let params = event.params;
-            if (params.second.type === "rock") {
-		this.toasts.updateActionPrompt("...", ["You stare at the rock.", "The rock stares back.", "<SPC>"]);
-                var dist = params.first.distanceFrom(params.second);
-                this.actions.focus(params.second, dist, "stone-hit");
-            } else if (params.second.type === "bear") {
-                this.toasts.updateActionPrompt("...", ["Yeah. Big ass-bear.", "Fight him?", "<SPC>"]);
-                var dist = params.first.distanceFrom(params.second);
-                this.actions.focus(params.second, dist, "bear-fight");
-            }
-        }
+
+
+    toastBerserkerState() {
+	let state = this.berserkerState;
+	this.toastManager.updateQuestDisplay("Current Quest: " + BerserkerQuest.name,
+					     [BerserkerQuest.stages[state.stage],
+					      state.bearsKilled + " out of " +
+					      BerserkerQuest.bearsToKill + " bears killed."]);
+    }
+
+    registerBerserkerForestEntered() {
+	var state = this.berserkerState;
+	if (state.stage === 0) {
+	    state.stage = 1;
+	    this.toastBerserkerState();
+	}
+    }
+
+    registerBearKilled() {
+	var state = this.berserkerState;
+	console.log(state);
+	if (state.stage == 1) {
+	    state.bearsKilled++;
+	    if (state.bearsKilled == BerserkerQuest.bearsToKill) {
+		state.stage++;
+	    }
+	    this.toastBerserkerState();
+	}
+    }
+
+    registerOutlawKilledWithBerserk() {
+	var state = this.berserkerState;
+	if (this.berserkerState.stage == 2) {
+	    state.stage++;
+	    this.toastBerserkerState();
+	}
     }
 }

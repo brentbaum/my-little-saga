@@ -86,6 +86,10 @@ class ToastManager {
 	this.putToggle("proximity-context", title, lines, 20, top_left);
     }
 
+    updateQuestDisplay(title, lines) {
+	this.putToggle("quest", title, lines, 20, top_right);
+    }
+
     draw(g) {
 	if (this.toasts.length > 0)
 	    for (var toast of this.toasts) {
