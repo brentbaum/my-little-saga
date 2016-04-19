@@ -227,8 +227,8 @@ class Saga extends Game {
             };
 
             var bottom = {
-                x: top.x + screenTileSize.x + 1,
-                y: top.y + screenTileSize.y + 1 
+                x: top.x + screenTileSize.x + 2,
+                y: top.y + screenTileSize.y + 2 
             };
 
             return top.x < node.tilePosition.x && top.y < node.tilePosition.y && bottom.x > node.tilePosition.x && bottom.y > node.tilePosition.y;
