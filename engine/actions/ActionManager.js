@@ -2,15 +2,32 @@
 
 let actionInstance = null;
 
-class ActionManager {
+class ActionManager extends EventListener {
     constructor() {
+	super("actionMan");
         if (!actionInstance) {
             actionInstance = this;
         }
+	this.toasts = new ToastManager();
         this.actionable = null;
         this.actions = {};
 
         return actionInstance;
+    }
+
+    handleEvent(event) {
+        if (event.eventType === "proximity-collision") {
+            let params = event.params;
+            if (params.second.type === "rock") {
+		this.toasts.updateActionPrompt("...", ["You stare at the rock.", "The rock stares back.", "<SPC>"]);
+                var dist = params.first.distanceFrom(params.second);
+                this.focus(params.second, dist, "stone-hit");
+            } else if (params.second.type === "bear") {
+                this.toasts.updateActionPrompt("...", ["Yeah. Big ass-bear.", "Fight him?", "<SPC>"]);
+                var dist = params.first.distanceFrom(params.second);
+                this.focus(params.second, dist, "bear-fight");
+            }
+        }
     }
 
     add(k, fn) {
