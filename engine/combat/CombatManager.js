@@ -69,12 +69,6 @@ class CombatManager {
 	this.updateCombatMessage("Prepare to Battle!", [playerName + " is battling " + opponent.type]);
     }
 
-
-    updateCombatMessage(title, lines) {
-	lines.push("<SPC>");
-	this.toastManager.putToggle("combat_message", title, lines, ToastManager.top_middle());
-    }
-
     disableBattleMenu() {
 	this.toastManager.hide("combat_menu");
     }
@@ -89,20 +83,23 @@ class CombatManager {
 	this.updateCombatMessage(results.message, results.lines);
 	
 	if (results.result === "win" || results.result === "loss") {
-	    this.concludeBattle(results.result);
+	    this.result = results.result;
+	    this.goToPrompt();
 	} else {
 	    this.turn = false;
 	    this.goToPrompt();
 	}
     }
 
-    concludeBattle(result) {
+    concludeBattle() {
 	let saga = Game.getInstance();
 	this.active = false;
+	this.over = false;
 	this.toastManager.hide("combat_menu");
 	this.toastManager.hide("combat_message");
 	this.battle = {};
-	saga.concludeBattle(result, this.opponent);
+	saga.concludeBattle(this.result, this.opponent);
+	this.result = null;
     }
 
     updateBattleMenu() {
@@ -112,9 +109,12 @@ class CombatManager {
 	for (var i = 0; i < this.battle.actions.length; i++) {
 	    actionLines[i] = (i == this.battle.selectedAction) ? ">> " + this.battle.actions[i] : this.battle.actions[i];
 	}
-	var config = ToastManager.bottom_left();
-	config.titleSize = 16;
-	this.toastManager.putToggle("combat_menu", "Choose Action <SPC>", actionLines, config);
+	this.toastManager.putToggle("combat_menu", "Choose Action <SPC>", actionLines, 16, bottom_left);
+    }
+
+    updateCombatMessage(title, lines) {
+	lines.push("<SPC>");
+	this.toastManager.putToggle("combat_message", title, lines, 20, top_middle);
     }
 
     updateBattleUI() {
@@ -135,7 +135,6 @@ class CombatManager {
     }
 
     backToBattle() {
-	console.log("back to battle");
 	this.phase = "action";
 	this.updateBattleUI();
 	this.toastManager.show("combat_menu");
@@ -143,7 +142,7 @@ class CombatManager {
     }
 
     update(pressedKeys) {
-	if (!this.active)
+	if (!this.active )
 	    return;
 	if (this.inputBuffer++ < INPUT_BUF_SIZE) {
 	    return;
@@ -172,7 +171,9 @@ class CombatManager {
 	} else if (this.phase === "prompt") {
 	    if (pressedKeys.includes(keycodes.space)) {
 		this.inputBuffer = 0;
-		if (this.turn) {
+		if (this.result) {
+		    this.concludeBattle();
+		} else if (this.turn) {
 		    this.backToBattle();
 		} else {
 		    this.doEnemyMove();

@@ -1,8 +1,8 @@
 var flatDmg = function(x) { return () => x; };
 
-var chantOneMove = {name: "chant", stateAddition: "chanting", message: "*the chanting intensifies*", damage: 0};
-var chantTwoMove = {name: "chant", stateAddition: "chanting2", message: "*the chanting intensifies*", damage: 0};
-var chantFinishMove = {name: "chant_conclude", message: "the wrath of the Gods is felt", damage: 1000};
+var chantOneMove = {name: "chant", stateAddition: "chanting", message: "began to chant a spoopy chant", damage: 0};
+var chantTwoMove = {name: "chant", stateAddition: "chanting2", message: "continues to chant a spoopy chant", damage: 0};
+var chantFinishMove = {name: "chant_conclude", message: "concludes his chant", damage: 1000};
 var CombatActions = {
     berserk: {activationMsg: "is going BEARserk",
 	      moves: [{name: "Claw", message: "claws at the enemy", damage: 50, chance: 0.3},
@@ -63,31 +63,32 @@ class Battle {
     heroAction() {
 	let selectedActionName = this.actions[this.selectedAction];
 	let action = CombatActions[selectedActionName];
+	var lines = [];
 
-	if (false) {
-	    console.log("Toast:" + action.activationMsg);
-	}
+	if (false) { console.log("Toast:" + action.activationMsg); }
 
 	console.log(this.opponent.type);
 
 	// Determine move for real based on combat state
 	var move;
+	console.log("this.combatState.hero", this.combatState.hero);
 	if (selectedActionName === "magic") {
-	    if (this.combatState.hero.includes("chanting") && action.name === "magic") {
-		this.combatState.hero.remove("chanting");
-		move = chantTwoMove;
-	    } else if (this.combatState.hero.includes("chanting2")) {
-		this.combatState.hero.remove("chanting2");
+	    if (this.combatState.hero.indexOf("chanting2") != -1) {
+		this.combatState.hero.splice(this.combatState.hero.indexOf("chanting2"), 1);
+		lines.push("The wrath of the gods is felt!");
 		move = chantFinishMove;
+	    } else if (this.combatState.hero.indexOf("chanting") != -1) {
+		this.combatState.hero.splice(this.combatState.hero.indexOf("chanting"), 1);
+		move = chantTwoMove;
 	    } else {
-		// Draw a move at random
 		move = chantOneMove;
 	    }
 	} else {
+	    // Draw a move at random
 	    console.log("selecting random move");
 	    move = this.selectMove(action.moves);
 	}
-
+	console.log("this.combatState.hero", this.combatState.hero);
 	console.log(move);
 	
 	var damage = move.damage;
@@ -115,7 +116,7 @@ class Battle {
 	}
 
 	// TODO Toast message + damage
-	var lines = ["Dealt " + damage + " damage"];
+	lines.push("Dealt " + damage + " damage");
 	if (move.heal)
 	    lines.push("Healed self for " + move.heal + " HP!");
 	

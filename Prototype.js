@@ -158,12 +158,15 @@ class Saga extends Game {
                     y: y * this.tileSize
                 };
                 bgTile.collisionDisable = true;
+		if (bgTile.type === "water" || bgTile.type === "rock") {
+		    bgTile.collisionDisable = false;
+		}
                 this.background.children.push(bgTile);
                 this.foreground.children.push(fgTile);
             }
         }
 
-        this.background.collisionDisable = true;
+        // this.background.collisionDisable = true;
         this.floor.children.push(this.background);
         this.floor.children.push(this.foreground);
         this.root.children = [this.floor, this.hero];
@@ -183,12 +186,8 @@ class Saga extends Game {
     concludeBattle(result, opponent) {
         this.inBattle = false;
         console.log("[Saga] Conclude battle: " + result);
-        var config = ToastManager.top_right();
-        config.duration = 5000;
         if (result === "win") {
-            this.toastManager.put("proximity-context",
-                "You defeated the " + opponent.type + "!", ["Gained 3 reputation"],
-                config);
+            this.toastManager.updateActionPrompt("You defeated the " + opponent.type + "!", ["Gained 3 reputation"]);
         } else {
             // TODO handle loss
         }
@@ -221,35 +220,35 @@ class Saga extends Game {
                             offset: offset
                         });
                         switch (dir) {
-                            case "left":
-                                if (this.isCentered("left")) {
-                                    this.floor.position.x += 1.5;
-                                } else {
-                                    this.hero.position.x -= 1.5;
-                                }
-                                break;
-                            case "right":
-                                if (this.isCentered("right")) {
-                                    this.floor.position.x -= 1.5;
-                                } else {
-                                    this.hero.position.x += 1.5;
-                                }
-                                break;
-                            case "top":
-                                if (this.isCentered("up")) {
-                                    this.floor.position.y -= 1.5;
-                                } else {
-                                    this.hero.position.y += 1.5;
-                                }
-                                break;
-                            case "bottom":
-                                if (this.isCentered("down")) {
-                                    this.floor.position.y += 1.5;
+                        case "left":
+                            if (this.isCentered("left")) {
+                                this.floor.position.x += 1.5;
+                            } else {
+                                this.hero.position.x -= 1.5;
+                            }
+                            break;
+                        case "right":
+                            if (this.isCentered("right")) {
+                                this.floor.position.x -= 1.5;
+                            } else {
+                                this.hero.position.x += 1.5;
+                            }
+                            break;
+                        case "top":
+                            if (this.isCentered("up")) {
+                                this.floor.position.y -= 1.5;
+                            } else {
+                                this.hero.position.y += 1.5;
+                            }
+                            break;
+                        case "bottom":
+                            if (this.isCentered("down")) {
+                                this.floor.position.y += 1.5;
 
-                                } else {
-                                    this.hero.position.y -= 1.5;
-                                }
-                                break;
+                            } else {
+                                this.hero.position.y -= 1.5;
+                            }
+                            break;
                         }
                     }
                     this.dispatcher.dispatchEvent(event);

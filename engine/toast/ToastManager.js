@@ -1,12 +1,20 @@
 "use strict";
 
 let toastInstance = null;
+let edge_offset = 10;
+let title_body_offset = 4;
 
+var top_left= function(bounds) { return {x: edge_offset, y: edge_offset}; };
+var top_middle = function(bounds)  { return {x: (game_size.x - bounds.width) / 2, y: edge_offset}; };
+var top_right = function(bounds) { return {x: game_size.x - bounds.width, y: edge_offset}; };
+var bottom_left = function(bounds) { return {x: edge_offset, y: game_size.y - bounds.height}; };
+var bottom_middle = function(bounds) { return {x: (game_size.x - bounds.width) / 2, y: game_size.y - bounds.height}; };
+var bottom_right = function(bounds) { return {x: game_size.x - bounds.width, y: game_size.y - bounds.height}; };
 
 class ToastManager {
 
     constructor() {
-        if(toastInstance) {
+        if (toastInstance) {
 	    return toastInstance;
         }
 
@@ -19,18 +27,23 @@ class ToastManager {
 	toastInstance = this;
         return this;
     }
+    
+    makeConfig(title, titleSize, lines, bodySize, position_fn, duration) {
+	var widths = lines.map(txt => this.g.measureText(txt).width);
+	this.g.font = titleSize + "px Arial";
+	widths.push(this.g.measureText(this.title).width);
+	var size = {width: Math.max.apply(null, widths),
+		    height: (10 + titleSize) + (10 + bodySize * lines.length)};
+	var position = position_fn(size);
+	return {x: position.x, y: position.y, duration: duration};
+    }
 
-    static top_left()  { return {x: 300, y: 300}}
-    static top_middle()  { return {x: game_size.y / 2, y: 300}}
-    static top_right()  { return {x: game_size.x - 300, y: 300}}
-    static bottom_left()  { return {x: 30, y: game_size.y - 200}}
-    static bottom_middle()  { return  {x: game_size.x / 2, y: game_size.y - 300}}
-    static bottom_right()  { return {x: game_size.x - 300, y: game_size.y - 300}}
-
-    put(id, title, lines, config) {
+    put(id, title, lines, size, position_fn, duration) {
 	// console.log("ToastManager.add " + id);
 	var toast = this.toasts.find(t => t.id === id);
+	let config = this.makeConfig(title, size + title_body_offset, lines, size, position_fn, duration);
 	if(!toast) {
+	    config.duration = duration;
 	    toast = new Toast(this.g, id, title, lines, config);
 	    this.toasts.push(toast);
 	} else {
@@ -41,20 +54,19 @@ class ToastManager {
 	}
     }
 
-    putToggle(id, title, lines, config) {
+    putToggle(id, title, lines, size, position_fn) {
 	// console.log("ToastManager.addToggle " + id);
 	var toast = this.toggleToasts.find(t => t.id === id);
+	let config = this.makeConfig(title, size + title_body_offset, lines, size, position_fn, 0);
 	if (!toast) {
-	    var conf = config;
-	    conf.toggle = true;
-	    toast = new Toast(this.g, id, title, lines, conf);
+	    config.toggle = true;
+	    toast = new Toast(this.g, id, title, lines, config);
 	    this.toggleToasts.push(toast);
 	} else {
 	    toast.on = true;
 	    toast.title = title;
 	    toast.lines = lines;
-	    if (config)
-		toast.config = config;
+	    toast.config = config;
 	}
     }
 
@@ -71,7 +83,7 @@ class ToastManager {
     }
 
     updateActionPrompt(title, lines) {
-	this.addToggle("action-prompt", title, lines, ToastManager.bottom_middle());
+	this.putToggle("proximity-context", title, lines, 20, top_left);
     }
 
     draw(g) {
