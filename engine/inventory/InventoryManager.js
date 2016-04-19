@@ -50,9 +50,7 @@ class InventoryManager {
         for (var i = 0; i < this.inventory.length; i++) {
             inventoryLines[i] = ((i == this.position) ? ">> " : "") + " " + this.inventory[i].name + "(" + this.inventory[i].count + ")";
         }
-        var config = ToastManager.top_right();
-        config.titleSize = 16;
-        this.toastManager.putToggle("inventory", "Inventory", inventoryLines, config);
+        this.toastManager.updateInventory(inventoryLines);
         // TODO toast progress
     }
 

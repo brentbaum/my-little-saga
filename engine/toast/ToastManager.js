@@ -8,6 +8,7 @@ var top_left= function(bounds) { return {x: edge_offset, y: edge_offset}; };
 var top_middle = function(bounds)  { return {x: (game_size.x - bounds.width) / 2, y: edge_offset}; };
 var top_right = function(bounds) { return {x: game_size.x - bounds.width, y: edge_offset}; };
 var middle_middle = function(bounds)  { return {x: (game_size.x - bounds.width) / 2, y: (game_size.y - bounds.height) / 2}; };
+var middle_right = function(bounds)  { return {x: game_size.x - bounds.width, y: (game_size.y - bounds.height) / 2}; };
 var bottom_left = function(bounds) { return {x: edge_offset, y: game_size.y - bounds.height}; };
 var bottom_middle = function(bounds) { return {x: (game_size.x - bounds.width) / 2, y: game_size.y - bounds.height}; };
 var bottom_right = function(bounds) { return {x: game_size.x - bounds.width, y: game_size.y - bounds.height}; };
@@ -81,6 +82,10 @@ class ToastManager {
 	var toast = this.toggleToasts.find(t => t.id === id);
 	if (toast)
 	    toast.on = true;
+    }
+
+    updateInventory(lines) {
+        this.putToggle("inventory", "Inventory", lines, 20, middle_right);
     }
 
     updateActionPrompt(title, lines) {

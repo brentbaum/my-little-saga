@@ -19,7 +19,7 @@ class Sprite extends DisplayObjectContainer {
     /**
      * Draws this image to the screen
      */
-    draw(g) {
-        super.draw(g);
+    draw(g, onScreen) {
+        super.draw(g, onScreen);
     }
 }

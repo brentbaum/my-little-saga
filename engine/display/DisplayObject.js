@@ -76,9 +76,9 @@ class DisplayObject {
     /**
      * Draws this image to the screen
      */
-    draw(g) {
+    draw(g, onScreen) {
 	if (this.displayImage) {
-	    if (this.loaded && this.visible) {
+	    if (this.loaded && this.visible && onScreen(this)) {
 		this.applyTransformations(g);
 		g.drawImage(this.displayImage, this.frame * this.width, 0, this.width, this.height, 0, 0, this.width, this.height);
 		this.reverseTransformations(g);
