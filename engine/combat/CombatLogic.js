@@ -5,31 +5,35 @@ var chantTwoMove = {name: "chant", stateAddition: "chanting2", message: "continu
 var chantFinishMove = {name: "chant_conclude", message: "concludes his chant", damage: 1000};
 var CombatActions = {
     berserk: {activationMsg: "is going BEARserk",
-	      moves: [{name: "Claw", message: "claws at the enemy", damage: 50, chance: 0.3},
-		      {name: "Bite", message: "takes a bite out of the enemy", damage: 40, chance: 0.3},
-		      {name: "Hibernate", message: "is hibernating", damage: 0, heal: 150, chance: 0.3},
-		      {name: "Takedown", message: "performs a full takedown", damage: 200, chance: 0.2}]},
+	      moves: [{name: "Claw", message: "claws at the enemy", damage: 50},
+		      {name: "Bite", message: "takes a bite out of the enemy", damage: 40},
+		      {name: "Hibernate", message: "is hibernating", damage: 0, heal: 150},
+		      {name: "Takedown", message: "performs a full takedown", damage: 200}]},
     law: {activationMsg: "has begun a lawsuit",
 	  moves: [{message: "presents a list of grievances", damage: 0.3},
-		  {message: "calls witnesses to testify", damage: 0.2}]},
+		  {message: "calls witnesses to testify", damage: 0.2},
+		  {message: "comes to an advantageous settlement", damage: 200}]},
     melee: {activationMsg: "put up his dukes",
 	    moves: [{message: "throws a mean left hook", damage: 0.2},
 		    {message: "throws his foe to the ground", damage: 0.5},
 		    {message: "tears his foes' arms off", damage: 1.0}]},
     magic: {activationMsg: "has begun a terrifying chant",
-	    moves: [chantOneMove,
-		    chantTwoMove,
-		    chantFinishMove]}
+	    moves: [chantOneMove, chantTwoMove, chantFinishMove]}
 };
 
 // Hash for damage multipliers and unique messages
 var CombatOpponents = {
     bear: {interactions: {law: {message: "Bear is immune to the Law!", damage: 0}},
-	   health: 200,
-	   moves: [{name: "Claw", message: "claws at you", damage: 20, chance: 0.5},
-		   {name: "Bite", message: "takes a bite out of you", damage: 30, chance: 0.4},
-		   {name: "Takedown", message: "performs a full takedown", damage: 100, chance: 0.1}]
-	  }
+	   health: 500,
+	   moves: [{name: "Claw", message: "claws at you", damage: 20},
+		   {name: "Bite", message: "takes a bite out of you", damage: 30},
+		   {name: "Takedown", message: "performs a full takedown", damage: 100}]
+	  },
+    outlaw: {interactions: {law: {message: "The outlaw is guilty!", damage: 2}},
+	     health: 200,
+	     moves: [{name: "Beard-whip", message: "whips you with his beard", damage: 10},
+		     {name: "Dagger slice", message: "slices with his dagger", damage: 30}]
+	    }
 };
 
 var BATTLE_STATE_IP = "in_progress";
@@ -95,9 +99,9 @@ class Battle {
 	var heal = move.heal;
 	var message = this.hero.name + " " + move.message;
 
-	let specialInteraction = CombatOpponents[this.opponent.type][selectedActionName];
+	let specialInteraction = CombatOpponents[this.opponent.type].interactions[selectedActionName];
 	if (specialInteraction) {
-	    message += ": " + specialInteraction.message;
+	    lines.push(specialInteraction.message);
 	    damage *= specialInteraction.damage;
 	}
 

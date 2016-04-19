@@ -1,6 +1,5 @@
 "use strict";
 
-
 class Toast {
     constructor(ctx, id, title, lines, config) {
 	this.id = id;

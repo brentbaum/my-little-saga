@@ -49,8 +49,10 @@ class ActionManager extends EventListener {
 	if (!this.actionable)
 	    return;
 	var fn = this.actions[this.actionable.k];
-	if (fn)
+	if (fn) {
 	    fn(this.actionable.object, this.actionable.params);
+	    this.toasts.hide("proximity-context");
+	}
     }
 
     clear() {

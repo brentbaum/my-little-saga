@@ -144,33 +144,26 @@ class CombatManager {
     update(pressedKeys) {
 	if (!this.active )
 	    return;
-	if (this.inputBuffer++ < INPUT_BUF_SIZE) {
-	    return;
-	}
 
 	if (this.phase === "action") {
 	    if (pressedKeys.includes(keycodes.up)) {
 		if (this.battle.selectedAction > 0) {
 		    this.battle.selectedAction -= 1;
 		    this.updateBattleUI();
-		    this.inputBuffer = 0;
 		}
 	    }
 	    if (pressedKeys.includes(keycodes.down)) {
 		if (this.battle.selectedAction < this.battle.actions.length - 1) {
 		    this.battle.selectedAction += 1;
 		    this.updateBattleUI();
-		    this.inputBuffer = 0;
 		}
 	    }
 	    if (pressedKeys.includes(keycodes.space)) {
 		this.performAction();
-		this.inputBuffer = 0;
 	    }
 
 	} else if (this.phase === "prompt") {
 	    if (pressedKeys.includes(keycodes.space)) {
-		this.inputBuffer = 0;
 		if (this.result) {
 		    this.concludeBattle();
 		} else if (this.turn) {

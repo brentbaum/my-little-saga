@@ -12,7 +12,7 @@ var dev_inventory = [{
     count: 3
 }];
 var dev_game_state = {
-    actionsUnlocked: ["berserk", "law", "melee", "magic"],
+    actionsUnlocked: ["Run", "Berserk", "Law", "Melee", "Magic"],
     inBattle: false,
     gameOver: false,
     inventory: []
@@ -201,9 +201,7 @@ class Saga extends Game {
 	    var stats = {};
 	    this.gameOver(stats);
         }
-	var stats = {};
-	this.gameOver(stats);
-
+	
         // TODO delete sprite
         opponent.visible = false;
         opponent.collisionDisable = true;
@@ -215,6 +213,9 @@ class Saga extends Game {
     }
 
     collideCheck(node, offset) {
+	if (this.inBattle)
+	    return;
+
         for (var child of node.children) {
             if (child.id === "hero")
                 return;
