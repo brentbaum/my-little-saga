@@ -9,8 +9,8 @@ angular.module('myApp.mapView', ['ngRoute'])
     });
 }])
 
-.controller('MapViewCtrl', ["$scope", "guid",
-        function($scope, guid) {
+.controller('MapViewCtrl', ["$scope", "guid", "$http",
+        function($scope, guid, $http) {
             $scope.pencilTip = "grass";
             $scope.layer = "background";
             $scope.message = "Here is a map. It is blank";
@@ -171,37 +171,47 @@ angular.module('myApp.mapView', ['ngRoute'])
                 $scope.layer = type;
             };
 
-            $scope.downloadCurrentMap = function() {
+            $scope.saveMap = function() {
                 var filename = prompt("Filename?", "map.json");
-                if(filename)
-                    downloadObject(filename, $scope.map);
+                if (filename) {
+                    $http.post("/save/map", {
+                        filename: filename,
+                        map: $scope.map
+                    }).then(function(res) {
+                        console.log(res);
+                    });
+                }
             };
 
-            $scope.downloadMapping = function() {
-                var filename = prompt("Filename?", "mapping.json");
-                if(filename)
-                    downloadObject(filename, {list: $scope.tileTypes});
+            $scope.saveMapping = function() {
+                $http.post("/save/mapping", {
+                    list: $scope.tileTypes
+                }).then(function(res) {
+                    console.log(res);
+                });
             };
 
-            $scope.parseMapping = function(json) {
-                $scope.tileTypes = JSON.parse(json).list;
-                $scope.mappingJson = "";
+            $scope.loadSavedMapping = function() {
+                $http.get("/load/mapping")
+                    .then(function(res) {
+                        $scope.tileTypes = res.data.list;
+                    }, function() {
+                        alert("Loading failed.")
+                    });
             };
 
-            var downloadObject = function(filename, obj) {
-                var str = JSON.stringify(obj, undefined, 2);
-                var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(str);
-                var dlAnchorElem = document.getElementById('downloadAnchorElem');
-                dlAnchorElem.setAttribute("href", dataStr);
-                dlAnchorElem.setAttribute("download", filename);
-                dlAnchorElem.click();
-            };
+            $scope.loadSavedMap = function() {
+                var filename = prompt("Filename?", "map.json");
+                if (filename)
+                    $http.post("/load/map", {
+                        filename: filename
+                    })
+                    .then(function(res) {
+                        $scope.map = res.data;
 
-            $scope.mapJson = "";
-
-            $scope.parseMap = function(json) {
-                $scope.map = JSON.parse(json);
-                $scope.mapJSON = "";
+                    }, function() {
+                        alert("Loading failed.")
+                    });
             };
 
             var editing = {
@@ -258,18 +268,23 @@ angular.module('myApp.mapView', ['ngRoute'])
                     id: guid.make()
                 }];
                 var stored = localStorage.getItem("types");
-                if(stored) {
+                if (stored) {
                     $scope.tileTypes = JSON.parse(stored).list;
                 }
             }
+
+            function validJSON(text) {
+
+                return (/^[\],:{}\s]*$/.test(text.replace(/\\["\\\/bfnrtu]/g, '@').replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').replace(/(?:^|:|,)(?:\s*\[)+/g, '')));
+            }
+
             function loadMap() {
                 var stored = localStorage.getItem("map");
-                if(stored) {
+                if (stored && validJSON(stored)) {
                     $scope.map = JSON.parse(stored);
                     $scope.size.x = $scope.map.background[0].length;
                     $scope.size.y = $scope.map.background.length;
-                }
-                else
+                } else
                     $scope.clearGrid(true);
             }
             loadTileTypes();
@@ -282,73 +297,35 @@ angular.module('myApp.mapView', ['ngRoute'])
             }, true);
             $scope.$watch("tileTypes", function(val, old) {
                 if (old) {
-                    var json = JSON.stringify({list: val});
+                    var json = JSON.stringify({
+                        list: val
+                    });
                     localStorage.setItem("types", json);
                 }
             }, true);
             window.addEventListener('keyup', function(event) {
-                if(event.keyCode === 37) {
+                if (event.keyCode === 37) {
                     $scope.shiftView('left');
                 }
-                if(event.keyCode === 38) {
+                if (event.keyCode === 38) {
                     $scope.shiftView('up');
                 }
-                if(event.keyCode === 39) {
+                if (event.keyCode === 39) {
                     $scope.shiftView('right');
                 }
-                if(event.keyCode === 40) {
+                if (event.keyCode === 40) {
                     $scope.shiftView('down');
                 }
-                if(event.keyCode === 70) {
+                if (event.keyCode === 70) {
                     $scope.setLayer('foreground');
                 }
-                if(event.keyCode === 66) {
+                if (event.keyCode === 66) {
                     $scope.setLayer('background');
                 }
                 $scope.$apply();
             });
         }
     ])
-    .directive('appFilereader', function($q) {
-        var slice = Array.prototype.slice;
-
-        return {
-            restrict: 'A',
-            require: '?ngModel',
-            link: function(scope, element, attrs, ngModel) {
-                    if (!ngModel) return;
-
-                    ngModel.$render = function() {};
-
-                    element.bind('change', function(e) {
-                        var element = e.target;
-
-                        $q.all(slice.call(element.files, 0).map(readFile))
-                            .then(function(values) {
-                                if (element.multiple) ngModel.$setViewValue(values);
-                                else ngModel.$setViewValue(values.length ? values[0] : null);
-                            });
-
-                        function readFile(file) {
-                            var deferred = $q.defer();
-
-                            var reader = new FileReader();
-                            reader.onload = function(e) {
-                                deferred.resolve(e.target.result);
-                            };
-                            reader.onerror = function(e) {
-                                deferred.reject(e);
-                            };
-                            reader.readAsText(file);
-
-                            return deferred.promise;
-                        }
-
-                    }); //change
-
-                } //link
-        }; //return
-    })
     .service("guid", function() {
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)

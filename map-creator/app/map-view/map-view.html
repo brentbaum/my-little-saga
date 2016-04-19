@@ -2,20 +2,10 @@
 <div class="toolbox">
   <span class="button button-primary" ng-click="newMap()">New Map</span>
   <span class="button" ng-click="clearGrid()">Clear Grid</span>
-  <span class="button" ng-click="downloadCurrentMap()">Download Map JSON</span>
-  <span>
-    <input id="file"  type="file" ng-model="mapJson"
-           ng-change="parseMap(mapJson)" accept="*.json"
-           style="display: none;"app-filereader />
-    <label class="button" for="file">Load Map JSON</label>
-  </span>
-  <span class="button" ng-click="downloadMapping()">Download Tile Mapping</span>
-  <span>
-    <input id="mapping"  type="file" ng-model="mappingJson"
-           ng-change="parseMapping(mappingJson)" accept="*"
-           style="display: none;"app-filereader />
-    <label class="button" for="mapping">Load Tile Mapping</label>
-  </span>
+  <span class="button" ng-click="saveMap()">Save Map</span>
+  <span class="button" ng-click="loadSavedMap()"> Load Saved Map</span>
+  <span class="button" ng-click="saveMapping()">Save Tile Mapping</span>
+  <span class="button" ng-click="loadSavedMapping()">Load Saved Mapping </span>
 </div>
 <div class="map-view-wrapper"
      ng-mousedown="mouseDown()"
