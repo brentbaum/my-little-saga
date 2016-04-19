@@ -14,6 +14,7 @@ class Game{
         this.canvas = canvas;
         this.g = canvas.getContext('2d'); //the graphics object
         this.playing = false;
+        this.fps = 60;
 
         this.pressedKeys = [];
 
@@ -28,9 +29,17 @@ class Game{
     draw(g){}
 
     nextFrame(){
+        var startTime = (new Date()).getTime();
         game.update(this.pressedKeys);
         game.draw(this.g);
-        if(this.playing) window.requestAnimationFrame(tick);
+        var endTime = (new Date()).getTime();
+        var i = 1000 / this.fps;
+        var remainder = i - (endTime - startTime) % i;
+        if(this.playing) {
+            setTimeout(function() {
+                window.requestAnimationFrame(tick);
+            }, remainder);
+        }
     }
 
     start(){

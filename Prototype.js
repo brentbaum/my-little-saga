@@ -59,6 +59,10 @@ class Saga extends Game {
             y: this.size.y / 2
         };
         this.tileSize = 64;
+        this.screenTileSize = {
+            x: game_size.x / this.tileSize,
+            y: game_size.y / this.tileSize
+        };
         this.tileCount = {
             x: 25,
             y: 20
@@ -67,6 +71,8 @@ class Saga extends Game {
             x: this.tileCount.x * this.tileSize,
             y: this.tileCount.y * this.tileSize
         };
+
+        this.movementSpeed = 3;
         this.root = new DisplayObjectContainer("Root");
         this.inBattle = false;
         this.tweener = new TweenJuggler();
@@ -101,8 +107,8 @@ class Saga extends Game {
             });
         });
 
-	// TODO just for testing:
-	this.questManager.registerBerserkerForestEntered();
+        // TODO just for testing:
+        this.questManager.registerBerserkerForestEntered();
     }
 
     setupHero(root) {
@@ -129,7 +135,7 @@ class Saga extends Game {
         this.hero.name = "Ragnar";
 
         this.hero.animate("stop");
-        this.hero.animationSpeed = 10;
+        this.hero.animationSpeed = 5;
         this.hero.position.x = this.centerPoint.x;
         this.hero.position.y = this.centerPoint.y;
         this.hero.scale = {
@@ -147,6 +153,15 @@ class Saga extends Game {
         this.floor.position.x = -50;
         this.floor.position.y = -50;
 
+        this.tileCount = {
+            x: map.background.length,
+            y: map.background[0].length
+        };
+        this.mapSize = {
+            x: this.tileCount.x * this.tileSize,
+            y: this.tileCount.y * this.tileSize
+        };
+
         for (var y = 0; y < this.tileCount.y; y++) {
             var row = [];
             for (var x = 0; x < this.tileCount.x; x++) {
@@ -156,14 +171,22 @@ class Saga extends Game {
                     x: x * this.tileSize,
                     y: y * this.tileSize
                 };
+                bgTile.tilePosition = {
+                    x: x,
+                    y: y
+                };
                 fgTile.position = {
                     x: x * this.tileSize,
                     y: y * this.tileSize
                 };
+                fgTile.tilePosition = {
+                    x: x,
+                    y: y
+                };
                 bgTile.collisionDisable = true;
-		if (bgTile.type === "water" || bgTile.type === "rock") {
-		    bgTile.collisionDisable = false;
-		}
+                if (bgTile.type === "water" || bgTile.type === "rock") {
+                    bgTile.collisionDisable = false;
+                }
                 this.background.children.push(bgTile);
                 this.foreground.children.push(fgTile);
             }
@@ -192,24 +215,51 @@ class Saga extends Game {
         if (result === "win") {
             this.toastManager.updateActionPrompt("You defeated the " + opponent.type + "!", ["Gained 3 reputation"]);
 
-	    // Quest Stuff!
-	    if (opponent.type == "bear") {
-		this.questManager.registerBearKilled();
-	    }
+            // Quest Stuff!
+            if (opponent.type == "bear") {
+                this.questManager.registerBearKilled();
+            }
         } else {
             // TODO handle loss
-	    var stats = {};
-	    this.gameOver(stats);
+            var stats = {};
+            this.gameOver(stats);
         }
+<<<<<<< HEAD
 	
+=======
+        var stats = {};
+        this.gameOver(stats);
+
+>>>>>>> origin/master
         // TODO delete sprite
         opponent.visible = false;
         opponent.collisionDisable = true;
     }
 
     gameOver(stats) {
-	this.toastManager.updateCenterDisplay("Game over! :(", ["here are some stats", stats]);
-	this.gameState.gameOver = true;
+        this.toastManager.updateCenterDisplay("Game over! :(", ["here are some stats", stats]);
+        this.gameState.gameOver = true;
+    }
+
+    onScreen(floor, tileSize, screenTileSize) {
+            return function(node) {
+            if (node.id === "hero")
+                return true;
+            if (!node.tilePosition)
+                return false;
+            var top = {
+                x: Math.floor(floor.position.x * -1 / tileSize) - 1,
+                y: Math.floor(floor.position.y * -1 / tileSize) - 1
+            };
+
+            var bottom = {
+                x: top.x + screenTileSize.x + 5,
+                y: top.y + screenTileSize.y + 5
+            };
+
+            return top.x < node.tilePosition.x && top.y < node.tilePosition.y && bottom.x > node.tilePosition.x && bottom.y > node.tilePosition.y;
+
+        };
     }
 
     collideCheck(node, offset) {
@@ -219,7 +269,7 @@ class Saga extends Game {
         for (var child of node.children) {
             if (child.id === "hero")
                 return;
-            if (!child.collisionDisable) {
+            if (!child.collisionDisable && this.onScreen(this.floor, this.tileSize, this.screenTileSize)(child)) {
                 var dir = this.hero.collidesWith(child, offset);
                 if (dir) {
                     var event;
@@ -239,35 +289,35 @@ class Saga extends Game {
                             offset: offset
                         });
                         switch (dir) {
-                        case "left":
-                            if (this.isCentered("left")) {
-                                this.floor.position.x += 1.5;
-                            } else {
-                                this.hero.position.x -= 1.5;
-                            }
-                            break;
-                        case "right":
-                            if (this.isCentered("right")) {
-                                this.floor.position.x -= 1.5;
-                            } else {
-                                this.hero.position.x += 1.5;
-                            }
-                            break;
-                        case "top":
-                            if (this.isCentered("up")) {
-                                this.floor.position.y -= 1.5;
-                            } else {
-                                this.hero.position.y += 1.5;
-                            }
-                            break;
-                        case "bottom":
-                            if (this.isCentered("down")) {
-                                this.floor.position.y += 1.5;
+                            case "left":
+                                if (this.isCentered("left")) {
+                                    this.floor.position.x += this.movementSpeed;
+                                } else {
+                                    this.hero.position.x -= this.movementSpeed;
+                                }
+                                break;
+                            case "right":
+                                if (this.isCentered("right")) {
+                                    this.floor.position.x -= this.movementSpeed;
+                                } else {
+                                    this.hero.position.x += this.movementSpeed;
+                                }
+                                break;
+                            case "top":
+                                if (this.isCentered("up")) {
+                                    this.floor.position.y -= this.movementSpeed;
+                                } else {
+                                    this.hero.position.y += this.movementSpeed;
+                                }
+                                break;
+                            case "bottom":
+                                if (this.isCentered("down")) {
+                                    this.floor.position.y += this.movementSpeed;
 
-                            } else {
-                                this.hero.position.y -= 1.5;
-                            }
-                            break;
+                                } else {
+                                    this.hero.position.y -= this.movementSpeed;
+                                }
+                                break;
                         }
                     }
                     this.dispatcher.dispatchEvent(event);
@@ -284,52 +334,50 @@ class Saga extends Game {
     }
 
     isCentered(dir) {
-        var movementSpeed = 1.5;
 
         if (dir === "right")
-            return this.mapSize.x + this.floor.position.x > this.size.x && Math.abs(this.hero.position.x - this.centerPoint.x) < 8 * movementSpeed;
+            return this.mapSize.x + this.floor.position.x > this.size.x && Math.abs(this.hero.position.x - this.centerPoint.x) < 8 * this.movementSpeed;
         if (dir === "left")
-            return this.floor.position.x < -movementSpeed * 2 && Math.abs(this.hero.position.x - this.centerPoint.x) < 8 * movementSpeed;
+            return this.floor.position.x < -this.movementSpeed * 2 && Math.abs(this.hero.position.x - this.centerPoint.x) < 8 * this.movementSpeed;
         if (dir === "up")
-            return this.mapSize.y + this.floor.position.y > this.size.y && Math.abs(this.hero.position.y - this.centerPoint.y) < 8 * movementSpeed;
+            return this.mapSize.y + this.floor.position.y > this.size.y && Math.abs(this.hero.position.y - this.centerPoint.y) < 8 * this.movementSpeed;
         if (dir === "down")
-            return this.floor.position.y < -movementSpeed && Math.abs(this.hero.position.y - this.centerPoint.y) < 8 * movementSpeed;
+            return this.floor.position.y < -this.movementSpeed && Math.abs(this.hero.position.y - this.centerPoint.y) < 8 * this.movementSpeed;
     }
 
     move(pressedKeys, newKeys) {
-        var movementSpeed = 1.5;
         if (pressedKeys.includes(keycodes.right)) {
             this.hero.animate("run");
 
             //move
             if (this.isCentered("right"))
-                this.floor.position.x -= movementSpeed;
+                this.floor.position.x -= this.movementSpeed;
             else if (this.hero.position.x < this.size.x)
-                this.hero.position.x += movementSpeed;
+                this.hero.position.x += this.movementSpeed;
         }
         if (pressedKeys.includes(keycodes.left)) {
             this.hero.animate("run");
 
             //move
             if (this.isCentered("left"))
-                this.floor.position.x += movementSpeed;
+                this.floor.position.x += this.movementSpeed;
             else if (this.hero.position.x > 0) {
-                this.hero.position.x -= movementSpeed;
+                this.hero.position.x -= this.movementSpeed;
             }
         }
         if (pressedKeys.includes(keycodes.down)) {
             this.hero.animate("run");
             if (this.isCentered("up"))
-                this.floor.position.y -= movementSpeed;
+                this.floor.position.y -= this.movementSpeed;
             else if (this.hero.position.y < this.size.y)
-                this.hero.position.y += movementSpeed;
+                this.hero.position.y += this.movementSpeed;
         }
         if (pressedKeys.includes(keycodes.up)) {
             this.hero.animate("run");
             if (this.isCentered("down"))
-                this.floor.position.y += movementSpeed;
+                this.floor.position.y += this.movementSpeed;
             else if (this.hero.position.y > 0) {
-                this.hero.position.y -= movementSpeed;
+                this.hero.position.y -= this.movementSpeed;
             }
         }
 
@@ -384,7 +432,7 @@ class Saga extends Game {
     draw(g) {
         g.clearRect(0, 0, this.width, this.height);
         super.draw(g);
-        this.root.draw(g);
+        this.root.draw(g, this.onScreen(this.floor, this.tileSize, this.screenTileSize));
         this.actionManager.draw(g, this.floor.position);
         this.toastManager.draw(g);
     }
