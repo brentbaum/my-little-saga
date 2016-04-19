@@ -18,36 +18,11 @@ var dev_game_state = {
     inventory: []
 };
 var game_size = {
-    x: 970,
-    y: 650
+    x: 1200,
+    y: 700
 };
 
-var GameObjects = {
-    hero: {
-        name: "hero",
-        filename: "super-mario-sprite.png"
-    },
-    rock: {
-        name: "rock",
-        filename: "fg/rock.png"
-    },
-    grass: {
-        name: "grass",
-        filename: "bg/grass.png"
-    },
-    water: {
-        name: "water",
-        filename: "bg/water.png"
-    },
-    sand: {
-        name: "sand",
-        filename: "bg/sand.png"
-    },
-    bear: {
-        name: "bear",
-        filename: "fg/bear.png"
-    }
-};
+var GameObjects = {};
 
 class Saga extends Game {
     constructor(canvas) {
@@ -86,7 +61,6 @@ class Saga extends Game {
         this.addActions();
         this.sound = new SoundManager();
 
-        this.setupHero();
 
         this.gameState = dev_game_state;
         // this.gameState = {actionsUnlocked: [], reputation: 0};
@@ -96,15 +70,22 @@ class Saga extends Game {
         var mapReader = new MapReader();
         var tileReader = new TileMappingReader();
         var saga = this;
-        this.tileMapping = {};
         var t = this;
         tileReader.get(function(mapping) {
+            GameObjects = {
+                hero:{
+                    key: "hero",
+                    img: "super-mario-sprite.png"
+                }
+            };
             mapping.list.forEach(function(tile) {
-                t.tileMapping[tile.key] = tile.img;
+                GameObjects[tile.key] = tile;
             });
-            mapReader.get('berserkerforest', function(map) {
+            mapReader.get('level1', function(map) {
                 saga.setupMap(saga.root, map);
             });
+            t.setupHero();
+            t.setup = true;
         });
 
         // TODO just for testing:
@@ -162,26 +143,26 @@ class Saga extends Game {
             y: this.tileCount.y * this.tileSize
         };
 
-        for (var y = 0; y < this.tileCount.y; y++) {
+        for (var x = 0; x < this.tileCount.x; x++) {
             var row = [];
-            for (var x = 0; x < this.tileCount.x; x++) {
+            for (var y = 0; y < this.tileCount.y; y++) {
                 var bgTile = new Sprite("bg_(" + x + ", " + y + ")", map.background[x][y]);
                 var fgTile = new Sprite(map.foreground[x][y] + "_(" + x + ", " + y + ")", map.foreground[x][y]);
                 bgTile.position = {
-                    x: x * this.tileSize,
-                    y: y * this.tileSize
+                    y: x * this.tileSize,
+                    x: y * this.tileSize
                 };
                 bgTile.tilePosition = {
-                    x: x,
-                    y: y
+                    y: x,
+                    x: y
                 };
                 fgTile.position = {
-                    x: x * this.tileSize,
-                    y: y * this.tileSize
+                    y: x * this.tileSize,
+                    x: y * this.tileSize
                 };
                 fgTile.tilePosition = {
-                    x: x,
-                    y: y
+                    y: x,
+                    x: y
                 };
                 bgTile.collisionDisable = true;
                 if (bgTile.type === "water" || bgTile.type === "rock") {
@@ -235,7 +216,7 @@ class Saga extends Game {
     }
 
     onScreen(floor, tileSize, screenTileSize) {
-            return function(node) {
+        return function(node) {
             if (node.id === "hero")
                 return true;
             if (!node.tilePosition)
@@ -246,8 +227,8 @@ class Saga extends Game {
             };
 
             var bottom = {
-                x: top.x + screenTileSize.x + 5,
-                y: top.y + screenTileSize.y + 5
+                x: top.x + screenTileSize.x + 1,
+                y: top.y + screenTileSize.y + 1 
             };
 
             return top.x < node.tilePosition.x && top.y < node.tilePosition.y && bottom.x > node.tilePosition.x && bottom.y > node.tilePosition.y;
@@ -256,8 +237,8 @@ class Saga extends Game {
     }
 
     collideCheck(node, offset) {
-	if (this.inBattle)
-	    return;
+        if (this.inBattle)
+            return;
 
         for (var child of node.children) {
             if (child.id === "hero")
@@ -402,6 +383,8 @@ class Saga extends Game {
     }
 
     update(pressedKeys) {
+        if(!this.setup)
+            return;
         var newKeys = this.pressedKeyDiff(pressedKeys);
         this.actionManager.clear();
         this.tweener.nextFrame();
@@ -423,6 +406,8 @@ class Saga extends Game {
     }
 
     draw(g) {
+        if(!this.setup)
+            return;
         g.clearRect(0, 0, this.width, this.height);
         super.draw(g);
         this.root.draw(g, this.onScreen(this.floor, this.tileSize, this.screenTileSize));

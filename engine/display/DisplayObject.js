@@ -10,8 +10,8 @@ class DisplayObject {
 	this.loaded = false;
 
 	this.type = gameObjectId;
-	if (!!gameObjectId) {
-	    this.loadImage(GameObjects[gameObjectId].filename);
+	if (!!gameObjectId && GameObjects[gameObjectId]) {
+	    this.loadImage(GameObjects[gameObjectId].img);
 	} else {
 	    this.imageWidth = this.width = this.height = 0;
 	    this.displayImage = {

@@ -18,6 +18,12 @@ class Game{
 
         this.pressedKeys = [];
 
+        var mc = document.createElement('canvas');
+        mc.width = game_size.x;
+        mc.height = game_size.y;
+        this.mg = mc.getContext('2d');
+        this.mc = mc;
+
         /* Setup a key listener */
         window.addEventListener("keydown", onKeyDown, true);
         window.addEventListener("keyup", onKeyUp, true);
@@ -29,11 +35,16 @@ class Game{
     draw(g){}
 
     nextFrame(){
+        console.log("--------");
         var startTime = (new Date()).getTime();
         game.update(this.pressedKeys);
-        game.draw(this.g);
+        var updateTime = (new Date()).getTime() - startTime;
+        game.draw(this.mg);
+        this.g.drawImage(this.mc, 0, 0);
         var endTime = (new Date()).getTime();
         var i = 1000 / this.fps;
+        console.log(endTime - startTime, " = ", updateTime, " + ", endTime - startTime - updateTime);
+        console.log("--------");
         var remainder = i - (endTime - startTime) % i;
         if(this.playing) {
             setTimeout(function() {
