@@ -224,13 +224,6 @@ class Saga extends Game {
             var stats = {};
             this.gameOver(stats);
         }
-<<<<<<< HEAD
-	
-=======
-        var stats = {};
-        this.gameOver(stats);
-
->>>>>>> origin/master
         // TODO delete sprite
         opponent.visible = false;
         opponent.collisionDisable = true;
