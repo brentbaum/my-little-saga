@@ -14,6 +14,7 @@ var dev_inventory = [{
 var dev_game_state = {
     actionsUnlocked: ["berserk", "law", "melee", "magic"],
     inBattle: false,
+    gameOver: false,
     inventory: []
 };
 var game_size = {
@@ -197,10 +198,20 @@ class Saga extends Game {
 	    }
         } else {
             // TODO handle loss
+	    var stats = {};
+	    this.gameOver(stats);
         }
+	var stats = {};
+	this.gameOver(stats);
+
         // TODO delete sprite
         opponent.visible = false;
         opponent.collisionDisable = true;
+    }
+
+    gameOver(stats) {
+	this.toastManager.updateCenterDisplay("Game over! :(", ["here are some stats", stats]);
+	this.gameState.gameOver = true;
     }
 
     collideCheck(node, offset) {
@@ -267,14 +278,6 @@ class Saga extends Game {
                     x: offset.x + node.position.x,
                     y: offset.y + node.position.y
                 });
-            }
-        }
-    }
-
-    physic(root) {
-        for (var child of root.children) {
-            if (!!child.children) {
-                this.physic(child);
             }
         }
     }
@@ -360,7 +363,6 @@ class Saga extends Game {
         var newKeys = this.pressedKeyDiff(pressedKeys);
         this.actionManager.clear();
         this.tweener.nextFrame();
-        this.physic(this.root);
         this.collideCheck(this.root, {
             x: 0,
             y: 0

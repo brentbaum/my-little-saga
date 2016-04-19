@@ -7,6 +7,7 @@ let title_body_offset = 4;
 var top_left= function(bounds) { return {x: edge_offset, y: edge_offset}; };
 var top_middle = function(bounds)  { return {x: (game_size.x - bounds.width) / 2, y: edge_offset}; };
 var top_right = function(bounds) { return {x: game_size.x - bounds.width, y: edge_offset}; };
+var middle_middle = function(bounds)  { return {x: (game_size.x - bounds.width) / 2, y: (game_size.y - bounds.height) / 2}; };
 var bottom_left = function(bounds) { return {x: edge_offset, y: game_size.y - bounds.height}; };
 var bottom_middle = function(bounds) { return {x: (game_size.x - bounds.width) / 2, y: game_size.y - bounds.height}; };
 var bottom_right = function(bounds) { return {x: game_size.x - bounds.width, y: game_size.y - bounds.height}; };
@@ -88,6 +89,10 @@ class ToastManager {
 
     updateQuestDisplay(title, lines) {
 	this.putToggle("quest", title, lines, 20, top_right);
+    }
+
+    updateCenterDisplay(title, lines) {
+	this.putToggle("center", title, lines, 36, middle_middle);
     }
 
     draw(g) {

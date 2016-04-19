@@ -37,9 +37,6 @@ class DisplayObject {
 	this.frame = 0;
 	this.onImageLoad = onload;
 	this.parent = null;
-	this.physics = {
-	    gravity: false
-	};
 	this.vel = {
 	    x: 0,
 	    y: 0
@@ -208,31 +205,31 @@ class DisplayObject {
     }
 
     collidesWith(other, offset) {
-		var t = this.getHitBox();
-		var o = other.getHitBox();
-		if((t.x1 == t.x2 && t.y1 == t.y2) || (o.x1 == o.x2 && o.y1 == o.y2)){
-			// if something has zero width and height, it can't be collided with
-			return false;
-		}
-		o.x1 += offset.x;
-		o.x2 += offset.x;
-		o.y1 += offset.y;
-		o.y2 += offset.y;
+	var t = this.getHitBox();
+	var o = other.getHitBox();
+	if((t.x1 == t.x2 && t.y1 == t.y2) || (o.x1 == o.x2 && o.y1 == o.y2)){
+	    // if something has zero width and height, it can't be collided with
+	    return false;
+	}
+	o.x1 += offset.x;
+	o.x2 += offset.x;
+	o.y1 += offset.y;
+	o.y2 += offset.y;
 
-		var d = this.directCollide(t, o, other);
-		if (d) {
-		    return d;
-		}
-		var p = this.proximityCollide(t, o, other);
-		return p ? "proximity" : false;
-	    }
+	var d = this.directCollide(t, o, other);
+	if (d) {
+	    return d;
+	}
+	var p = this.proximityCollide(t, o, other);
+	return p ? "proximity" : false;
+    }
 
-	    directCollide(t, o, other) {
-		//minsowski sum works well, as we want direction too.
-		var w = 0.5 * (this.width * this.scale.x + other.width * other.scale.x);
-		var h = 0.5 * (this.height * this.scale.y + other.height * other.scale.y);
+    directCollide(t, o, other) {
+	//minsowski sum works well, as we want direction too.
+	var w = 0.5 * (this.width * this.scale.x + other.width * other.scale.x);
+	var h = 0.5 * (this.height * this.scale.y + other.height * other.scale.y);
 
-		return this.collisionDirection(w, h, t, o);
+	return this.collisionDirection(w, h, t, o);
     }
 
     proximityCollide(t, o, other) {

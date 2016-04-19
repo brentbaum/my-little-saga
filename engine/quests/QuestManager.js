@@ -21,10 +21,13 @@ class QuestManager {
 
     toastBerserkerState() {
 	let state = this.berserkerState;
+	var lines = [];
+	lines.push(BerserkerQuest.stages[state.stage]);
+	if (state.stage == 1) 
+	    lines.push(state.bearsKilled + " out of " + BerserkerQuest.bearsToKill + " bears killed.");
+
 	this.toastManager.updateQuestDisplay("Current Quest: " + BerserkerQuest.name,
-					     [BerserkerQuest.stages[state.stage],
-					      state.bearsKilled + " out of " +
-					      BerserkerQuest.bearsToKill + " bears killed."]);
+					     lines);
     }
 
     registerBerserkerForestEntered() {
