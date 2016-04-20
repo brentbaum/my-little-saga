@@ -27,7 +27,11 @@ class DisplayObjectContainer extends DisplayObject {
         if(!onScreen)
             debugger;
         if(this.displayImage && this.loaded && this.visible && onScreen(this)) {
-            g.drawImage(this.displayImage, this.frame * this.width, 0, this.width, this.height, 0, 0, this.width, this.height);
+            try{
+                g.drawImage(this.displayImage, this.frame * this.width, 0, this.width, this.height, 0, 0, this.width, this.height);
+            } catch(err){
+                // skip it i guess, its outside of the screen anyway
+            }
         }
         for(let child of this.children) {
             child.draw(g, onScreen);

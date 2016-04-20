@@ -181,11 +181,13 @@ class DisplayObject {
     }
 
     updatePositions() {
-	this.position.x += this.vel.x;
-	this.position.y += this.vel.y;
-	for (var child of this.children) {
-	    child.updatePositions();
-	}
+		this.position.x += this.vel.x;
+		this.position.y += this.vel.y;
+		if(this instanceof DisplayObjectContainer){
+			for (var child of this.children) {
+			    child.updatePositions();
+			}
+		}
     }
 
     getHitBox() {

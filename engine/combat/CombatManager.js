@@ -118,7 +118,7 @@ class CombatManager {
     }
 
     updateBattleUI() {
-	this.updateBattleMenu();
+		this.updateBattleMenu();
     }
 
     goToPrompt() {

@@ -123,7 +123,9 @@ class Saga extends Game {
             x: .8,
             y: .5
         };
-
+        this.hero.maxhealth = 250;
+        this.hero.health = this.hero.maxhealth;
+        this.toastManager.updateHUD(this.hero, this);
     }
 
     setupMap(root, map) {
@@ -182,7 +184,7 @@ class Saga extends Game {
         this.floor.children = [this.background, this.foreground];
         this.floor.children.push(this.background);
         this.floor.children.push(this.foreground);
-        this.root.children = [this.floor, this.hero];
+        this.root.children = [this.floor, this.hero, this.toastManager];
     }
 
     addActions() {
@@ -426,8 +428,10 @@ class Saga extends Game {
         g.clearRect(0, 0, this.width, this.height);
         super.draw(g);
         this.root.draw(g, this.onScreen(this.floor, this.tileSize, this.screenTileSize));
-        this.actionManager.draw(g, this.floor.position);
-        this.toastManager.draw(g);
+        if(this.floor){
+            this.actionManager.draw(g, this.floor.position);
+        }
+       // this.toastManager.draw(g);
     }
 }
 

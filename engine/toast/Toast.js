@@ -1,6 +1,6 @@
 "use strict";
 
-class Toast {
+class Toast{
     constructor(ctx, id, title, lines, config) {
         this.id = id;
         this.title = title;
@@ -14,12 +14,13 @@ class Toast {
             x: config.x || 20,
             y: config.y || 20
         };
+        this.children = [];
         this.updateBounds(ctx, title, lines);
     }
 
     updateBounds(ctx) {
         this.width = this.textWidth(ctx);
-        this.height = (10 + this.titleSize) + (10 + this.bodySize * this.lines.length);
+        this.height = (10 + this.titleSize) + ((this.bodySize + 5) * this.lines.length);
     }
 
     textWidth(ctx) {
@@ -35,7 +36,7 @@ class Toast {
         this.updateBounds(g);
         g.fillStyle = "rgba(73,49,28, .7)";
         g.strokeStyle = "rgb(255, 255, 255)";
-        roundRect(g, this.position.x, this.position.y, 20 + this.width, 15 + this.height, 5, true);
+        roundRect(g, this.position.x, this.position.y, 20 + this.width, 10 + this.height, 5, true);
         g.fillStyle = "rgba(255, 255, 255, .8)";
         g.strokeStyle = "rgba(255, 255, 255, .8)";
         g.font = this.titleSize + "px Arial";

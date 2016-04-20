@@ -3,7 +3,7 @@
 let toastInstance = null;
 let edge_offset = 10;
 let inherent_width = 20; // total offset between the text and the edge of the box
-let inherent_height = 25; // same as above but for height
+let inherent_height = 20; // same as above but for height
 let title_body_offset = 4;
 
 var top_left= function(bounds) { 		return {x: edge_offset, 						y: edge_offset}; };
@@ -16,9 +16,10 @@ var bottom_left = function(bounds) { 	return {x: edge_offset, 						y: game_size
 var bottom_middle = function(bounds) { 	return {x: (game_size.x - bounds.width) / 2, 	y: game_size.y - bounds.height - inherent_height}; };
 var bottom_right = function(bounds) { 	return {x: game_size.x - bounds.width, 			y: game_size.y - bounds.height - inherent_height}; };
 
-class ToastManager {
+class ToastManager extends DisplayObject {
 
     constructor() {
+    	super("toastmanager", null, null);
         if (toastInstance) {
 	    return toastInstance;
         }
@@ -39,7 +40,7 @@ class ToastManager {
 		this.g.font = (titleSize) + "px Arial";
 		widths.push(this.g.measureText(title).width + inherent_width + edge_offset);
 		var size = {width: Math.max.apply(null, widths),
-			    height: (10 + titleSize) + (10 + bodySize * lines.length)};
+			    height: (10 + titleSize) + ((bodySize + 5) * lines.length)};
 		var position = position_fn(size);
 		return {x: position.x, y: position.y, duration: duration, titleSize: titleSize, bodySize: bodySize};
     }
@@ -96,15 +97,25 @@ class ToastManager {
     }
 
     updateActionPrompt(title, lines) {
-	this.putToggle("proximity-context", title, lines, 20, top_left);
+		this.putToggle("proximity-context", title, lines, 20, top_left);
     }
 
     updateQuestDisplay(title, lines) {
-	this.putToggle("quest", title, lines, 20, top_right);
+		this.putToggle("quest", title, lines, 20, top_right);
     }
 
     updateCenterDisplay(title, lines) {
-	this.putToggle("center", title, lines, 36, middle_middle);
+		this.putToggle("center", title, lines, 36, middle_middle);
+    }
+
+    updateHUD(hero, game) {    	        
+        var lns = [];
+        var hpln = "Health: " + hero.health;
+        lns.push(hpln);
+        var stln = "(no status effects)";
+
+		this.putToggle("hero", hero.name, lns, 20, bottom_left);
+		//this.addIcon("hero", "inventory_icon", icon_top_right)
     }
 
     draw(g) {
