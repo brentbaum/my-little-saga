@@ -150,7 +150,6 @@ class Battle {
 	var lines = ["Dealt " + damage + " damage"];
 	if (move.heal)
 	    lines.push("Healed self for " + move.heal + " HP!");
-	
 	return {message: message, lines: lines, damage: damage, result: result};
 
     }

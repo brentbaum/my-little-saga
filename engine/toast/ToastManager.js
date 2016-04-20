@@ -97,7 +97,7 @@ class ToastManager extends DisplayObject {
     }
 
     updateActionPrompt(title, lines) {
-		this.putToggle("proximity-context", title, lines, 20, top_left);
+		this.putToggle("proximity-context", title, lines, 20, middle_middle);
     }
 
     updateQuestDisplay(title, lines) {
@@ -114,7 +114,7 @@ class ToastManager extends DisplayObject {
         lns.push(hpln);
         var stln = "(no status effects)";
 
-		this.putToggle("hero", hero.name, lns, 20, bottom_left);
+		this.putToggle("hero", hero.name, lns, 20, top_left);
 		//this.addIcon("hero", "inventory_icon", icon_top_right)
     }
 

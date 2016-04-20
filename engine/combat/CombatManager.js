@@ -62,6 +62,7 @@ class CombatManager {
 	// this.updateBattleMenu();
 	console.log("[CombatManager]: Begin battle");
 	this.phase = "prompt";
+	this.hero = hero;
 	this.opponent = opponent;
 	this.active = true;
 	this.battle = new Battle(opponent.type, hero, actions);
@@ -89,6 +90,7 @@ class CombatManager {
 	    this.turn = false;
 	    this.goToPrompt();
 	}
+	this.toastManager.updateHUD(this.hero);
     }
 
     concludeBattle() {
@@ -131,6 +133,7 @@ class CombatManager {
 	this.toastManager.hide("combat_menu");
 	let result = this.battle.opponentAction();
 	this.updateCombatMessage(result.message, result.lines);
+	this.toastManager.updateHUD(this.hero);
 	this.turn = true;
     }
 
