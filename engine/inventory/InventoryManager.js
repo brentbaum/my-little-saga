@@ -41,36 +41,94 @@ class InventoryManager {
         this.position = 0;
         this.inventory = null;
         this.toastManager.hide("inventory");
+        this.toastManager.hide("inventory-action");
+    };
+
+    updateActionUI() {
+        this.showingActions = true;
+        var item = this.inventory[this.position];
+        var lines = ["Use", "Drop", "Cancel"];
+        lines[this.actionPosition] = ">> " + lines[this.actionPosition];
+
+        this.toastManager.updateInventoryAction(item, lines);
+
     };
 
     updateInventoryUI() {
-        let x = game_size.x / 2;
-        let y = game_size.y / 2;
         var inventoryLines = [];
         for (var i = 0; i < this.inventory.length; i++) {
             inventoryLines[i] = ((i == this.position) ? ">> " : "") + " " + this.inventory[i].name + "(" + this.inventory[i].count + ")";
         }
+        inventoryLines.push(((this.position == this.inventory.length) ? ">> " : "") + "Close");
         this.toastManager.updateInventory(inventoryLines);
-        // TODO toast progress
+    }
+
+    hideItemAction() {
+        this.actionPosition = -1;
+        this.showingActions = false;
+        this.toastManager.hide("inventory-action");
+    }
+
+    selectItemAction() {
+        if(this.actionPosition === 0)
+            return;
+        else if(this.actionPosition === 1) {
+            this.inventory[this.position].count--;
+            if(this.inventory[this.position].count === 0) {
+                this.inventory.splice(this.position, 1);
+                this.hideItemAction();
+            } else {
+                this.updateActionUI();
+            }
+            this.updateInventoryUI();
+        }
+        else if(this.actionPosition === 2) {
+            this.hideItemAction();
+        }
     }
 
     update(pressedKeys) {
         if(!this.inventory)
             return;
         if (pressedKeys.includes(keycodes.up)) {
-            if (this.position > 0) {
-                this.position -= 1;
+            if(!this.showingActions) {
+                if (this.position > 0) {
+                    this.position -= 1;
+                }
+                this.updateInventoryUI();
+            } else {
+                if (this.actionPosition > 0) {
+                    this.actionPosition -= 1;
+                }
+                this.updateActionUI();
             }
-            this.updateInventoryUI();
         }
         if (pressedKeys.includes(keycodes.down)) {
-            if (this.position < this.inventory.length - 1) {
-                this.position += 1;
+            if(!this.showingActions) {
+                if (this.position < this.inventory.length) {
+                    this.position += 1;
+                }
+                this.updateInventoryUI();
+            } else {
+                if (this.actionPosition < 2) {
+                    this.actionPosition += 1;
+                }
+                this.updateActionUI();
             }
-            this.updateInventoryUI();
+        }
+        if (pressedKeys.includes(keycodes.space)) {
+            if(!this.showingActions) {
+                if(this.position === this.inventory.length)
+                    this.close();
+                else {
+                    this.actionPosition = 0;
+                    this.updateActionUI();
+                }
+            } else {
+                this.selectItemAction();
+            }
         }
         if (pressedKeys.includes(keycodes.i)) {
-            //this.performAction();
             this.close();
         }
     }

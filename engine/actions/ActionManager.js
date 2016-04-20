@@ -18,14 +18,16 @@ class ActionManager extends EventListener {
     handleEvent(event) {
         if (event.eventType === "proximity-collision") {
             let params = event.params;
+            var dist = params.first.distanceFrom(params.second);
             if (params.second.type === "rock") {
 		this.toasts.updateActionPrompt("...", ["You stare at the rock.", "The rock stares back.", "<SPC>"]);
-                var dist = params.first.distanceFrom(params.second);
                 this.focus(params.second, dist, "stone-hit");
             } else if (params.second.type === "bear") {
                 this.toasts.updateActionPrompt("...", ["Yeah. Big ass-bear.", "Fight him?", "<SPC>"]);
-                var dist = params.first.distanceFrom(params.second);
                 this.focus(params.second, dist, "bear-fight");
+            } else if (params.second.type === "teleport") {
+                this.toasts.updateActionPrompt("Fly on the magic carpet?", ["This will take you to:", "Level, the Second"]);
+                this.focus(params.second, dist, "teleport", {level: "level2"});
             }
         }
     }

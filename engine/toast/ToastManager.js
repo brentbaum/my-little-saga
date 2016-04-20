@@ -1,17 +1,19 @@
 "use strict";
 
 let toastInstance = null;
-let edge_offset = 10;
+let edge_offset = 25;
 let title_body_offset = 4;
 
 var top_left= function(bounds) { return {x: edge_offset, y: edge_offset}; };
 var top_middle = function(bounds)  { return {x: (game_size.x - bounds.width) / 2, y: edge_offset}; };
-var top_right = function(bounds) { return {x: game_size.x - bounds.width, y: edge_offset}; };
+var top_right = function(bounds) { return {x: game_size.x - bounds.width - 260, y: edge_offset}; };
 var middle_middle = function(bounds)  { return {x: (game_size.x - bounds.width) / 2, y: (game_size.y - bounds.height) / 2}; };
-var middle_right = function(bounds)  { return {x: game_size.x - bounds.width, y: (game_size.y - bounds.height) / 2}; };
+var middle_right = function(bounds)  { return {x: game_size.x - bounds.width - edge_offset, y: (game_size.y - bounds.height) / 2}; };
 var bottom_left = function(bounds) { return {x: edge_offset, y: game_size.y - bounds.height}; };
 var bottom_middle = function(bounds) { return {x: (game_size.x - bounds.width) / 2, y: game_size.y - bounds.height}; };
-var bottom_right = function(bounds) { return {x: game_size.x - bounds.width, y: game_size.y - bounds.height}; };
+var bottom_right = function(bounds) { return {x: game_size.x - bounds.width - edge_offset, y: game_size.y - bounds.height - edge_offset}; };
+
+var bottom_right_attach = function(bounds) { return {x: game_size.x - bounds.width - edge_offset - 200, y: game_size.y - bounds.height - edge_offset}; };
 
 class ToastManager {
 
@@ -85,7 +87,11 @@ class ToastManager {
     }
 
     updateInventory(lines) {
-        this.putToggle("inventory", "Inventory", lines, 20, middle_right);
+        this.putToggle("inventory", "Inventory", lines, 20, bottom_right);
+    }
+
+    updateInventoryAction(item, lines) {
+        this.putToggle("inventory-action", item.name, lines, 20, bottom_right_attach);
     }
 
     updateActionPrompt(title, lines) {

@@ -37,18 +37,31 @@ angular.module('myApp.mapView', ['ngRoute'])
             };
 
             $scope.colRange = function() {
+                if($scope.size.x < $scope.viewSize.x)
+                    return range(0, $scope.size.x);
                 return range($scope.view.x, $scope.view.x + $scope.viewSize.x);
             };
 
             $scope.rowRange = function() {
+                if($scope.size.y < $scope.viewSize.y)
+                    return range(0, $scope.size.y);
                 return range($scope.view.y, $scope.view.y + $scope.viewSize.y);
             };
 
             $scope.backType = function(row, col) {
+                if($scope.map.foreground.length <= row)
+                    return "";
+                if($scope.map.foreground[0].length <= col)
+                    return "";
                 return $scope.map.background[row][col];
             };
 
             $scope.foreType = function(row, col) {
+                if($scope.map.foreground.length <= row)
+                    return "";
+                if($scope.map.foreground[0].length <= col)
+                    return "";
+
                 return $scope.map.foreground[row][col];
             };
 
@@ -159,7 +172,7 @@ angular.module('myApp.mapView', ['ngRoute'])
                     if (!result)
                         return;
                 }
-                $scope.map = createBlankMap($scope.size.x, $scope.size.y);
+                $scope.map = createBlankMap(20, 15);
             };
 
             $scope.setTileType = function(type) {

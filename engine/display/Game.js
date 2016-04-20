@@ -14,7 +14,7 @@ class Game{
         this.canvas = canvas;
         this.g = canvas.getContext('2d'); //the graphics object
         this.playing = false;
-        this.fps = 60;
+        this.fps = 30;
 
         this.pressedKeys = [];
 
@@ -23,6 +23,8 @@ class Game{
         mc.height = game_size.y;
         this.mg = mc.getContext('2d');
         this.mc = mc;
+
+        this.index = 0;
 
         /* Setup a key listener */
         window.addEventListener("keydown", onKeyDown, true);
@@ -35,7 +37,9 @@ class Game{
     draw(g){}
 
     nextFrame(){
-        console.log("--------");
+        if(this.index == 0)
+            console.log((new Date()).getTime());
+        this.index = (this.index + 1) % 30;
         var startTime = (new Date()).getTime();
         game.update(this.pressedKeys);
         var updateTime = (new Date()).getTime() - startTime;
@@ -43,12 +47,11 @@ class Game{
         this.g.drawImage(this.mc, 0, 0);
         var endTime = (new Date()).getTime();
         var i = 1000 / this.fps;
-        console.log(endTime - startTime, " = ", updateTime, " + ", endTime - startTime - updateTime);
-        console.log("--------");
         var remainder = i - (endTime - startTime) % i;
+        var t = this;
         if(this.playing) {
             setTimeout(function() {
-                window.requestAnimationFrame(tick);
+                t.nextFrame();
             }, remainder);
         }
     }
