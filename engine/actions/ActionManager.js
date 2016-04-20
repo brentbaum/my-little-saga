@@ -59,12 +59,12 @@ class ActionManager extends EventListener {
     }
 
     clear() {
+	this.toasts.hide("proximity-context");
 	this.actionable = null;
     }
 
     draw(g, offset) {
 	if(!this.actionable) {
-	    this.toasts.hide("proximity-context");
 	    return;
 	}
 	var start = {
