@@ -47,7 +47,7 @@ class InventoryManager {
     updateActionUI() {
         this.showingActions = true;
         var item = this.inventory[this.position];
-        var lines = ["Use", "Drop", "Cancel"];
+        var lines = ["Use", "Drop", "Close"];
         lines[this.actionPosition] = ">> " + lines[this.actionPosition];
 
         this.toastManager.updateInventoryAction(item, lines);
