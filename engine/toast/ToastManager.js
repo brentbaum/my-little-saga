@@ -2,16 +2,19 @@
 
 let toastInstance = null;
 let edge_offset = 10;
+let inherent_width = 20; // total offset between the text and the edge of the box
+let inherent_height = 25; // same as above but for height
 let title_body_offset = 4;
 
-var top_left= function(bounds) { return {x: edge_offset, y: edge_offset}; };
-var top_middle = function(bounds)  { return {x: (game_size.x - bounds.width) / 2, y: edge_offset}; };
-var top_right = function(bounds) { return {x: game_size.x - bounds.width, y: edge_offset}; };
-var middle_middle = function(bounds)  { return {x: (game_size.x - bounds.width) / 2, y: (game_size.y - bounds.height) / 2}; };
-var middle_right = function(bounds)  { return {x: game_size.x - bounds.width, y: (game_size.y - bounds.height) / 2}; };
-var bottom_left = function(bounds) { return {x: edge_offset, y: game_size.y - bounds.height}; };
-var bottom_middle = function(bounds) { return {x: (game_size.x - bounds.width) / 2, y: game_size.y - bounds.height}; };
-var bottom_right = function(bounds) { return {x: game_size.x - bounds.width, y: game_size.y - bounds.height}; };
+var top_left= function(bounds) { 		return {x: edge_offset, 						y: edge_offset}; };
+var top_middle = function(bounds)  { 	return {x: (game_size.x - bounds.width) / 2, 	y: edge_offset}; };
+var top_right = function(bounds) { 		return {x: game_size.x - bounds.width, 			y: edge_offset}; };
+var middle_left = function(bounds)  { 	return {x: edge_offset, 						y: (game_size.y - bounds.height) / 2}; };
+var middle_middle = function(bounds)  { return {x: (game_size.x - bounds.width) / 2, 	y: (game_size.y - bounds.height) / 2}; };
+var middle_right = function(bounds)  { 	return {x: game_size.x - bounds.width, 			y: (game_size.y - bounds.height) / 2}; };
+var bottom_left = function(bounds) { 	return {x: edge_offset, 						y: game_size.y - bounds.height - inherent_height}; };
+var bottom_middle = function(bounds) { 	return {x: (game_size.x - bounds.width) / 2, 	y: game_size.y - bounds.height - inherent_height}; };
+var bottom_right = function(bounds) { 	return {x: game_size.x - bounds.width, 			y: game_size.y - bounds.height - inherent_height}; };
 
 class ToastManager {
 
@@ -31,57 +34,58 @@ class ToastManager {
     }
     
     makeConfig(title, titleSize, lines, bodySize, position_fn, duration) {
-	var widths = lines.map(txt => this.g.measureText(txt).width);
-	this.g.font = titleSize + "px Arial";
-	widths.push(this.g.measureText(this.title).width);
-	var size = {width: Math.max.apply(null, widths),
-		    height: (10 + titleSize) + (10 + bodySize * lines.length)};
-	var position = position_fn(size);
-	return {x: position.x, y: position.y, duration: duration};
+    	this.g.font = (bodySize) + "px Arial";
+		var widths = lines.map(txt => (this.g.measureText(txt).width + inherent_width + edge_offset));
+		this.g.font = (titleSize) + "px Arial";
+		widths.push(this.g.measureText(title).width + inherent_width + edge_offset);
+		var size = {width: Math.max.apply(null, widths),
+			    height: (10 + titleSize) + (10 + bodySize * lines.length)};
+		var position = position_fn(size);
+		return {x: position.x, y: position.y, duration: duration, titleSize: titleSize, bodySize: bodySize};
     }
 
     put(id, title, lines, size, position_fn, duration) {
 	// console.log("ToastManager.add " + id);
-	var toast = this.toasts.find(t => t.id === id);
-	let config = this.makeConfig(title, size + title_body_offset, lines, size, position_fn, duration);
-	if(!toast) {
-	    config.duration = duration;
-	    toast = new Toast(this.g, id, title, lines, config);
-	    this.toasts.push(toast);
-	} else {
-	    toast.start = (new Date()).getTime();
-	    toast.title = title;
-	    toast.lines = lines;
-	    toast.config = config;
-	}
+		var toast = this.toasts.find(t => t.id === id);
+		let config = this.makeConfig(title, size + title_body_offset, lines, size, position_fn, duration);
+		if(!toast) {
+		    config.duration = duration;
+		    toast = new Toast(this.g, id, title, lines, config);
+		    this.toasts.push(toast);
+		} else {
+		    toast.start = (new Date()).getTime();
+		    toast.title = title;
+		    toast.lines = lines;
+		    toast.config = config;
+		}
     }
 
     putToggle(id, title, lines, size, position_fn) {
-	// console.log("ToastManager.addToggle " + id);
-	var toast = this.toggleToasts.find(t => t.id === id);
-	let config = this.makeConfig(title, size + title_body_offset, lines, size, position_fn, 0);
-	if (!toast) {
-	    config.toggle = true;
-	    toast = new Toast(this.g, id, title, lines, config);
-	    this.toggleToasts.push(toast);
-	} else {
-	    toast.on = true;
-	    toast.title = title;
-	    toast.lines = lines;
-	    toast.config = config;
-	}
+		// console.log("ToastManager.addToggle " + id);
+		var toast = this.toggleToasts.find(t => t.id === id);
+		let config = this.makeConfig(title, size + title_body_offset, lines, size, position_fn, 0);
+		if (!toast) {
+		    config.toggle = true;
+		    toast = new Toast(this.g, id, title, lines, config);
+		    this.toggleToasts.push(toast);
+		} else {
+		    toast.on = true;
+		    toast.title = title;
+		    toast.lines = lines;
+		    toast.config = config;
+		}
     }
 
     hide(id) {
-	var toast = this.toggleToasts.find(t => t.id === id);
-	if (toast)
-	    toast.on = false;
+		var toast = this.toggleToasts.find(t => t.id === id);
+		if (toast)
+		    toast.on = false;
     }
 
     show(id) {
-	var toast = this.toggleToasts.find(t => t.id === id);
-	if (toast)
-	    toast.on = true;
+		var toast = this.toggleToasts.find(t => t.id === id);
+		if (toast)
+		    toast.on = true;
     }
 
     updateInventory(lines) {
@@ -89,34 +93,34 @@ class ToastManager {
     }
 
     updateActionPrompt(title, lines) {
-	this.putToggle("proximity-context", title, lines, 20, top_left);
+		this.putToggle("proximity-context", title, lines, 20, top_left);
     }
 
     updateQuestDisplay(title, lines) {
-	this.putToggle("quest", title, lines, 20, top_right);
+		this.putToggle("quest", title, lines, 20, top_right);
     }
 
     updateCenterDisplay(title, lines) {
-	this.putToggle("center", title, lines, 36, middle_middle);
+		this.putToggle("center", title, lines, 36, middle_middle);
     }
 
     draw(g) {
-	if (this.toasts.length > 0)
-	    for (var toast of this.toasts) {
-		toast.draw(g);
-	    }
+		if (this.toasts.length > 0)
+		    for (var toast of this.toasts) {
+			toast.draw(g);
+		    }
 
-	for (var toast of this.toggleToasts) {
-	    if (toast.on) {
-		toast.draw(g);
-	    }
-	}
+		for (var toast of this.toggleToasts) {
+		    if (toast.on) {
+			toast.draw(g);
+		    }
+		}
     }
 
     update() {
-	if (this.toasts.length > 0) {
-	    var time = (new Date()).getTime();
-	    this.toasts = this.toasts.filter(t => !t.start || t.duration > time - t.start);
-	}
+		if (this.toasts.length > 0) {
+		    var time = (new Date()).getTime();
+		    this.toasts = this.toasts.filter(t => !t.start || t.duration > time - t.start);
+		}
     }
 }

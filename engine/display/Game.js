@@ -35,7 +35,7 @@ class Game{
     draw(g){}
 
     nextFrame(){
-        console.log("--------");
+        //console.log("--------");
         var startTime = (new Date()).getTime();
         game.update(this.pressedKeys);
         var updateTime = (new Date()).getTime() - startTime;
@@ -43,8 +43,8 @@ class Game{
         this.g.drawImage(this.mc, 0, 0);
         var endTime = (new Date()).getTime();
         var i = 1000 / this.fps;
-        console.log(endTime - startTime, " = ", updateTime, " + ", endTime - startTime - updateTime);
-        console.log("--------");
+        //console.log(endTime - startTime, " = ", updateTime, " + ", endTime - startTime - updateTime);
+       // console.log("--------");
         var remainder = i - (endTime - startTime) % i;
         if(this.playing) {
             setTimeout(function() {
