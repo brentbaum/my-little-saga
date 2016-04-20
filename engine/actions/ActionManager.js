@@ -48,8 +48,9 @@ class ActionManager extends EventListener {
     }
 
     act() {
-	if (!this.actionable)
+	if (!this.actionable) {
 	    return;
+	}
 	var fn = this.actions[this.actionable.k];
 	if (fn) {
 	    fn(this.actionable.object, this.actionable.params);
@@ -58,12 +59,14 @@ class ActionManager extends EventListener {
     }
 
     clear() {
+	this.toasts.hide("proximity-context");
 	this.actionable = null;
     }
 
     draw(g, offset) {
-	if(!this.actionable)
+	if(!this.actionable) {
 	    return;
+	}
 	var start = {
 	    x: offset.x + this.actionable.object.position.x + this.actionable.object.width * .5 - 10,
 	    y: offset.y + this.actionable.object.position.y - 10

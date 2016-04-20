@@ -1,19 +1,20 @@
 "use strict";
 
 let toastInstance = null;
-let edge_offset = 25;
+let edge_offset = 10;
+let inherent_width = 20; // total offset between the text and the edge of the box
+let inherent_height = 25; // same as above but for height
 let title_body_offset = 4;
 
-var top_left= function(bounds) { return {x: edge_offset, y: edge_offset}; };
-var top_middle = function(bounds)  { return {x: (game_size.x - bounds.width) / 2, y: edge_offset}; };
-var top_right = function(bounds) { return {x: game_size.x - bounds.width - 260, y: edge_offset}; };
-var middle_middle = function(bounds)  { return {x: (game_size.x - bounds.width) / 2, y: (game_size.y - bounds.height) / 2}; };
-var middle_right = function(bounds)  { return {x: game_size.x - bounds.width - edge_offset, y: (game_size.y - bounds.height) / 2}; };
-var bottom_left = function(bounds) { return {x: edge_offset, y: game_size.y - bounds.height}; };
-var bottom_middle = function(bounds) { return {x: (game_size.x - bounds.width) / 2, y: game_size.y - bounds.height}; };
-var bottom_right = function(bounds) { return {x: game_size.x - bounds.width - edge_offset, y: game_size.y - bounds.height - edge_offset}; };
-
-var bottom_right_attach = function(bounds) { return {x: game_size.x - bounds.width - edge_offset - 200, y: game_size.y - bounds.height - edge_offset}; };
+var top_left= function(bounds) { 		return {x: edge_offset, 						y: edge_offset}; };
+var top_middle = function(bounds)  { 	return {x: (game_size.x - bounds.width) / 2, 	y: edge_offset}; };
+var top_right = function(bounds) { 		return {x: game_size.x - bounds.width, 			y: edge_offset}; };
+var middle_left = function(bounds)  { 	return {x: edge_offset, 						y: (game_size.y - bounds.height) / 2}; };
+var middle_middle = function(bounds)  { return {x: (game_size.x - bounds.width) / 2, 	y: (game_size.y - bounds.height) / 2}; };
+var middle_right = function(bounds)  { 	return {x: game_size.x - bounds.width, 			y: (game_size.y - bounds.height) / 2}; };
+var bottom_left = function(bounds) { 	return {x: edge_offset, 						y: game_size.y - bounds.height - inherent_height}; };
+var bottom_middle = function(bounds) { 	return {x: (game_size.x - bounds.width) / 2, 	y: game_size.y - bounds.height - inherent_height}; };
+var bottom_right = function(bounds) { 	return {x: game_size.x - bounds.width, 			y: game_size.y - bounds.height - inherent_height}; };
 
 class ToastManager {
 
@@ -33,15 +34,15 @@ class ToastManager {
     }
     
     makeConfig(title, titleSize, lines, bodySize, position_fn, duration) {
-	var widths = lines.map(txt => this.g.measureText(txt).width);
-	this.g.font = titleSize + "px Arial";
-	widths.push(this.g.measureText(this.title).width);
-	var size = {width: Math.max.apply(null, widths),
-		    height: (10 + titleSize) + (10 + bodySize * lines.length)};
-	var position = position_fn(size);
-	return {x: position.x, y: position.y, duration: duration};
+    	this.g.font = (bodySize) + "px Arial";
+		var widths = lines.map(txt => (this.g.measureText(txt).width + inherent_width + edge_offset));
+		this.g.font = (titleSize) + "px Arial";
+		widths.push(this.g.measureText(title).width + inherent_width + edge_offset);
+		var size = {width: Math.max.apply(null, widths),
+			    height: (10 + titleSize) + (10 + bodySize * lines.length)};
+		var position = position_fn(size);
+		return {x: position.x, y: position.y, duration: duration, titleSize: titleSize, bodySize: bodySize};
     }
-
     put(id, title, lines, size, position_fn, duration) {
 	// console.log("ToastManager.add " + id);
 	var toast = this.toasts.find(t => t.id === id);

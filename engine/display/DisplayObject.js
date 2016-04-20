@@ -9,6 +9,8 @@ class DisplayObject {
 	this.id = id;
 	this.loaded = false;
 
+	this.imageCache = new ImageCache();
+
 	this.type = gameObjectId;
 	if (!!gameObjectId && GameObjects[gameObjectId]) {
 	    this.loadImage(GameObjects[gameObjectId].img);
@@ -53,17 +55,7 @@ class DisplayObject {
      * Loads the image, sets a flag called 'loaded' when the image is ready to be drawn
      */
     loadImage(filename) {
-	var t = this;
-	this.displayImage = new Image();
-	this.displayImage.onload = function() {
-	    t.imageWidth = t.width = t.displayImage.width;
-	    t.height = t.displayImage.height;
-	    t.loaded = true;
-	    if (!!t.onImageLoad) {
-		t.onImageLoad();
-	    }
-	};
-	this.displayImage.src = 'resources/' + filename;
+		this.displayImage = this.imageCache.getImage(filename, this);
     }
 
     /**
@@ -78,7 +70,7 @@ class DisplayObject {
      */
     draw(g, onScreen) {
 	if (this.displayImage) {
-            console.log(onScreen(this));
+            //console.log(onScreen(this));
 	    if (this.loaded && this.visible) {// && onScreen(this)) {
 		this.applyTransformations(g);
 		g.drawImage(this.displayImage, this.frame * this.width, 0, this.width, this.height, 0, 0, this.width, this.height);
