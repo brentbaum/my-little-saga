@@ -124,12 +124,10 @@ class Saga extends Game {
             y: .5
         };
 
-        this.floor = new DisplayObjectContainer("floor");
-        this.background = new DisplayObjectContainer("background");
-        this.foreground = new DisplayObjectContainer("foreground");
     }
 
     setupMap(root, map) {
+        this.floor = new DisplayObjectContainer("floor");
 
         this.floor.position.x = -50;
         this.floor.position.y = -50;
@@ -143,6 +141,8 @@ class Saga extends Game {
             y: this.tileCount.y * this.tileSize
         };
 
+        this.background = new DisplayObjectContainer("background");
+        this.foreground = new DisplayObjectContainer("foreground");
         for (var x = 0; x < this.tileCount.x; x++) {
             var row = [];
             for (var y = 0; y < this.tileCount.y; y++) {
