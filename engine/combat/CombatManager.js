@@ -116,7 +116,7 @@ class CombatManager {
 
     updateCombatMessage(title, lines) {
 	lines.push("<SPC>");
-	this.toastManager.putToggle("combat_message", title, lines, 20, top_middle);
+	this.toastManager.putToggle("combat_message", title, lines, 20, bottom_middle);
     }
 
     updateBattleUI() {
