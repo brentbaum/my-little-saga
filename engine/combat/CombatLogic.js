@@ -3,6 +3,7 @@ var flatDmg = function(x) { return () => x; };
 var chantOneMove = {name: "chant", stateAddition: "chanting", message: "began to chant a spoopy chant", damage: 0};
 var chantTwoMove = {name: "chant", stateAddition: "chanting2", message: "continues to chant a spoopy chant", damage: 0};
 var chantFinishMove = {name: "chant_conclude", message: "concludes his chant", damage: 1000};
+var rockThrowMove = {name: "rock_throw", message: "heaves a boulder at the enemy!", damage: 500};
 var CombatActions = {
     berserk: {activationMsg: "is going BEARserk",
 	      moves: [{name: "Claw", message: "claws at the enemy", damage: 50},
@@ -18,7 +19,8 @@ var CombatActions = {
 		    {message: "throws his foe to the ground", damage: 0.5},
 		    {message: "tears his foes' arms off", damage: 1.0}]},
     magic: {activationMsg: "has begun a terrifying chant",
-	    moves: [chantOneMove, chantTwoMove, chantFinishMove]}
+	    moves: [chantOneMove, chantTwoMove, chantFinishMove]},
+    rock: {activationMsg: "", moves: [rockThrowMove]}
 };
 
 // Hash for damage multipliers and unique messages
@@ -67,6 +69,7 @@ class Battle {
     heroAction() {
 	let selectedActionName = this.actions[this.selectedAction];
 	let action = CombatActions[selectedActionName];
+	console.log(selectedActionName);
 	var lines = [];
 
 	if (false) { console.log("Toast:" + action.activationMsg); }
