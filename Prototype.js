@@ -4,18 +4,19 @@ var dev_inventory = [{
     id: "rock",
     name: "Rock",
     description: "For smashing",
-    count: 3
+    count: 0
 }, {
     id: "tree",
     name: "Tree",
     description: "For building",
-    count: 3
+    count: 1
 }];
 var dev_game_state = {
     actionsUnlocked: ["berserk", "law", "melee", "magic", "run"],
     inBattle: false,
     gameOver: false,
-    inventory: []
+    reputation: 0,
+    inventory: dev_inventory
 };
 var game_size = {
     x: 970,
@@ -188,9 +189,11 @@ class Saga extends Game {
     }
 
     addActions() {
-        this.actionManager.add("stone-hit", (object) => {
+        this.actionManager.add("rock-hit", (object) => {
             object.visible = false;
             object.collisionDisable = true;
+	    // TODO hardcoded index for beta
+	    this.gameState.inventory[0].count++;
         });
         this.actionManager.add("bear-fight", (bear) => {
             this.combatManager.beginBattle(bear, this.hero, this.gameState.actionsUnlocked, null);
@@ -382,7 +385,7 @@ class Saga extends Game {
         }
 
         if (newKeys.includes(keycodes.i)) {
-            this.inventoryManager.open(dev_inventory);
+            this.inventoryManager.open(this.gameState.inventory);
         }
 
         if (pressedKeys.includes(keycodes.space)) {

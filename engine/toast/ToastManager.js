@@ -98,7 +98,7 @@ class ToastManager extends DisplayObject {
     }
 
     updateActionPrompt(title, lines) {
-		this.putToggle("proximity-context", title, lines, 20, middle_middle);
+		this.putToggle("proximity-context", title, lines, 16, middle_middle);
     }
 
     updateQuestDisplay(title, lines) {

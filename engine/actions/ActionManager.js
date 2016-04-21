@@ -21,7 +21,7 @@ class ActionManager extends EventListener {
             var dist = params.first.distanceFrom(params.second);
             if (params.second.type === "rock") {
 		this.toasts.updateActionPrompt("...", ["You stare at the rock.", "The rock stares back.", "<SPC>"]);
-                this.focus(params.second, dist, "stone-hit");
+                this.focus(params.second, dist, "rock-hit");
             } else if (params.second.type === "bear") {
                 this.toasts.updateActionPrompt("...", ["Yeah. Big ass-bear.", "Fight him?", "<SPC>"]);
                 this.focus(params.second, dist, "bear-fight");
