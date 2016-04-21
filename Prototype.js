@@ -12,7 +12,7 @@ var dev_inventory = [{
     count: 1
 }];
 var dev_game_state = {
-    actionsUnlocked: ["berserk", "law", "melee", "magic", "run"],
+    actionsUnlocked: ["berserk", "law", "melee", "magic", "rock"],
     inBattle: false,
     gameOver: false,
     reputation: 0,
