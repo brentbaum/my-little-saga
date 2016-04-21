@@ -15,6 +15,7 @@ var middle_right = function(bounds)  { 	return {x: game_size.x - bounds.width, 	
 var bottom_left = function(bounds) { 	return {x: edge_offset, 						y: game_size.y - bounds.height - inherent_height}; };
 var bottom_middle = function(bounds) { 	return {x: (game_size.x - bounds.width) / 2, 	y: game_size.y - bounds.height - inherent_height}; };
 var bottom_right = function(bounds) { 	return {x: game_size.x - bounds.width, 			y: game_size.y - bounds.height - inherent_height}; };
+var bottom_right_attach = function(bounds) { 	return {x: game_size.x - bounds.width - 150, 			y: game_size.y - bounds.height - inherent_height}; };
 
 class ToastManager extends DisplayObject {
 
