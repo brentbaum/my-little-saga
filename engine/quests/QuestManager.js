@@ -45,6 +45,8 @@ class QuestManager {
 	    state.bearsKilled++;
 	    if (state.bearsKilled == BerserkerQuest.bearsToKill) {
 		state.stage++;
+		let saga = Game.getInstance();
+		saga.gameState.actionsUnlocked.push("berserk");
 	    }
 	    this.toastBerserkerState();
 	}
