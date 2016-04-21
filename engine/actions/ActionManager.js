@@ -28,7 +28,10 @@ class ActionManager extends EventListener {
             } else if (params.second.type === "teleport") {
                 this.toasts.updateActionPrompt("Fly on the magic carpet?", ["This will take you to:", "Level, the Second"]);
                 this.focus(params.second, dist, "teleport", {level: "level2"});
-            }
+            } else if (params.second.type === "outlaw") {
+		this.toasts.updateActionPrompt("An outlaw! Only one of us is going home alive.", []);
+                this.focus(params.second, dist, "outlaw-fight");
+	    }
         }
     }
 

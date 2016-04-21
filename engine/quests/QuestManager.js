@@ -4,7 +4,7 @@ var LawQuest = {name: "Master of the Old Law", quote: "Hard things have happened
 		stages: ["Find Njal at Law Rock", "Learn the ways of the Old Law", "Win a settlement"]};
 var BerserkerQuest = {name: "I am become Bear", quote: "Odin's men rushed forwards without armour, were as mad as dogs or wolves, bit their shields, and were strong as bears or wild oxen, and killed people at a blow, but neither fire nor iron told upon them. This was called Berserkergang.",
 		      bearsToKill: 5,
-		      stages: ["Venture into the Berserker forest", "Defeat the Bears", "Go berserk on some poor outlaw"]};
+		      stages: ["Venture into the Berserker forest", "Defeat the Bears", "Go berserk on some poor outlaw", "Quest Complete! You can now go Berserk whenever you like."]};
 
 
 class QuestManager {
