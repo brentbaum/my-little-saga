@@ -75,13 +75,13 @@ class Saga extends Game {
             GameObjects = {
                 hero: {
                     key: "hero",
-                    img: "super-mario-sprite.png"
+                    img: "fg/hero.png"
                 }
             };
             mapping.list.forEach(function(tile) {
                 GameObjects[tile.key] = tile;
             });
-            t.mapReader.get('level1', function(map) {
+            t.mapReader.get('start', function(map) {
                 saga.setupMap(saga.root, map);
             });
             t.setupHero();
@@ -112,17 +112,17 @@ class Saga extends Game {
             }
         };
         //instantiate with the id, filename, number of frames, and the animation map.
-        this.hero = new AnimatedSprite("hero", "hero", 21, heroAnimations);
+        // this.hero = new AnimatedSprite("hero", "hero", 21, heroAnimations);
+	this.hero = new DisplayObject("hero", "hero", function() {});
         this.hero.name = "Ragnar";
 
-        this.hero.animate("stop");
-        this.hero.animationSpeed = 5;
-        this.hero.position.x = this.centerPoint.x;
-        this.hero.position.y = this.centerPoint.y;
-        this.hero.scale = {
-            x: .8,
-            y: .5
-        };
+	this.hero.scale = {x: 0.9, y: 0.9};
+
+        // this.hero.animate("stop");
+        // this.hero.animationSpeed = 5;
+        this.hero.position.x = 30;
+        this.hero.position.y = 100;
+
         this.hero.maxhealth = 250;
         this.hero.health = this.hero.maxhealth;
         this.toastManager.updateHUD(this.hero, this);
@@ -347,7 +347,7 @@ class Saga extends Game {
 
     move(pressedKeys, newKeys) {
         if (pressedKeys.includes(keycodes.right)) {
-            this.hero.animate("run");
+            // this.hero.animate("run");
 
             //move
             if (this.isCentered("right"))
@@ -356,7 +356,7 @@ class Saga extends Game {
                 this.hero.position.x += this.movementSpeed;
         }
         if (pressedKeys.includes(keycodes.left)) {
-            this.hero.animate("run");
+            // this.hero.animate("run");
 
             //move
             if (this.isCentered("left"))
@@ -366,14 +366,14 @@ class Saga extends Game {
             }
         }
         if (pressedKeys.includes(keycodes.down)) {
-            this.hero.animate("run");
+            // this.hero.animate("run");
             if (this.isCentered("up"))
                 this.floor.position.y -= this.movementSpeed;
             else if (this.hero.position.y < this.size.y)
                 this.hero.position.y += this.movementSpeed;
         }
         if (pressedKeys.includes(keycodes.up)) {
-            this.hero.animate("run");
+            // this.hero.animate("run");
             if (this.isCentered("down"))
                 this.floor.position.y += this.movementSpeed;
             else if (this.hero.position.y > 0) {
@@ -391,7 +391,7 @@ class Saga extends Game {
 
         if (pressedKeys.length === 0) {
             //stop and do nothing, all is futile.
-            this.hero.animate("stop");
+            // this.hero.animate("stop");
         }
     }
 
