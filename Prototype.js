@@ -75,7 +75,7 @@ class Saga extends Game {
             GameObjects = {
                 hero: {
                     key: "hero",
-                    img: "super-mario-sprite.png"
+                    img: "viking.png"
                 }
             };
             mapping.list.forEach(function(tile) {
@@ -99,20 +99,12 @@ class Saga extends Game {
                 end: 0
             },
             "run": {
-                start: 1,
-                end: 3
-            },
-            "hit": {
-                start: 4,
+                start: 2,
                 end: 6
-            },
-            "jump": {
-                start: 7,
-                end: 14
             }
         };
         //instantiate with the id, filename, number of frames, and the animation map.
-        this.hero = new AnimatedSprite("hero", "hero", 21, heroAnimations);
+        this.hero = new AnimatedSprite("hero", "hero", 8, heroAnimations);
         this.hero.name = "Ragnar";
 
         this.hero.animate("stop");
