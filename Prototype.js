@@ -330,13 +330,17 @@ class Saga extends Game {
     isCentered(dir) {
 
         if (dir === "right")
-            return this.mapSize.x + this.floor.position.x > this.size.x && Math.abs(this.hero.position.x - this.centerPoint.x) < 8 * this.movementSpeed;
+            return this.mapSize.x + this.floor.position.x > this.size.x
+            && Math.abs(this.hero.position.x - this.centerPoint.x) < 8 * this.movementSpeed;
         if (dir === "left")
-            return this.floor.position.x < -this.movementSpeed * 2 && Math.abs(this.hero.position.x - this.centerPoint.x) < 8 * this.movementSpeed;
+            return this.floor.position.x < -this.movementSpeed
+            && Math.abs(this.hero.position.x - this.centerPoint.x) < 8 * this.movementSpeed;
         if (dir === "up")
-            return this.mapSize.y + this.floor.position.y > this.size.y && Math.abs(this.hero.position.y - this.centerPoint.y) < 8 * this.movementSpeed;
+            return this.mapSize.y + this.floor.position.y > this.size.y
+            && Math.abs(this.hero.position.y - this.centerPoint.y) < 8 * this.movementSpeed;
         if (dir === "down")
-            return this.floor.position.y < -this.movementSpeed && Math.abs(this.hero.position.y - this.centerPoint.y) < 8 * this.movementSpeed;
+            return this.floor.position.y < -this.movementSpeed
+            && Math.abs(this.hero.position.y - this.centerPoint.y) < 8 * this.movementSpeed;
     }
 
     move(pressedKeys, newKeys) {
@@ -344,7 +348,7 @@ class Saga extends Game {
             this.hero.animate("run");
 
             //move
-            if (this.isCentered("right"))
+            if (this.isCentered("left"))
                 this.floor.position.x -= this.movementSpeed;
             else if (this.hero.position.x < this.size.x)
                 this.hero.position.x += this.movementSpeed;
