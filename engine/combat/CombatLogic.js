@@ -15,9 +15,9 @@ var CombatActions = {
 		  {message: "calls witnesses to testify", damage: 0.2},
 		  {message: "comes to an advantageous settlement", damage: 200}]},
     melee: {activationMsg: "put up his dukes",
-	    moves: [{message: "throws a mean left hook", damage: 0.2},
-		    {message: "throws his foe to the ground", damage: 0.5},
-		    {message: "tears his foes' arms off", damage: 1.0}]},
+	    moves: [{message: "throws a mean left hook", damage: 20},
+		    {message: "throws his foe to the ground", damage: 30},
+		    {message: "tears his foes' arms off", damage: 300}]},
     magic: {activationMsg: "has begun a terrifying chant",
 	    moves: [chantOneMove, chantTwoMove, chantFinishMove]},
     rock: {activationMsg: "", moves: [rockThrowMove]}
@@ -62,6 +62,7 @@ class Battle {
 	};
 
 	let randomIndex = Math.round(rand(0, max));
+	// let selectedMove = moves[randomIndex];
 	let selectedMove = moves[0];
 	return selectedMove;
     }
