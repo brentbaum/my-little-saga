@@ -69,27 +69,33 @@
        ng-click="setLayer('foreground')">
     front
   </div>
-  <div ng-repeat="type in tileTypes track by $index">
-    <span class="tile {{type.key}}"
-          ng-class="{'selected': type.id === pencilId}"
-          ng-click="setTileType(type)"
-          ng-dblclick="editType(type)">
-      <img src="/resources/{{type.img}}">
-    </span>
-    <div ng-show="editingType(type)"
-         class="tile-edit">
-      <div>
-        <span class="input-label" >Key:</span>
-        <input type="text" placeholder="key"
-               ng-model="type.key">
-      </div>
-      <div>
-        <span class="input-label">Image:</span>
-        <input type="text" placeholder="image.png"
-               ng-model="type.img">
-      </div>
-      <div>
-        <a class="button" ng-click="doneEditing()">Done</a>
+  <div>
+    {{tileRange()}}
+    <div ng-repeat="tileIndex in tileRange()"
+         style="display: inline-block;">
+      <div ng-repeat="type in tileColumn(tileIndex) track by $index">
+        <span class="tile {{type.key}}"
+              ng-class="{'selected': type.id === pencilId}"
+              ng-click="setTileType(type)"
+              ng-dblclick="editType(type)">
+          <img src="/resources/{{type.img}}">
+        </span>
+        <div ng-show="editingType(type)"
+             class="tile-edit">
+          <div>
+            <span class="input-label" >Key:</span>
+            <input type="text" placeholder="key"
+                   ng-model="type.key">
+          </div>
+          <div>
+            <span class="input-label">Image:</span>
+            <input type="text" placeholder="image.png"
+                   ng-model="type.img">
+          </div>
+          <div>
+            <a class="button" ng-click="doneEditing()">Done</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>

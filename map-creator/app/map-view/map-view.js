@@ -65,6 +65,15 @@ angular.module('myApp.mapView', ['ngRoute'])
                 return $scope.map.foreground[row][col];
             };
 
+            $scope.tileRange = function() {
+                console.log(range(0, Math.ceil($scope.tileTypes.length / 10)));
+                return range(0, Math.ceil($scope.tileTypes.length / 10));
+            };
+
+            $scope.tileColumn = function(index) {
+                return $scope.tileTypes.slice(index * 10, (index + 1) * 10);
+            };
+
             $scope.shiftView = function(dir) {
                 if (dir === 'up') {
                     $scope.view.y -= 10;
