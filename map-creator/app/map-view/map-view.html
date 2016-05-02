@@ -48,7 +48,7 @@
       <span class="tile {{backType(r, c)}}"
             ng-repeat="c in colRange()"
             ng-mouseenter="setTile(r, c)"
-            ng-mousedown="clickTile(r, c)">
+            ng-mousedown="clickTile(r, c, $event)">
         <img src="{{tileImage(backType(r, c))}}"
              ng-show="backType(r, c) !== ''">
         <img src="{{tileImage(foreType(r, c))}}"

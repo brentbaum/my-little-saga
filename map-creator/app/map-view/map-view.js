@@ -66,7 +66,6 @@ angular.module('myApp.mapView', ['ngRoute'])
             };
 
             $scope.tileRange = function() {
-                console.log(range(0, Math.ceil($scope.tileTypes.length / 10)));
                 return range(0, Math.ceil($scope.tileTypes.length / 10));
             };
 
@@ -154,6 +153,7 @@ angular.module('myApp.mapView', ['ngRoute'])
             };
 
             var isMouseDown = false;
+            var isShiftDown = false;
 
             $scope.mouseDown = function() {
                 console.log("down");
@@ -167,12 +167,21 @@ angular.module('myApp.mapView', ['ngRoute'])
 
             $scope.setTile = function(r, c) {
                 if (isMouseDown) {
-                    $scope.map[$scope.layer][r][c] = $scope.pencilTip;
+                    if(isShiftDown)
+                        $scope.map[$scope.layer][r][c] = "";
+                    else
+                        $scope.map[$scope.layer][r][c] = $scope.pencilTip;
                 }
             };
 
-            $scope.clickTile = function(r, c) {
-                $scope.map[$scope.layer][r][c] = $scope.pencilTip;
+            $scope.clickTile = function(r, c, $event) {
+                isShiftDown = $event.shiftKey;
+                if($event.shiftKey) {
+                    $scope.map[$scope.layer][r][c] = "";
+                }
+                else {
+                    $scope.map[$scope.layer][r][c] = $scope.pencilTip;
+                }
             };
 
             $scope.clearGrid = function(override) {
