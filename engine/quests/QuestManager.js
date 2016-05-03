@@ -2,12 +2,16 @@
 
 var LawQuest = {name: "Master of the Old Law", 
 		quote: "Hard things have happened here, both in loss of life and in lawsuits. (Njal’s saga, 274)",
-		stages: ["Find Njal at Law Rock", "Learn the ways of the Old Law", "Use the Law to bring an Outlaw to justice!",
-			"Quest Completed! You are now a Master of the Old Law"]};
+		stages: ["Find Njal at Law Rock", 
+			 "Learn the ways of the Old Law", 
+			 "Use the Law to bring an Outlaw to justice!",
+  			 "Quest Completed! You are now a Master of the Old Law"]};
 var BerserkerQuest = {name: "I am become Bear", 
 		      quote: "Odin's men rushed forwards without armour, were as mad as dogs or wolves, bit their shields, and were strong as bears or wild oxen, and killed people at a blow, but neither fire nor iron told upon them. This was called Berserkergang.",
 		      bearsToKill: 5,
-		      stages: ["Venture into the Berserker forest", "Defeat the Bears", "Go berserk on some poor outlaw", "Quest Complete! You can now go Berserk whenever you like."]};
+		      stages: ["Venture into the Berserker forest", 
+			       "Defeat the Bears", "Go berserk on some poor outlaw", 
+			       "Quest Complete! You can now go Berserk whenever you like."]};
 
 
 class QuestManager {

@@ -89,7 +89,7 @@ class Saga extends Game {
             t.setupHero();
             t.mapReader.get('start', function(map) {
                 saga.setupMap(saga.root, map);
-                t.setPosition(3, 3);
+                t.setPosition({x: 3, y: 3});
                 t.setup = true;
             });
         });
@@ -212,7 +212,8 @@ class Saga extends Game {
         this.actionManager.add("teleport", (carpet, params) => {
             t.mapReader.get(params.level, function(map) {
                 t.setupMap(t.root, map);
-                t.hero.position = params.position;
+		t.setPosition(params.position);
+                // t.hero.position = params.position;
                 t.atHome = !t.atHome;
             });
         });
@@ -271,12 +272,13 @@ class Saga extends Game {
         };
     }
 
-    setPosition(x, y) {
+    setPosition(coords) {
+	console.log("Set position", coords);
         if (!this.floor)
             return;
         var position = {
-            x: x * this.tileSize,
-            y: y * this.tileSize
+            x: coords.x * this.tileSize,
+            y: coords.y * this.tileSize
         };
         this.floor.position = {
             x: -position.x + game_size.x / 2,
