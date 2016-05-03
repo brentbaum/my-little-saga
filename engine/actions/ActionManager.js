@@ -36,28 +36,26 @@ class ActionManager extends EventListener {
                 this.focus(params.second, dist, "njal-dialogue");
 
             } else if (params.second.type === "teleport_forest") {
-
-        		if (atHome) {
-        		    this.questManager.registerBerserkerForestEntered();
-        		    this.transportAction("berserkerforest", "Berserker Forest", params.second, dist, 1, 6);
-        		} else { 
+        	if (atHome) {
+        	    this.questManager.registerBerserkerForestEntered();
+        	    this.transportAction("berserkerforest", "Berserker Forest", params.second, dist, 1, 6);
+        	} else { 
                     this.homeTransportAction(params.second, dist, 19, 3); 
                 }
 
             } else if (params.second.type === "teleport_ocean") {
-
-        		if (atHome){
+        	if (atHome){
                     this.transportAction("ocean", "lake floor", params.second, dist, 18, 2);
                 } else { 
-                    this.homeTransportAction(params.second, dist, 15, 13); 
+                    this.homeTransportAction(params.second, dist, 12, 11); 
                 }
 
             } else if (params.second.type === "teleport_lawrock") {
 
-        		if (atHome) {
-        		    this.questManager.registerLawRockEntered();
-        		    this.transportAction("lawrock", "Law Rock", params.second, dist, 19, 12);
-        		} else { 
+        	if (atHome) {
+        	    this.questManager.registerLawRockEntered();
+        	    this.transportAction("lawrock", "Law Rock", params.second, dist, 19, 12);
+        	} else { 
                     this.homeTransportAction(params.second, dist, 1, 9);  // returning to x=0 causes problems for the camera centering code
                 }
 

@@ -211,10 +211,10 @@ class Saga extends Game {
         var t = this;
         this.actionManager.add("teleport", (carpet, params) => {
             t.mapReader.get(params.level, function(map) {
-            t.setupMap(t.root, map);
-            t.setPosition(params.position);
+		t.setupMap(t.root, map);
+		t.setPosition(params.position);
                 // t.hero.position = params.position;
-             t.atHome = !t.atHome;
+		t.atHome = !t.atHome;
             });
         });
     }
@@ -223,7 +223,8 @@ class Saga extends Game {
         this.inBattle = false;
         console.log("[Saga] Conclude battle: " + results);
         if (results.result === "win") {
-            this.toastManager.updateActionPrompt("You defeated the " + opponent.type + "!", ["Gained 3 reputation"]);
+            this.toastManager.updateActionPrompt("You defeated the " + opponent.type + "!", ["Gained 5 reputation"]);
+	    this.gameState.reputation += 5;
 
             // Quest Stuff!
             if (opponent.type == "bear") {
@@ -334,35 +335,35 @@ class Saga extends Game {
                         });
                         if (!child.softCollide) {
                             switch (dir) {
-                                case "left":
-                                    if (this.isCentered("left")) {
-                                        this.floor.position.x += this.movementSpeed;
-                                    } else {
-                                        this.hero.position.x -= this.movementSpeed;
-                                    }
-                                    break;
-                                case "right":
-                                    if (this.isCentered("right")) {
-                                        this.floor.position.x -= this.movementSpeed;
-                                    } else {
-                                        this.hero.position.x += this.movementSpeed;
-                                    }
-                                    break;
-                                case "top":
-                                    if (this.isCentered("up")) {
-                                        this.floor.position.y -= this.movementSpeed;
-                                    } else {
-                                        this.hero.position.y += this.movementSpeed;
-                                    }
-                                    break;
-                                case "bottom":
-                                    if (this.isCentered("down")) {
-                                        this.floor.position.y += this.movementSpeed;
+                            case "left":
+                                if (this.isCentered("left")) {
+                                    this.floor.position.x += this.movementSpeed;
+                                } else {
+                                    this.hero.position.x -= this.movementSpeed;
+                                }
+                                break;
+                            case "right":
+                                if (this.isCentered("right")) {
+                                    this.floor.position.x -= this.movementSpeed;
+                                } else {
+                                    this.hero.position.x += this.movementSpeed;
+                                }
+                                break;
+                            case "top":
+                                if (this.isCentered("up")) {
+                                    this.floor.position.y -= this.movementSpeed;
+                                } else {
+                                    this.hero.position.y += this.movementSpeed;
+                                }
+                                break;
+                            case "bottom":
+                                if (this.isCentered("down")) {
+                                    this.floor.position.y += this.movementSpeed;
 
-                                    } else {
-                                        this.hero.position.y -= this.movementSpeed;
-                                    }
-                                    break;
+                                } else {
+                                    this.hero.position.y -= this.movementSpeed;
+                                }
+                                break;
                             }
                         }
                     }
