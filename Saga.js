@@ -89,7 +89,7 @@ class Saga extends Game {
             t.setupHero();
             t.mapReader.get('start', function(map) {
                 saga.setupMap(saga.root, map);
-                t.setPosition({x: 3, y: 3});
+                t.setPosition({x: 5, y: 12});
                 t.setup = true;
             });
         });
@@ -111,6 +111,7 @@ class Saga extends Game {
         };
         //instantiate with the id, filename, number of frames, and the animation map.
         this.hero = new AnimatedSprite("hero", "hero", 8, heroAnimations);
+        var name = prompt("Character name?");
         this.hero.name = "Ragnar";
 
         this.hero.scale = {
@@ -288,6 +289,14 @@ class Saga extends Game {
             x: this.centerPoint.x,
             y: this.centerPoint.y
         };
+        if (-this.floor.position.x > this.mapSize.x - this.centerPoint.x) {
+            this.hero.position.x = this.centerPoint.x + (game_size.x - this.mapSize.x - this.position.x);
+            this.floor.position.x = this.mapSize.x - this.centerPoint.x;
+        }
+        if (-this.floor.position.y > this.mapSize.y - this.centerPoint.y) {
+            this.hero.position.y = this.centerPoint.y + (game_size.y - this.mapSize.y - this.position.y);
+            this.floor.position.y = this.mapSize.y - this.centerPoint.y;
+        }
         if (-this.floor.position.x < this.centerPoint.x) {
             this.hero.position.x = position.x;
             this.floor.position.x = 3;
