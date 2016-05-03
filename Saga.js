@@ -86,11 +86,12 @@ class Saga extends Game {
             mapping.list.forEach(function(tile) {
                 GameObjects[tile.key] = tile;
             });
+            t.setupHero();
             t.mapReader.get('start', function(map) {
                 saga.setupMap(saga.root, map);
+                t.setPosition(3, 3);
+                t.setup = true;
             });
-            t.setupHero();
-            t.setup = true;
         });
 
         // TODO just for testing:
@@ -286,11 +287,11 @@ class Saga extends Game {
             y: this.centerPoint.y
         };
         if (-this.floor.position.x < this.centerPoint.x) {
-            this.hero.position.x += this.floor.position.x;
+            this.hero.position.x = position.x;
             this.floor.position.x = 3;
         }
         if (-this.floor.position.y < this.centerPoint.y) {
-            this.hero.position.y += this.floor.position.y;
+            this.hero.position.y = position.y;
             this.floor.position.y = 3;
         }
     }
@@ -370,13 +371,17 @@ class Saga extends Game {
 
     isCentered(dir) {
         if (dir === "right")
-            return -1 * this.floor.position.x > this.movementSpeed && this.hero.position.x < this.centerPoint.x + 2 * this.movementSpeed;
+            return -1 * this.floor.position.x > this.movementSpeed
+            && this.hero.position.x < this.centerPoint.x + 2 * this.movementSpeed;
         if (dir === "left")
-            return this.mapSize.x + this.floor.position.x > 2 * this.movementSpeed && this.hero.position.x > this.centerPoint.x - 2 * this.movementSpeed;
+            return this.mapSize.x + this.floor.position.x > 2 * this.movementSpeed
+            && this.hero.position.x > this.centerPoint.x - 2 * this.movementSpeed;
         if (dir === "down")
-            return -1 * this.floor.position.y > this.movementSpeed && this.hero.position.y < this.centerPoint.y + 2 * this.movementSpeed;
+            return -1 * this.floor.position.y > this.movementSpeed
+            && this.hero.position.y < this.centerPoint.y + 2 * this.movementSpeed;
         if (dir === "up") {
-            return game_size.x + this.floor.position.y > 2 * this.movementSpeed && this.hero.position.y > this.centerPoint.y - 2 * this.movementSpeed;
+            return game_size.x + this.floor.position.y > 2 * this.movementSpeed
+                && this.hero.position.y > this.centerPoint.y - 2 * this.movementSpeed;
         }
         return false;
     }
