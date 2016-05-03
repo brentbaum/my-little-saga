@@ -49,8 +49,8 @@ class Saga extends Game {
             y: game_size.y / this.tileSize
         };
         this.tileCount = {
-            x: 25,
-            y: 20
+            x: 20,
+            y: 15
         };
         this.mapSize = {
             x: this.tileCount.x * this.tileSize,
@@ -89,7 +89,7 @@ class Saga extends Game {
             t.setupHero();
             t.mapReader.get('start', function(map) {
                 saga.setupMap(saga.root, map);
-                t.setPosition(3, 3);
+                t.setPosition(10, 10);
                 t.setup = true;
             });
         });
@@ -131,8 +131,8 @@ class Saga extends Game {
     setupMap(root, map) {
         this.floor = new DisplayObjectContainer("floor");
 
-        this.floor.position.x = -50;
-        this.floor.position.y = -50;
+        this.floor.position.x = 0;
+        this.floor.position.y = 0;
 
         this.tileCount = {
             x: map.background.length,
@@ -374,13 +374,13 @@ class Saga extends Game {
             return -1 * this.floor.position.x > this.movementSpeed
             && this.hero.position.x < this.centerPoint.x + 2 * this.movementSpeed;
         if (dir === "left")
-            return this.mapSize.x + this.floor.position.x > 2 * this.movementSpeed
+            return this.mapSize.x / 2 + this.floor.position.x - this.centerPoint.y > 2 * this.movementSpeed
             && this.hero.position.x > this.centerPoint.x - 2 * this.movementSpeed;
         if (dir === "down")
             return -1 * this.floor.position.y > this.movementSpeed
             && this.hero.position.y < this.centerPoint.y + 2 * this.movementSpeed;
         if (dir === "up") {
-            return game_size.x + this.floor.position.y > 2 * this.movementSpeed
+            return this.mapSize.y / 2 + this.floor.position.y - this.centerPoint.y > 2 * this.movementSpeed
                 && this.hero.position.y > this.centerPoint.y - 2 * this.movementSpeed;
         }
         return false;
