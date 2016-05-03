@@ -8,13 +8,13 @@ let title_body_offset = 4;
 
 var top_left= function(bounds) { 		return {x: edge_offset, 						y: edge_offset}; };
 var top_middle = function(bounds)  { 	return {x: (game_size.x - bounds.width) / 2, 	y: edge_offset}; };
-var top_right = function(bounds) { 		return {x: game_size.x - bounds.width, 			y: edge_offset}; };
+var top_right = function(bounds) { 		return {x: game_size.x - bounds.width - edge_offset, 			y: edge_offset}; };
 var middle_left = function(bounds)  { 	return {x: edge_offset, 						y: (game_size.y - bounds.height) / 2}; };
 var middle_middle = function(bounds)  { return {x: (game_size.x - bounds.width) / 2, 	y: (game_size.y - bounds.height) / 2}; };
-var middle_right = function(bounds)  { 	return {x: game_size.x - bounds.width, 			y: (game_size.y - bounds.height) / 2}; };
+var middle_right = function(bounds)  { 	return {x: game_size.x - bounds.width - edge_offset, 			y: (game_size.y - bounds.height) / 2}; };
 var bottom_left = function(bounds) { 	return {x: edge_offset, 						y: game_size.y - bounds.height - inherent_height}; };
 var bottom_middle = function(bounds) { 	return {x: (game_size.x - bounds.width) / 2, 	y: game_size.y - bounds.height - inherent_height}; };
-var bottom_right = function(bounds) { 	return {x: game_size.x - bounds.width, 			y: game_size.y - bounds.height - inherent_height}; };
+var bottom_right = function(bounds) { 	return {x: game_size.x - bounds.width - edge_offset, 			y: game_size.y - bounds.height - inherent_height}; };
 var bottom_right_attach = function(bounds) { 	return {x: game_size.x - bounds.width - 150, 			y: game_size.y - bounds.height - inherent_height}; };
 
 class ToastManager extends DisplayObject {
@@ -39,26 +39,29 @@ class ToastManager extends DisplayObject {
     	this.g.font = (bodySize) + "px Arial";
 		var widths = lines.map(txt => (this.g.measureText(txt).width + inherent_width + edge_offset));
 		this.g.font = (titleSize) + "px Arial";
-		widths.push(this.g.measureText(title).width + inherent_width + edge_offset);
+		var twid = this.g.measureText(title).width + inherent_width + edge_offset;
+		widths.push(twid);
 		var size = {width: Math.max.apply(null, widths),
 			    height: (10 + titleSize) + ((bodySize + 5) * lines.length)};
 		var position = position_fn(size);
-		return {x: position.x, y: position.y, duration: duration, titleSize: titleSize, bodySize: bodySize};
+		//console.log("conf: " + title + ": " + position.x + ", " + position.y);
+		return {x: position.x, y: position.y, duration: duration, titleSize: titleSize, bodySize: bodySize, position_function: position_fn};
     }
     put(id, title, lines, size, position_fn, duration) {
-	// console.log("ToastManager.add " + id);
-	var toast = this.toasts.find(t => t.id === id);
-	let config = this.makeConfig(title, size + title_body_offset, lines, size, position_fn, duration);
-	if(!toast) {
-	    config.duration = duration;
-	    toast = new Toast(this.g, id, title, lines, config);
-	    this.toasts.push(toast);
-	} else {
-	    toast.start = (new Date()).getTime();
-	    toast.title = title;
-	    toast.lines = lines;
-	    toast.config = config;
-	}
+		// console.log("ToastManager.add " + id);
+		var toast = this.toasts.find(t => t.id === id);
+		let config = this.makeConfig(title, size + title_body_offset, lines, size, position_fn, duration);
+		if(!toast) {
+		    config.duration = duration;
+		    toast = new Toast(this.g, id, title, lines, config);
+		    this.toasts.push(toast);
+		} else {
+		    toast.start = (new Date()).getTime();
+		    toast.title = title;
+		    toast.lines = lines;
+		    toast.config = config;
+		    toast.updateBounds(this.g);
+		}
     }
 
     putToggle(id, title, lines, size, position_fn) {
@@ -74,6 +77,7 @@ class ToastManager extends DisplayObject {
 	    toast.title = title;
 	    toast.lines = lines;
 	    toast.config = config;
+	    toast.updateBounds(this.g);
 	}
     }
 

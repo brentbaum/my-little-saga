@@ -14,6 +14,8 @@ class Toast{
             x: config.x || 20,
             y: config.y || 20
         };
+        this.posfunction = config.position_function;
+        //console.log("init" + title + ": " + this.position.x + ", " + this.position.y);
         this.children = [];
         this.updateBounds(ctx, title, lines);
     }
@@ -21,13 +23,15 @@ class Toast{
     updateBounds(ctx) {
         this.width = this.textWidth(ctx);
         this.height = (10 + this.titleSize) + ((this.bodySize + 5) * this.lines.length);
+        var size = {width: this.width, height: this.height};
+        this.position = this.posfunction(size);
     }
 
     textWidth(ctx) {
         ctx.font = this.bodySize + "px Arial";
-        var widths = this.lines.map(txt => ctx.measureText(txt).width);
+        var widths = this.lines.map(txt => (ctx.measureText(txt).width + inherent_width + edge_offset));
         ctx.font = this.titleSize + "px Arial";
-        widths.push(ctx.measureText(this.title).width);
+        widths.push(ctx.measureText(this.title).width + inherent_width + edge_offset);
         return Math.max.apply(null, widths);
     }
 
@@ -36,7 +40,8 @@ class Toast{
         this.updateBounds(g);
         g.fillStyle = "rgba(73,49,28, .7)";
         g.strokeStyle = "rgb(255, 255, 255)";
-        roundRect(g, this.position.x, this.position.y, 20 + this.width, 10 + this.height, 5, true);
+        //console.log(this.title + ": " + this.position.x);
+        roundRect(g, this.position.x, this.position.y, this.width, 10 + this.height, 5, true);
         g.fillStyle = "rgba(255, 255, 255, .8)";
         g.strokeStyle = "rgba(255, 255, 255, .8)";
         g.font = this.titleSize + "px Arial";
