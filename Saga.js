@@ -112,7 +112,7 @@ class Saga extends Game {
         //instantiate with the id, filename, number of frames, and the animation map.
         this.hero = new AnimatedSprite("hero", "hero", 8, heroAnimations);
         var name = prompt("Character name?");
-        this.hero.name = "Ragnar";
+        this.hero.name = name ? name : "Ragnar";
 
         this.hero.scale = {
             x: 0.7,
