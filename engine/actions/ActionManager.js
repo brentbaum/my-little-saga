@@ -47,7 +47,7 @@ class ActionManager extends EventListener {
             } else if (params.second.type === "teleport_ocean") {
 
         		if (atHome){
-                    this.transportAction("ocean", "lake floor", params.second, dist, 17, 14);
+                    this.transportAction("ocean", "lake floor", params.second, dist, 18, 14);
                 } else { 
                     this.homeTransportAction(params.second, dist, 16, 14); 
                 }

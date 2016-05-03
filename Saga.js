@@ -34,6 +34,8 @@ var GameObjects = {
     }
 };
 
+var playerName = "";
+
 class Saga extends Game {
     constructor(canvas) {
         var size = game_size;
@@ -111,8 +113,8 @@ class Saga extends Game {
         };
         //instantiate with the id, filename, number of frames, and the animation map.
         this.hero = new AnimatedSprite("hero", "hero", 8, heroAnimations);
-        var name = prompt("Character name?");
-        this.hero.name = "Ragnar";
+        playerName = prompt("Character name?");
+        this.hero.name = playerName;
 
         this.hero.scale = {
             x: 0.7,

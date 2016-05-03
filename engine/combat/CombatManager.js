@@ -5,7 +5,6 @@ let combatInstance = null;
 
 // Sax - a kind of short, heavy sword or sabre, with only one sharp edge
 var INPUT_BUF_SIZE = 10;
-var playerName = "Ragnar";
 
 class CombatManager {
 
