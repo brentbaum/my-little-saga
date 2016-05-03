@@ -84,7 +84,7 @@ class CombatManager {
 	this.updateCombatMessage(results.message, results.lines);
 	
 	if (results.result === "win" || results.result === "loss") {
-	    this.result = results.result;
+	    this.result = results;
 	    this.goToPrompt();
 	} else {
 	    this.turn = false;

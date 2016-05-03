@@ -11,9 +11,8 @@ var CombatActions = {
 		      {name: "Hibernate", message: "is hibernating", damage: 0, heal: 150},
 		      {name: "Takedown", message: "performs a full takedown", damage: 200}]},
     law: {activationMsg: "has begun a lawsuit",
-	  moves: [{message: "presents a list of grievances", damage: 0.3},
-		  {message: "calls witnesses to testify", damage: 0.2},
-		  {message: "comes to an advantageous settlement", damage: 200}]},
+	  moves: [{message: "presents a list of grievances", damage: 100},
+		  {message: "calls witnesses to testify", damage: 60}]},
     melee: {activationMsg: "put up his dukes",
 	    moves: [{message: "throws a mean left hook", damage: 20},
 		    {message: "throws his foe to the ground", damage: 30},
@@ -129,7 +128,7 @@ class Battle {
 	    lines.push("Healed self for " + move.heal + " HP!");
 	
 	console.log("opponent health", this.opponent.health);
-	return {message: message, lines: lines, damage: damage, result: result};
+	return {message: message, lines: lines, damage: damage, result: result, action: selectedActionName};
     }
 
     opponentAction() {
