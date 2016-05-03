@@ -139,8 +139,8 @@ class Saga extends Game {
             y: map.background[0].length
         };
         this.mapSize = {
-            x: this.tileCount.x * this.tileSize,
-            y: this.tileCount.y * this.tileSize
+            x: this.tileCount.y * this.tileSize,
+            y: this.tileCount.x * this.tileSize
         };
 
         this.background = new DisplayObjectContainer("background");
@@ -376,13 +376,13 @@ class Saga extends Game {
             return -1 * this.floor.position.x > this.movementSpeed
             && this.hero.position.x < this.centerPoint.x + 2 * this.movementSpeed;
         if (dir === "left")
-            return this.mapSize.x / 2 + this.floor.position.x - this.centerPoint.y > 2 * this.movementSpeed
+            return this.mapSize.x + this.floor.position.x - 2 * this.centerPoint.x > 2 * this.movementSpeed
             && this.hero.position.x > this.centerPoint.x - 2 * this.movementSpeed;
         if (dir === "down")
             return -1 * this.floor.position.y > this.movementSpeed
             && this.hero.position.y < this.centerPoint.y + 2 * this.movementSpeed;
         if (dir === "up") {
-            return this.mapSize.y / 2 + this.floor.position.y - this.centerPoint.y > 2 * this.movementSpeed
+            return this.mapSize.y + this.floor.position.y - 2 * this.centerPoint.y > 2 * this.movementSpeed
                 && this.hero.position.y > this.centerPoint.y - 2 * this.movementSpeed;
         }
         return false;
