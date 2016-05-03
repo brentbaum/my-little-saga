@@ -16,7 +16,6 @@ class Toast{
         };
         this.posfunction = config.position_function;
         //console.log("init" + title + ": " + this.position.x + ", " + this.position.y);
-        this.children = [];
         this.updateBounds(ctx, title, lines);
     }
 
