@@ -212,10 +212,10 @@ class Saga extends Game {
         var t = this;
         this.actionManager.add("teleport", (carpet, params) => {
             t.mapReader.get(params.level, function(map) {
-                t.setupMap(t.root, map);
-		t.setPosition(params.position);
+            t.setupMap(t.root, map);
+            t.setPosition(params.position);
                 // t.hero.position = params.position;
-                t.atHome = !t.atHome;
+             t.atHome = !t.atHome;
             });
         });
     }
@@ -438,7 +438,19 @@ class Saga extends Game {
         }
 
         if (pressedKeys.includes(keycodes.space)) {
-            this.actionManager.act();
+            // prevent instantly performing multiple actions
+            if(!this.prevTime || this.actionTimeout == undefined){
+                this.prevTime = new Date();
+                this.actionTimeout = 0;
+            }
+            if(this.actionTimeout > 0){
+                var newtime = new Date();
+                this.actionTimeout -= newtime - this.prevTime;
+                this.prevTime = newtime;
+            } else {
+                this.actionManager.act();
+                this.actionTimeout = 250;
+            }
         }
 
         if (pressedKeys.length === 0) {
@@ -464,7 +476,10 @@ class Saga extends Game {
         if (!this.setup)
             return;
         var newKeys = this.pressedKeyDiff(pressedKeys);
+
         this.actionManager.clear();
+
+
         this.tweener.nextFrame();
         this.collideCheck(this.root, {
             x: 0,
