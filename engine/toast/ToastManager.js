@@ -37,31 +37,31 @@ class ToastManager extends DisplayObject {
     
     makeConfig(title, titleSize, lines, bodySize, position_fn, duration) {
     	this.g.font = (bodySize) + "px Arial";
-		var widths = lines.map(txt => (this.g.measureText(txt).width + inherent_width + edge_offset));
-		this.g.font = (titleSize) + "px Arial";
-		var twid = this.g.measureText(title).width + inherent_width + edge_offset;
-		widths.push(twid);
-		var size = {width: Math.max.apply(null, widths),
-			    height: (10 + titleSize) + ((bodySize + 5) * lines.length)};
-		var position = position_fn(size);
-		//console.log("conf: " + title + ": " + position.x + ", " + position.y);
-		return {x: position.x, y: position.y, duration: duration, titleSize: titleSize, bodySize: bodySize, position_function: position_fn};
+	var widths = lines.map(txt => (this.g.measureText(txt).width + inherent_width + edge_offset));
+	this.g.font = (titleSize) + "px Arial";
+	var twid = this.g.measureText(title).width + inherent_width + edge_offset;
+	widths.push(twid);
+	var size = {width: Math.max.apply(null, widths),
+		    height: (10 + titleSize) + ((bodySize + 5) * lines.length)};
+	var position = position_fn(size);
+	//console.log("conf: " + title + ": " + position.x + ", " + position.y);
+	return {x: position.x, y: position.y, duration: duration, titleSize: titleSize, bodySize: bodySize, position_function: position_fn};
     }
     put(id, title, lines, size, position_fn, duration) {
-		// console.log("ToastManager.add " + id);
-		var toast = this.toasts.find(t => t.id === id);
-		let config = this.makeConfig(title, size + title_body_offset, lines, size, position_fn, duration);
-		if(!toast) {
-		    config.duration = duration;
-		    toast = new Toast(this.g, id, title, lines, config);
-		    this.toasts.push(toast);
-		} else {
-		    toast.start = (new Date()).getTime();
-		    toast.title = title;
-		    toast.lines = lines;
-		    toast.config = config;
-		    toast.updateBounds(this.g);
-		}
+	// console.log("ToastManager.add " + id);
+	var toast = this.toasts.find(t => t.id === id);
+	let config = this.makeConfig(title, size + title_body_offset, lines, size, position_fn, duration);
+	if(!toast) {
+	    config.duration = duration;
+	    toast = new Toast(this.g, id, title, lines, config);
+	    this.toasts.push(toast);
+	} else {
+	    toast.start = (new Date()).getTime();
+	    toast.title = title;
+	    toast.lines = lines;
+	    toast.config = config;
+	    toast.updateBounds(this.g);
+	}
     }
 
     putToggle(id, title, lines, size, position_fn) {
@@ -102,15 +102,15 @@ class ToastManager extends DisplayObject {
     }
 
     updateActionPrompt(title, lines) {
-		this.putToggle("proximity-context", title, lines, 16, middle_middle);
+	this.putToggle("proximity-context", title, lines, 16, middle_middle);
     }
 
     updateQuestDisplay(title, lines) {
-		this.putToggle("quest", title, lines, 20, top_right);
+	this.putToggle("quest", title, lines, 20, top_right);
     }
 
     updateCenterDisplay(title, lines) {
-		this.putToggle("center", title, lines, 36, middle_middle);
+	this.putToggle("center", title, lines, 36, middle_middle);
     }
 
     updateHUD(hero, game) {    	        
@@ -119,8 +119,8 @@ class ToastManager extends DisplayObject {
         lns.push(hpln);
         var stln = "(no status effects)";
 
-		this.putToggle("hero", hero.name, lns, 20, top_left);
-		//this.addIcon("hero", "inventory_icon", icon_top_right)
+	this.putToggle("hero", hero.name, lns, 20, top_left);
+	//this.addIcon("hero", "inventory_icon", icon_top_right)
     }
 
     draw(g) {
