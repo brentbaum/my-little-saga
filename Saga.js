@@ -13,8 +13,9 @@ var dev_inventory = [{
 }];
 var dev_game_state = {
     actionsUnlocked: [
-	// "berserk", 
-	"law", "melee", "magic", "rock"],
+        // "berserk", 
+        "law", "melee", "magic", "rock"
+    ],
     inBattle: false,
     gameOver: false,
     reputation: 0,
@@ -110,7 +111,10 @@ class Saga extends Game {
         this.hero = new AnimatedSprite("hero", "hero", 8, heroAnimations);
         this.hero.name = "Ragnar";
 
-	this.hero.scale = {x: 0.7, y: 0.7};
+        this.hero.scale = {
+            x: 0.7,
+            y: 0.7
+        };
 
         this.hero.animate("stop");
         this.hero.animationSpeed = 5;
@@ -164,11 +168,11 @@ class Saga extends Game {
                 if (bgTile.type === "water" || bgTile.type === "rock") {
                     bgTile.collisionDisable = false;
                 }
-                if(bgTile.type === "teleport") {
+                if (bgTile.type === "teleport") {
                     bgTile.collisionDisable = false;
                     bgTile.softCollide = false;
                 }
-                
+
                 this.background.children.push(bgTile);
                 this.foreground.children.push(fgTile);
             }
@@ -185,17 +189,17 @@ class Saga extends Game {
         this.actionManager.add("rock-hit", (object) => {
             object.visible = false;
             object.collisionDisable = true;
-	    // TODO hardcoded index for beta
-	    this.gameState.inventory[0].count++;
+            // TODO hardcoded index for beta
+            this.gameState.inventory[0].count++;
         });
         this.actionManager.add("bear-fight", (bear) => {
             this.combatManager.beginBattle(bear, this.hero, this.gameState.actionsUnlocked, null);
             this.inBattle = true;
         });
-	this.actionManager.add("outlaw-fight", (outlaw) => {
-	    this.combatManager.beginBattle(outlaw, this.hero, this.gameState.actionsUnlocked, null);
+        this.actionManager.add("outlaw-fight", (outlaw) => {
+            this.combatManager.beginBattle(outlaw, this.hero, this.gameState.actionsUnlocked, null);
             this.inBattle = true;
-	});
+        });
 
         var t = this;
         this.actionManager.add("teleport", (carpet, params) => {
@@ -216,8 +220,8 @@ class Saga extends Game {
                 this.questManager.registerBearKilled();
             }
             if (opponent.type == "outlaw") {
-		// TODO battle results have stats....
-		// if (stats.killingAction === "berserk")
+                // TODO battle results have stats....
+                // if (stats.killingAction === "berserk")
                 this.questManager.registerOutlawKilledWithBerserk();
             }
         } else {
@@ -256,6 +260,31 @@ class Saga extends Game {
         };
     }
 
+    setPosition(x, y) {
+        if(!this.floor)
+            return;
+        var position = {
+            x: x * this.tileSize,
+            y: y * this.tileSize
+        };
+        this.floor.position = {
+            x: -position.x + game_size.x / 2,
+            y: -position.y + game_size.y / 2
+        };
+        this.hero.position = {
+            x: this.centerPoint.x,
+            y: this.centerPoint.y
+        };
+        if(-this.floor.position.x < this.centerPoint.x) {
+            this.hero.position.x += this.floor.position.x;
+            this.floor.position.x = 3;
+        }
+        if(-this.floor.position.y < this.centerPoint.y) {
+            this.hero.position.y += this.floor.position.y;
+            this.floor.position.y = 3;
+        }
+    }
+
     collideCheck(node, offset) {
         if (this.inBattle)
             return;
@@ -284,35 +313,35 @@ class Saga extends Game {
                         });
                         if (!child.softCollide) {
                             switch (dir) {
-                            case "left":
-                                if (this.isCentered("left")) {
-                                    this.floor.position.x += this.movementSpeed;
-                                } else {
-                                    this.hero.position.x -= this.movementSpeed;
-                                }
-                                break;
-                            case "right":
-                                if (this.isCentered("right")) {
-                                    this.floor.position.x -= this.movementSpeed;
-                                } else {
-                                    this.hero.position.x += this.movementSpeed;
-                                }
-                                break;
-                            case "top":
-                                if (this.isCentered("up")) {
-                                    this.floor.position.y -= this.movementSpeed;
-                                } else {
-                                    this.hero.position.y += this.movementSpeed;
-                                }
-                                break;
-                            case "bottom":
-                                if (this.isCentered("down")) {
-                                    this.floor.position.y += this.movementSpeed;
+                                case "left":
+                                    if (this.isCentered("left")) {
+                                        this.floor.position.x += this.movementSpeed;
+                                    } else {
+                                        this.hero.position.x -= this.movementSpeed;
+                                    }
+                                    break;
+                                case "right":
+                                    if (this.isCentered("right")) {
+                                        this.floor.position.x -= this.movementSpeed;
+                                    } else {
+                                        this.hero.position.x += this.movementSpeed;
+                                    }
+                                    break;
+                                case "top":
+                                    if (this.isCentered("up")) {
+                                        this.floor.position.y -= this.movementSpeed;
+                                    } else {
+                                        this.hero.position.y += this.movementSpeed;
+                                    }
+                                    break;
+                                case "bottom":
+                                    if (this.isCentered("down")) {
+                                        this.floor.position.y += this.movementSpeed;
 
-                                } else {
-                                    this.hero.position.y -= this.movementSpeed;
-                                }
-                                break;
+                                    } else {
+                                        this.hero.position.y -= this.movementSpeed;
+                                    }
+                                    break;
                             }
                         }
                     }
@@ -330,19 +359,14 @@ class Saga extends Game {
     }
 
     isCentered(dir) {
-
         if (dir === "right")
-            return -1 * this.floor.position.x > this.movementSpeed
-            && this.hero.position.x < this.centerPoint.x + 2 * this.movementSpeed;
+            return -1 * this.floor.position.x > this.movementSpeed && this.hero.position.x < this.centerPoint.x + 2 * this.movementSpeed;
         if (dir === "left")
-            return this.mapSize.x + this.floor.position.x > 2 * this.movementSpeed
-            && this.hero.position.x > this.centerPoint.x - 2 * this.movementSpeed;
+            return this.mapSize.x + this.floor.position.x > 2 * this.movementSpeed && this.hero.position.x > this.centerPoint.x - 2 * this.movementSpeed;
         if (dir === "down")
-            return -1 * this.floor.position.y > this.movementSpeed
-            && this.hero.position.y < this.centerPoint.y + 2 * this.movementSpeed;
+            return -1 * this.floor.position.y > this.movementSpeed && this.hero.position.y < this.centerPoint.y + 2 * this.movementSpeed;
         if (dir === "up") {
-            return game_size.x + this.floor.position.y > 2 * this.movementSpeed
-            && this.hero.position.y > this.centerPoint.y - 2 * this.movementSpeed;
+            return game_size.x + this.floor.position.y > 2 * this.movementSpeed && this.hero.position.y > this.centerPoint.y - 2 * this.movementSpeed;
         }
         return false;
     }
@@ -439,10 +463,10 @@ class Saga extends Game {
         g.clearRect(0, 0, this.width, this.height);
         super.draw(g);
         this.root.draw(g, this.onScreen(this.floor, this.tileSize, this.screenTileSize));
-        if(this.floor){
+        if (this.floor) {
             this.actionManager.draw(g, this.floor.position);
         }
-	// this.toastManager.draw(g);
+        // this.toastManager.draw(g);
     }
 }
 
