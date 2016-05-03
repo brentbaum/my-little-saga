@@ -494,6 +494,8 @@ class Saga extends Game {
         if (!this.setup)
             return;
         g.clearRect(0, 0, this.width, this.height);
+        g.fillStyle = "rgb(0, 0, 0)";
+        g.fillRect(0, 0, this.width, this.height);
         super.draw(g);
         this.root.draw(g, this.onScreen(this.floor, this.tileSize, this.screenTileSize));
         if (this.floor) {
