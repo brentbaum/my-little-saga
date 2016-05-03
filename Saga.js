@@ -95,9 +95,6 @@ class Saga extends Game {
                 t.setup = true;
             });
         });
-
-        // TODO just for testing:
-        this.questManager.registerBerserkerForestEntered();
     }
 
     setupHero(root) {
