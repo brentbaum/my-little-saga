@@ -89,7 +89,7 @@ class CombatManager {
 	    this.turn = false;
 	    this.goToPrompt();
 	}
-	this.toastManager.updateHUD(this.hero);
+	this.toastManager.updateHUD();
     }
 
     concludeBattle() {
@@ -132,7 +132,7 @@ class CombatManager {
 	this.toastManager.hide("combat_menu");
 	let result = this.battle.opponentAction();
 	this.updateCombatMessage(result.message, result.lines);
-	this.toastManager.updateHUD(this.hero);
+	this.toastManager.updateHUD();
 	this.turn = true;
     }
 

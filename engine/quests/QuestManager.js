@@ -35,6 +35,7 @@ class QuestManager {
 
 	this.toastManager.updateQuestDisplay("Current Quest: " + BerserkerQuest.name,
 					     lines);
+
     }
 
     toastLawState() {
@@ -49,6 +50,8 @@ class QuestManager {
     registerBerserkerForestEntered() {
 	var state = this.berserkerState;
 	if (state.stage === 0) {
+	    Game.getInstance().gameState.reputation += 10;
+	    this.toastManager.updateHUD();
 	    state.stage = 1;
 	    this.toastBerserkerState();
 	}
@@ -62,7 +65,9 @@ class QuestManager {
 	    if (state.bearsKilled == BerserkerQuest.bearsToKill) {
 		state.stage++;
 		let saga = Game.getInstance();
+		saga.gameState.reputation += 10;
 		saga.gameState.actionsUnlocked.push("berserk");
+		this.toastManager.updateHUD();
 	    }
 	    this.toastBerserkerState();
 	}
@@ -72,6 +77,8 @@ class QuestManager {
 	var state = this.berserkerState;
 	if (this.berserkerState.stage == 2) {
 	    state.stage++;
+	    Game.getInstance().gameState.reputation += 10;
+	    this.toastManager.updateHUD();
 	    this.toastBerserkerState();
 	}
     }
@@ -81,6 +88,8 @@ class QuestManager {
 	var state = this.lawState;
 	if (state.stage === 0) {
 	    state.stage++;
+	    Game.getInstance().gameState.reputation += 10;
+	    this.toastManager.updateHUD();
 	}
 	this.toastLawState();
     }
@@ -90,6 +99,8 @@ class QuestManager {
 	if (state.stage == 1) {
 	    state.stage++;
 	    let saga = Game.getInstance();
+	    saga.gameState.reputation += 10;
+	    this.toastManager.updateHUD();
 	    saga.gameState.actionsUnlocked.push("law");
 	}
 	this.toastLawState();
@@ -99,6 +110,8 @@ class QuestManager {
 	var state = this.lawState;
 	if (state.stage == 2) {
 	    state.stage++;
+	    Game.getInstance().gameState.reputation += 10;
+	    this.toastManager.updateHUD();
 	}
 	this.toastLawState();
     }

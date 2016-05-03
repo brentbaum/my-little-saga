@@ -125,7 +125,7 @@ class Saga extends Game {
 
         this.hero.maxhealth = 500;
         this.hero.health = this.hero.maxhealth;
-        this.toastManager.updateHUD(this.hero, this);
+        this.toastManager.updateHUD();
     }
 
     setupMap(root, map) {
@@ -195,6 +195,8 @@ class Saga extends Game {
             if (this.gameState.inventory[0].count === 0)
                 this.gameState.actionsUnlocked.push("rock");
             this.gameState.inventory[0].count++;
+            this.gameState.reputation++;
+	    this.toastManager.updateHUD();
         });
         this.actionManager.add("bear-fight", (bear) => {
             this.combatManager.beginBattle(bear, this.hero, this.gameState.actionsUnlocked, null);
@@ -225,6 +227,7 @@ class Saga extends Game {
         if (results.result === "win") {
             this.toastManager.updateActionPrompt("You defeated the " + opponent.type + "!", ["Gained 5 reputation"]);
 	    this.gameState.reputation += 5;
+	    this.toastManager.updateHUD();
 
             // Quest Stuff!
             if (opponent.type == "bear") {

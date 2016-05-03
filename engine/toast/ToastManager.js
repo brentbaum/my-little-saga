@@ -113,11 +113,15 @@ class ToastManager extends DisplayObject {
 	this.putToggle("center", title, lines, 36, middle_middle);
     }
 
-    updateHUD(hero, game) {    	        
+    updateHUD() {    	        
+	var saga = Game.getInstance();
+	var hero = saga.hero;
         var lns = [];
         var hpln = "Health: " + hero.health;
         lns.push(hpln);
         var stln = "(no status effects)";
+
+	lns.push("Reputation: " + saga.gameState.reputation);
 
 	this.putToggle("hero", hero.name, lns, 20, top_left);
 	//this.addIcon("hero", "inventory_icon", icon_top_right)
