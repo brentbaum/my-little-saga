@@ -14,7 +14,8 @@ var dev_inventory = [{
 var dev_game_state = {
     actionsUnlocked: [
         // "berserk", 
-        "law", "melee", "magic", "rock"
+        // "law", 
+        "melee", "magic"
     ],
     inBattle: false,
     gameOver: false,
@@ -26,7 +27,12 @@ var game_size = {
     y: 640
 };
 
-var GameObjects = {};
+var GameObjects = {
+    hero: {
+        key: "hero",
+        img: "viking.png"
+    }
+};
 
 class Saga extends Game {
     constructor(canvas) {
@@ -63,6 +69,7 @@ class Saga extends Game {
         this.actionManager = new ActionManager();
         this.dispatcher.addEventListener(this.actionManager, "proximity-collision");
         this.addActions();
+        this.atHome = true;
         this.sound = new SoundManager();
 
 
@@ -76,12 +83,6 @@ class Saga extends Game {
         var saga = this;
         var t = this;
         tileReader.get(function(mapping) {
-            GameObjects = {
-                hero: {
-                    key: "hero",
-                    img: "viking.png"
-                }
-            };
             mapping.list.forEach(function(tile) {
                 GameObjects[tile.key] = tile;
             });
@@ -118,10 +119,10 @@ class Saga extends Game {
 
         this.hero.animate("stop");
         this.hero.animationSpeed = 5;
-        this.hero.position.x = 30;
-        this.hero.position.y = 100;
+        this.hero.position.x = 500;
+        this.hero.position.y = 400;
 
-        this.hero.maxhealth = 250;
+        this.hero.maxhealth = 500;
         this.hero.health = this.hero.maxhealth;
         this.toastManager.updateHUD(this.hero, this);
     }
@@ -129,8 +130,8 @@ class Saga extends Game {
     setupMap(root, map) {
         this.floor = new DisplayObjectContainer("floor");
 
-        this.floor.position.x = 0;
-        this.floor.position.y = 0;
+        this.floor.position.x = -50;
+        this.floor.position.y = -50;
 
         this.tileCount = {
             x: map.background.length,
@@ -190,6 +191,8 @@ class Saga extends Game {
             object.visible = false;
             object.collisionDisable = true;
             // TODO hardcoded index for beta
+            if (this.gameState.inventory[0].count === 0)
+                this.gameState.actionsUnlocked.push("rock");
             this.gameState.inventory[0].count++;
         });
         this.actionManager.add("bear-fight", (bear) => {
@@ -200,19 +203,24 @@ class Saga extends Game {
             this.combatManager.beginBattle(outlaw, this.hero, this.gameState.actionsUnlocked, null);
             this.inBattle = true;
         });
+        this.actionManager.add("njal-dialogue", (njal) => {
+            this.questManager.registerNjalDialogue();
+        });
 
         var t = this;
         this.actionManager.add("teleport", (carpet, params) => {
             t.mapReader.get(params.level, function(map) {
                 t.setupMap(t.root, map);
+                t.hero.position = params.position;
+                t.atHome = !t.atHome;
             });
         });
     }
 
-    concludeBattle(result, opponent) {
+    concludeBattle(results, opponent) {
         this.inBattle = false;
-        console.log("[Saga] Conclude battle: " + result);
-        if (result === "win") {
+        console.log("[Saga] Conclude battle: " + results);
+        if (results.result === "win") {
             this.toastManager.updateActionPrompt("You defeated the " + opponent.type + "!", ["Gained 3 reputation"]);
 
             // Quest Stuff!
@@ -220,9 +228,11 @@ class Saga extends Game {
                 this.questManager.registerBearKilled();
             }
             if (opponent.type == "outlaw") {
-                // TODO battle results have stats....
-                // if (stats.killingAction === "berserk")
-                this.questManager.registerOutlawKilledWithBerserk();
+                console.log("Winning action: ", results.action);
+                if (results.action === "berserk")
+                    this.questManager.registerOutlawKilledWithBerserk();
+                if (results.action === "law")
+                    this.questManager.registerOutlawKilledWithLaw();
             }
         } else {
             // TODO handle loss
@@ -235,7 +245,7 @@ class Saga extends Game {
     }
 
     gameOver(stats) {
-        this.toastManager.updateCenterDisplay("Game over! :(", ["here are some stats", stats]);
+        this.toastManager.updateCenterDisplay("Game over! :(", []);
         this.gameState.gameOver = true;
     }
 
@@ -261,7 +271,7 @@ class Saga extends Game {
     }
 
     setPosition(x, y) {
-        if(!this.floor)
+        if (!this.floor)
             return;
         var position = {
             x: x * this.tileSize,
@@ -275,11 +285,11 @@ class Saga extends Game {
             x: this.centerPoint.x,
             y: this.centerPoint.y
         };
-        if(-this.floor.position.x < this.centerPoint.x) {
+        if (-this.floor.position.x < this.centerPoint.x) {
             this.hero.position.x += this.floor.position.x;
             this.floor.position.x = 3;
         }
-        if(-this.floor.position.y < this.centerPoint.y) {
+        if (-this.floor.position.y < this.centerPoint.y) {
             this.hero.position.y += this.floor.position.y;
             this.floor.position.y = 3;
         }
@@ -449,7 +459,8 @@ class Saga extends Game {
         } else if (this.inInventory) {
             this.inventoryManager.update(newKeys);
         } else {
-            this.move(pressedKeys, newKeys);
+            if (!this.gameState.gameOver)
+                this.move(pressedKeys, newKeys);
         }
         this.root.updatePositions();
         this.toastManager.update();

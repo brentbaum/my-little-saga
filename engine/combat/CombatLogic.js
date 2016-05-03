@@ -1,9 +1,9 @@
 var flatDmg = function(x) { return () => x; };
 
-var chantOneMove = {name: "chant", stateAddition: "chanting", message: "began to chant a spoopy chant", damage: 0};
-var chantTwoMove = {name: "chant", stateAddition: "chanting2", message: "continues to chant a spoopy chant", damage: 0};
+var chantOneMove = {name: "chant", stateAddition: "chanting", message: "began to chant a spooky chant", damage: 0};
+var chantTwoMove = {name: "chant", stateAddition: "chanting2", message: "continues to chant a spooky chant", damage: 0};
 var chantFinishMove = {name: "chant_conclude", message: "concludes his chant", damage: 1000};
-var rockThrowMove = {name: "rock_throw", message: "heaves a boulder at the enemy!", damage: 500};
+var rockThrowMove = {name: "rock_throw", message: "heaves a boulder at the enemy!", damage: 100};
 var CombatActions = {
     berserk: {activationMsg: "is going BEARserk",
 	      moves: [{name: "Claw", message: "claws at the enemy", damage: 50},
@@ -11,9 +11,8 @@ var CombatActions = {
 		      {name: "Hibernate", message: "is hibernating", damage: 0, heal: 150},
 		      {name: "Takedown", message: "performs a full takedown", damage: 200}]},
     law: {activationMsg: "has begun a lawsuit",
-	  moves: [{message: "presents a list of grievances", damage: 0.3},
-		  {message: "calls witnesses to testify", damage: 0.2},
-		  {message: "comes to an advantageous settlement", damage: 200}]},
+	  moves: [{message: "presents a list of grievances", damage: 100},
+		  {message: "calls witnesses to testify", damage: 60}]},
     melee: {activationMsg: "put up his dukes",
 	    moves: [{message: "throws a mean left hook", damage: 20},
 		    {message: "throws his foe to the ground", damage: 30},
@@ -26,7 +25,7 @@ var CombatActions = {
 // Hash for damage multipliers and unique messages
 var CombatOpponents = {
     bear: {interactions: {law: {message: "Bear is immune to the Law!", damage: 0}},
-	   health: 500,
+	   health: 300,
 	   moves: [{name: "Claw", message: "claws at you", damage: 20},
 		   {name: "Bite", message: "takes a bite out of you", damage: 30},
 		   {name: "Takedown", message: "performs a full takedown", damage: 100}]
@@ -61,9 +60,9 @@ class Battle {
 	    return Math.random() * (max - min) + min;
 	};
 
-	let randomIndex = Math.round(rand(0, max));
+	let randomIndex = max > 0 ? Math.round(rand(0, max-1)) : 0;
 	// let selectedMove = moves[randomIndex];
-	let selectedMove = moves[0];
+	let selectedMove = moves[randomIndex];
 	return selectedMove;
     }
 
@@ -129,7 +128,7 @@ class Battle {
 	    lines.push("Healed self for " + move.heal + " HP!");
 	
 	console.log("opponent health", this.opponent.health);
-	return {message: message, lines: lines, damage: damage, result: result};
+	return {message: message, lines: lines, damage: damage, result: result, action: selectedActionName};
     }
 
     opponentAction() {
