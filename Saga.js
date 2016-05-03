@@ -110,7 +110,7 @@ class Saga extends Game {
         this.hero = new AnimatedSprite("hero", "hero", 8, heroAnimations);
         this.hero.name = "Ragnar";
 
-	this.hero.scale = {x: 0.8, y: 0.8};
+	this.hero.scale = {x: 0.7, y: 0.7};
 
         this.hero.animate("stop");
         this.hero.animationSpeed = 5;
@@ -125,8 +125,8 @@ class Saga extends Game {
     setupMap(root, map) {
         this.floor = new DisplayObjectContainer("floor");
 
-        this.floor.position.x = -50;
-        this.floor.position.y = -50;
+        this.floor.position.x = 0;
+        this.floor.position.y = 0;
 
         this.tileCount = {
             x: map.background.length,
@@ -332,17 +332,19 @@ class Saga extends Game {
     isCentered(dir) {
 
         if (dir === "right")
-            return this.mapSize.x + this.floor.position.x > this.size.x
-            && Math.abs(this.hero.position.x - this.centerPoint.x) < 8 * this.movementSpeed;
+            return -1 * this.floor.position.x > this.movementSpeed
+            && this.hero.position.x < this.centerPoint.x + 2 * this.movementSpeed;
         if (dir === "left")
-            return this.floor.position.x < -this.movementSpeed
-            && Math.abs(this.hero.position.x - this.centerPoint.x) < 8 * this.movementSpeed;
-        if (dir === "up")
-            return this.mapSize.y + this.floor.position.y > this.size.y
-            && Math.abs(this.hero.position.y - this.centerPoint.y) < 8 * this.movementSpeed;
+            return this.mapSize.x + this.floor.position.x > 2 * this.movementSpeed
+            && this.hero.position.x > this.centerPoint.x - 2 * this.movementSpeed;
         if (dir === "down")
-            return this.floor.position.y < -this.movementSpeed
-            && Math.abs(this.hero.position.y - this.centerPoint.y) < 8 * this.movementSpeed;
+            return -1 * this.floor.position.y > this.movementSpeed
+            && this.hero.position.y < this.centerPoint.y + 2 * this.movementSpeed;
+        if (dir === "up") {
+            return game_size.x + this.floor.position.y > 2 * this.movementSpeed
+            && this.hero.position.y > this.centerPoint.y - 2 * this.movementSpeed;
+        }
+        return false;
     }
 
     move(pressedKeys, newKeys) {
@@ -359,7 +361,7 @@ class Saga extends Game {
             this.hero.animate("run");
 
             //move
-            if (this.isCentered("left"))
+            if (this.isCentered("right"))
                 this.floor.position.x += this.movementSpeed;
             else if (this.hero.position.x > 0) {
                 this.hero.position.x -= this.movementSpeed;
