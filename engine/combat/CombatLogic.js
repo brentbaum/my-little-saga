@@ -1,9 +1,9 @@
 var flatDmg = function(x) { return () => x; };
 
-var chantOneMove = {name: "chant", stateAddition: "chanting", message: "began to chant a spoopy chant", damage: 0};
-var chantTwoMove = {name: "chant", stateAddition: "chanting2", message: "continues to chant a spoopy chant", damage: 0};
+var chantOneMove = {name: "chant", stateAddition: "chanting", message: "began to chant a spooky chant", damage: 0};
+var chantTwoMove = {name: "chant", stateAddition: "chanting2", message: "continues to chant a spooky chant", damage: 0};
 var chantFinishMove = {name: "chant_conclude", message: "concludes his chant", damage: 1000};
-var rockThrowMove = {name: "rock_throw", message: "heaves a boulder at the enemy!", damage: 500};
+var rockThrowMove = {name: "rock_throw", message: "heaves a boulder at the enemy!", damage: 100};
 var CombatActions = {
     berserk: {activationMsg: "is going BEARserk",
 	      moves: [{name: "Claw", message: "claws at the enemy", damage: 50},
@@ -25,7 +25,7 @@ var CombatActions = {
 // Hash for damage multipliers and unique messages
 var CombatOpponents = {
     bear: {interactions: {law: {message: "Bear is immune to the Law!", damage: 0}},
-	   health: 500,
+	   health: 300,
 	   moves: [{name: "Claw", message: "claws at you", damage: 20},
 		   {name: "Bite", message: "takes a bite out of you", damage: 30},
 		   {name: "Takedown", message: "performs a full takedown", damage: 100}]
@@ -60,9 +60,9 @@ class Battle {
 	    return Math.random() * (max - min) + min;
 	};
 
-	let randomIndex = Math.round(rand(0, max));
+	let randomIndex = max > 0 ? Math.round(rand(0, max-1)) : 0;
 	// let selectedMove = moves[randomIndex];
-	let selectedMove = moves[0];
+	let selectedMove = moves[randomIndex];
 	return selectedMove;
     }
 

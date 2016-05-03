@@ -37,7 +37,7 @@ class ActionManager extends EventListener {
 
             } else if (params.second.type === "teleport_forest") {
 
-		if (atHome) this.transportAction("berserkerforest", "Berserker Forest", params.second, dist, 3, 10);
+		if (atHome) this.transportAction("berserkerforest", "Berserker Forest", params.second, dist, 3, 5);
                 else        this.homeTransportAction(params.second, dist); 
 
             } else if (params.second.type === "teleport_ocean") {
@@ -49,7 +49,7 @@ class ActionManager extends EventListener {
 
 		if (atHome) {
 		    this.questManager.registerLawRockEntered();
-		    this.transportAction("lawrock", "Law Rock", params.second, dist, 1, 12);
+		    this.transportAction("lawrock", "Law Rock", params.second, dist, 20, 15);
 		}
                 else        this.homeTransportAction(params.second, dist); 
 
