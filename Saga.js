@@ -19,6 +19,7 @@ var dev_game_state = {
     ],
     inBattle: false,
     gameOver: false,
+    fires: 3,
     reputation: 0,
     inventory: dev_inventory
 };
@@ -198,6 +199,14 @@ class Saga extends Game {
             this.gameState.reputation++;
 	    this.toastManager.updateHUD();
         });
+	this.actionManager.add("campfire", (campfire) => {
+	    if (this.gameState.fires > 0) {
+		this.hero.health += 200;
+		this.gameState.fires--;
+		this.toastManager.updateHUD();
+		this.toastManager.
+	    }
+	});
         this.actionManager.add("bear-fight", (bear) => {
             this.combatManager.beginBattle(bear, this.hero, this.gameState.actionsUnlocked, null);
             this.inBattle = true;

@@ -121,7 +121,10 @@ class ToastManager extends DisplayObject {
         lns.push(hpln);
         var stln = "(no status effects)";
 
+	var healsLine = "Heals remaining: " + saga.gameState.fires;
+
 	lns.push("Reputation: " + saga.gameState.reputation);
+	lns.push(healsLine);
 
 	this.putToggle("hero", hero.name, lns, 20, top_left);
 	//this.addIcon("hero", "inventory_icon", icon_top_right)

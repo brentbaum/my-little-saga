@@ -28,7 +28,7 @@ var CombatOpponents = {
 	   health: 300,
 	   moves: [{name: "Claw", message: "claws at you", damage: 20},
 		   {name: "Bite", message: "takes a bite out of you", damage: 30},
-		   {name: "Takedown", message: "performs a full takedown", damage: 100}]
+		   {name: "Takedown", message: "performs a full takedown", damage: 60}]
 	  },
     outlaw: {interactions: {law: {message: "The outlaw is guilty!", damage: 2}},
 	     health: 200,

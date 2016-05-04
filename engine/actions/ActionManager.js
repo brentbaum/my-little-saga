@@ -35,7 +35,10 @@ class ActionManager extends EventListener {
 									"<SPC>"]);
                 this.focus(params.second, dist, "njal-dialogue");
 
-            } else if (params.second.type === "teleport_forest") {
+            } else if (params.second.type === "campfire") {
+		this.toasts.updateActionPrompt("A warm and rejuvenating campfire for " + playerName + ".", ["I think this will heal me", "<SPC>"]);
+		this.focus(params.second, dist, "campfire");
+	    } else if (params.second.type === "teleport_forest") {
         	if (atHome) {
         	    this.questManager.registerBerserkerForestEntered();
         	    this.transportAction("berserkerforest", "Berserker Forest", params.second, dist, 1, 6);
