@@ -43,7 +43,7 @@ class ActionManager extends EventListener {
         	    this.questManager.registerBerserkerForestEntered();
         	    this.transportAction("berserkerforest", "Berserker Forest", params.second, dist, 1, 6);
         	} else { 
-                    this.homeTransportAction(params.second, dist, 19, 3); 
+                    this.homeTransportAction(params.second, dist, 18, 3); 
                 }
 
             } else if (params.second.type === "teleport_ocean") {

@@ -34,8 +34,6 @@ class AnimatedSprite extends Sprite {
         this.startIndex = animation.start;
         this.endIndex = animation.end;
 	this.frame = this.startIndex;
-	
-	console.log("animate: ", k);
     }
 
     /**
