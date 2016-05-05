@@ -75,7 +75,6 @@ class Saga extends Game {
         this.atHome = true;
         this.sound = new SoundManager();
 
-
         this.gameState = dev_game_state;
         // this.gameState = {actionsUnlocked: [], reputation: 0};
 
@@ -421,8 +420,10 @@ class Saga extends Game {
     }
 
     move(pressedKeys, newKeys) {
+	var animatedAlready = false; // Animate once per frame
         if (pressedKeys.includes(keycodes.right)) {
 	    this.hero.animate("right");
+	    animatedAlready = true;
 
             //move
             if (this.isCentered("left"))
@@ -432,6 +433,7 @@ class Saga extends Game {
         }
         if (pressedKeys.includes(keycodes.left)) {
 	    this.hero.animate("left");
+	    animatedAlready = true;
 
             //move
             if (this.isCentered("right"))
@@ -441,14 +443,15 @@ class Saga extends Game {
             }
         }
         if (pressedKeys.includes(keycodes.down)) {
-	    this.hero.animate("down");
+	    if (!animatedAlready) this.hero.animate("down");
+
             if (this.isCentered("up"))
                 this.floor.position.y -= this.movementSpeed;
             else if (this.hero.position.y < this.size.y)
                 this.hero.position.y += this.movementSpeed;
         }
         if (pressedKeys.includes(keycodes.up)) {
-	    this.hero.animate("up");
+	    if (!animatedAlready) this.hero.animate("up");
             if (this.isCentered("down"))
                 this.floor.position.y += this.movementSpeed;
             else if (this.hero.position.y > 0) {
