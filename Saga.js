@@ -31,7 +31,7 @@ var game_size = {
 var GameObjects = {
     hero: {
         key: "hero",
-        img: "viking.png"
+        img: "hero/hero.png"
     }
 };
 
@@ -60,7 +60,7 @@ class Saga extends Game {
             y: this.tileCount.y * this.tileSize
         };
 
-        this.movementSpeed = 3;
+        this.movementSpeed = 4;
         this.root = new DisplayObjectContainer("Root");
         this.inBattle = false;
         this.tweener = new TweenJuggler();
@@ -100,23 +100,35 @@ class Saga extends Game {
 
     setupHero(root) {
         var heroAnimations = {
-            "stop": {
+	    "stop": {
+		start: 0,
+		end: 0
+	    },
+            "down": {
                 start: 0,
-                end: 0
+                end: 3
             },
-            "run": {
-                start: 2,
-                end: 6
-            }
+            "left": {
+                start: 4,
+                end: 10 
+            },
+	    "right": {
+		start: 11,
+		end: 17
+	    },
+	    "up": {
+		start: 18,
+		end: 21
+	    }
         };
         //instantiate with the id, filename, number of frames, and the animation map.
-        this.hero = new AnimatedSprite("hero", "hero", 8, heroAnimations);
+        this.hero = new AnimatedSprite("hero", "hero", 8, heroAnimations, HeroSheet);
         playerName = prompt("Character name?");
         this.hero.name = playerName;
 
         this.hero.scale = {
-            x: 0.7,
-            y: 0.7
+            x: 0.42,
+            y: 0.42 
         };
 
         this.hero.animate("stop");
@@ -204,7 +216,6 @@ class Saga extends Game {
 		this.hero.health += 200;
 		this.gameState.fires--;
 		this.toastManager.updateHUD();
-		this.toastManager.
 	    }
 	});
         this.actionManager.add("bear-fight", (bear) => {
@@ -411,7 +422,7 @@ class Saga extends Game {
 
     move(pressedKeys, newKeys) {
         if (pressedKeys.includes(keycodes.right)) {
-            this.hero.animate("run");
+	    this.hero.animate("right");
 
             //move
             if (this.isCentered("left"))
@@ -420,7 +431,7 @@ class Saga extends Game {
                 this.hero.position.x += this.movementSpeed;
         }
         if (pressedKeys.includes(keycodes.left)) {
-            this.hero.animate("run");
+	    this.hero.animate("left");
 
             //move
             if (this.isCentered("right"))
@@ -430,14 +441,14 @@ class Saga extends Game {
             }
         }
         if (pressedKeys.includes(keycodes.down)) {
-            this.hero.animate("run");
+	    this.hero.animate("down");
             if (this.isCentered("up"))
                 this.floor.position.y -= this.movementSpeed;
             else if (this.hero.position.y < this.size.y)
                 this.hero.position.y += this.movementSpeed;
         }
         if (pressedKeys.includes(keycodes.up)) {
-            this.hero.animate("run");
+	    this.hero.animate("up");
             if (this.isCentered("down"))
                 this.floor.position.y += this.movementSpeed;
             else if (this.hero.position.y > 0) {
