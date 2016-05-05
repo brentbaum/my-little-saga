@@ -57,16 +57,21 @@ class ActionManager extends EventListener {
 
         	if (atHome) {
         	    this.questManager.registerLawRockEntered();
-        	    this.transportAction("lawrock", "Law Rock", params.second, dist, 19, 12);
+        	    this.transportAction("lawrock", "Law Rock", params.second, dist, 18, 12);
         	} else { 
                     this.homeTransportAction(params.second, dist, 1, 9);  // returning to x=0 causes problems for the camera centering code
                 }
 
             } else if (params.second.type === "outlaw") {
 
-		this.toasts.updateActionPrompt("An outlaw! Only one of us is going home alive.", []);
+		this.toasts.updateActionPrompt("An outlaw! Only one of you is going home alive.", ["Start the fight!", "<SPC>"]);
                 this.focus(params.second, dist, "outlaw-fight");
 
+            } else if (params.second.type === "starmie") {
+
+		this.toasts.updateActionPrompt("Yep, that's right.", [
+                    "It's motherfucking starmie."
+                ]);
 	    }
         }
     }

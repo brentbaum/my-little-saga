@@ -17,6 +17,15 @@ var dev_game_state = {
         // "law", 
         "melee", "magic"
     ],
+    map: "start",
+    hero: {
+        x: 320,
+        y: 468
+    },
+    floor: {
+        x: 0,
+        y: -300
+    },
     inBattle: false,
     gameOver: false,
     fires: 3,
@@ -75,7 +84,15 @@ class Saga extends Game {
         this.atHome = true;
         this.sound = new SoundManager();
 
-        this.gameState = dev_game_state;
+        var saved = localStorage.getItem("game-state"); 
+        if(saved && JSON.parse(saved)) {
+            this.gameState = JSON.parse(saved);
+        }
+        else {
+            this.gameState = dev_game_state;
+            playerName = prompt("Hail, and welcome to Iceland. What shall we call you?");
+            this.gameState.playerName = playerName;
+        }
         // this.gameState = {actionsUnlocked: [], reputation: 0};
 
         //var mapGenerator = new MapGenerator();
@@ -89,9 +106,8 @@ class Saga extends Game {
                 GameObjects[tile.key] = tile;
             });
             t.setupHero();
-            t.mapReader.get('start', function(map) {
+            t.mapReader.get(t.gameState.map, function(map) {
                 saga.setupMap(saga.root, map);
-                t.setPosition({x: 5, y: 12});
                 t.setup = true;
             });
         });
@@ -122,8 +138,7 @@ class Saga extends Game {
         };
         //instantiate with the id, filename, number of frames, and the animation map.
         this.hero = new AnimatedSprite("hero", "hero", 8, heroAnimations, HeroSheet);
-        playerName = prompt("Character name?");
-        this.hero.name = playerName;
+        this.hero.name = this.gameState.playerName;
 
         this.hero.scale = {
             x: 0.42,
@@ -132,8 +147,8 @@ class Saga extends Game {
 
         this.hero.animate("stop");
         this.hero.animationSpeed = 5;
-        this.hero.position.x = 500;
-        this.hero.position.y = 400;
+        this.hero.position.x = this.gameState.hero.x;
+        this.hero.position.y = this.gameState.hero.y;
 
         this.hero.maxhealth = 500;
         this.hero.health = this.hero.maxhealth;
@@ -143,8 +158,8 @@ class Saga extends Game {
     setupMap(root, map) {
         this.floor = new DisplayObjectContainer("floor");
 
-        this.floor.position.x = 0;
-        this.floor.position.y = 0;
+        this.floor.position.x = this.gameState.floor.x;
+        this.floor.position.y = this.gameState.floor.y;
 
         this.tileCount = {
             x: map.background.length,
@@ -232,6 +247,7 @@ class Saga extends Game {
         var t = this;
         this.actionManager.add("teleport", (carpet, params) => {
             t.mapReader.get(params.level, function(map) {
+                t.gameState.map = params.level;
 		t.setupMap(t.root, map);
 		t.setPosition(params.position);
                 // t.hero.position = params.position;
@@ -311,22 +327,6 @@ class Saga extends Game {
             x: this.centerPoint.x,
             y: this.centerPoint.y
         };
-        if (-this.floor.position.x > this.mapSize.x - this.centerPoint.x) {
-            this.hero.position.x = this.centerPoint.x + (game_size.x - this.mapSize.x - this.position.x);
-            this.floor.position.x = this.mapSize.x - this.centerPoint.x;
-        }
-        if (-this.floor.position.y > this.mapSize.y - this.centerPoint.y) {
-            this.hero.position.y = this.centerPoint.y + (game_size.y - this.mapSize.y - this.position.y);
-            this.floor.position.y = this.mapSize.y - this.centerPoint.y;
-        }
-        if (-this.floor.position.x < this.centerPoint.x) {
-            this.hero.position.x = position.x;
-            this.floor.position.x = 3;
-        }
-        if (-this.floor.position.y < this.centerPoint.y) {
-            this.hero.position.y = position.y;
-            this.floor.position.y = 3;
-        }
     }
 
     collideCheck(node, offset) {
@@ -498,6 +498,19 @@ class Saga extends Game {
         return newKeys;
     }
 
+    saveState() {
+        if(!this.saving) {
+            this.saving = true;
+            this.gameState.floor = this.floor.position;
+            this.gameState.hero = this.hero.position;
+            var state = JSON.stringify(this.gameState);
+            localStorage.setItem("game-state", state);
+            setTimeout(() => {
+                this.saving = false;
+            }, 3000);
+        }
+    }
+
     update(pressedKeys) {
         if (!this.setup)
             return;
@@ -519,6 +532,7 @@ class Saga extends Game {
             if (!this.gameState.gameOver)
                 this.move(pressedKeys, newKeys);
         }
+        this.saveState();
         this.root.updatePositions();
         this.toastManager.update();
         super.update(pressedKeys);
