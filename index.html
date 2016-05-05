@@ -11,6 +11,18 @@
       body {
       height: 100%;
       }
+      #clear, #save {
+      background: #ff5722;
+      color: white;
+      padding: .5em 1em;
+      border-radius: 3px;
+      text-align: center;
+      cursor: pointer;
+      }
+      .clear-game {
+      padding: 2.5em;
+      text-align: center;
+      }
 
     </style>
   </head>
@@ -22,6 +34,10 @@
         BLAKE_415
       </canvas>
     </main>
+    <div class="clear-game">
+      <a id="clear">New Game</a>
+      <a id="save">Save Game</a>
+    </div>
 
     <script type="text/javascript" src="./engine/display/ImageCache.js"></script>
     <script type="text/javascript" src="./engine/util/ArrayList.js"></script>

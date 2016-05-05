@@ -20,15 +20,24 @@ class QuestManager {
         this.toastManager = new ToastManager();
         this.actionManager = new ActionManager();
 	this.actionManager.questManager = this;
-	this.berserkerState = {stage: 0, bearsKilled: 0};
-	this.lawState = {stage: 0};
-	this.swimState = {stage: 0};
-	this.magicState = {stage: 0};
+	this.saga = Game.getInstance();
+        if(this.saga.gameState.quests.current) {
+            switch(this.saga.gameState.quests.current) {
+                case "":
+                break;
+                case "law-rock":
+                this.toastLawState();
+                break;
+                case "berserker":
+                this.toastBerserkerState();
+                break;
+            }
+        }
     }
 
     toastBerserkerState() {
-	let state = this.berserkerState;
-	var lines = [];
+	var state = this.saga.gameState.quests.berserkerState;
+        var lines = [];
 	lines.push(BerserkerQuest.stages[state.stage]);
 	if (state.stage == 1) 
 	    lines.push(state.bearsKilled + " out of " + BerserkerQuest.bearsToKill + " bears killed.");
@@ -39,7 +48,7 @@ class QuestManager {
     }
 
     toastLawState() {
-	let state = this.lawState;
+	let state = this.saga.gameState.quests.lawState;
 	var lines = [];
 	lines.push(LawQuest.stages[state.stage]);
 	this.toastManager.updateQuestDisplay("Current Quest: " + LawQuest.name,
@@ -48,9 +57,10 @@ class QuestManager {
     }
 
     registerBerserkerForestEntered() {
-	var state = this.berserkerState;
+	var state = this.saga.gameState.quests.berserkerState;
+        this.saga.gameState.quests.current = "berserker";
 	if (state.stage === 0) {
-	    Game.getInstance().gameState.reputation += 10;
+	    this.saga.gameState.reputation += 10;
 	    this.toastManager.updateHUD();
 	    state.stage = 1;
 	    this.toastBerserkerState();
@@ -58,15 +68,15 @@ class QuestManager {
     }
 
     registerBearKilled() {
-	var state = this.berserkerState;
+	var state = this.saga.gameState.quests.berserkerState;
+        this.saga.gameState.quests.current = "berserker";
 	console.log(state);
 	if (state.stage == 1) {
 	    state.bearsKilled++;
 	    if (state.bearsKilled == BerserkerQuest.bearsToKill) {
 		state.stage++;
-		let saga = Game.getInstance();
-		saga.gameState.reputation += 10;
-		saga.gameState.actionsUnlocked.push("berserk");
+		this.saga.gameState.reputation += 10;
+		this.saga.gameState.actionsUnlocked.push("berserk");
 		this.toastManager.updateHUD();
 	    }
 	    this.toastBerserkerState();
@@ -74,10 +84,11 @@ class QuestManager {
     }
 
     registerOutlawKilledWithBerserk() {
-	var state = this.berserkerState;
-	if (this.berserkerState.stage == 2) {
+	var state = this.saga.gameState.quests.berserkerState;
+        this.saga.gameState.quests.current = "berserker";
+	if (state.stage == 2) {
 	    state.stage++;
-	    Game.getInstance().gameState.reputation += 10;
+	    this.saga.gameState.reputation += 10;
 	    this.toastManager.updateHUD();
 	    this.toastBerserkerState();
 	}
@@ -85,32 +96,37 @@ class QuestManager {
 
     
     registerLawRockEntered() {
-	var state = this.lawState;
+	var state = this.saga.gameState.quests.lawState;
+        this.saga.gameState.quests.current = "law-rock";
+        this.saga.quest = "law-rock";
 	if (state.stage === 0) {
 	    state.stage++;
-	    Game.getInstance().gameState.reputation += 10;
+	    this.saga.gameState.reputation += 10;
+            this.saga.gameState.quest = {id: "law-rock", stage: 1};
 	    this.toastManager.updateHUD();
 	}
 	this.toastLawState();
     }
 
     registerNjalDialogue() {
-	var state = this.lawState;
+	var state = this.saga.gameState.quests.lawState;
+        this.saga.gameState.quests.current = "law-rock";
 	if (state.stage == 1) {
 	    state.stage++;
-	    let saga = Game.getInstance();
-	    saga.gameState.reputation += 10;
+            this.saga.gameState.quest = {id: "law-rock", stage: 2};
+	    this.saga.gameState.reputation += 10;
+	    this.saga.gameState.actionsUnlocked.push("law");
 	    this.toastManager.updateHUD();
-	    saga.gameState.actionsUnlocked.push("law");
 	}
 	this.toastLawState();
     }
 
     registerOutlawKilledWithLaw() {
-	var state = this.lawState;
+	var state = this.saga.gameState.quests.lawState;
+        this.saga.gameState.quests.current = "law-rock";
 	if (state.stage == 2) {
 	    state.stage++;
-	    Game.getInstance().gameState.reputation += 10;
+	    this.saga.gameState.reputation += 10;
 	    this.toastManager.updateHUD();
 	}
 	this.toastLawState();

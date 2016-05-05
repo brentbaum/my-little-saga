@@ -18,6 +18,8 @@ var dev_game_state = {
         "melee", "magic"
     ],
     map: "start",
+    hidden: {},
+    health: 500,
     hero: {
         x: 320,
         y: 468
@@ -25,6 +27,13 @@ var dev_game_state = {
     floor: {
         x: 0,
         y: -300
+    },
+    quests: {
+        current: undefined,
+        lawState: {stage: 0},
+        swimState: {stage: 0},
+        magicState: {stage: 0},
+        berserkerState: {stage: 0, bearsKilled: 0}
     },
     inBattle: false,
     gameOver: false,
@@ -69,6 +78,20 @@ class Saga extends Game {
             y: this.tileCount.y * this.tileSize
         };
 
+        this.initNewGameButton();
+
+        /************ LOAD SAVED STATE **************/
+        var saved = localStorage.getItem("game-state"); 
+        if(saved && JSON.parse(saved)) {
+            this.gameState = JSON.parse(saved);
+        }
+        else {
+            this.gameState = dev_game_state;
+            playerName = prompt("Hail, and welcome to Iceland. What shall we call you?");
+            this.gameState.playerName = playerName;
+        }
+        /************ /LOAD SAVED STATE **************/
+
         this.movementSpeed = 4;
         this.root = new DisplayObjectContainer("Root");
         this.inBattle = false;
@@ -84,15 +107,6 @@ class Saga extends Game {
         this.atHome = true;
         this.sound = new SoundManager();
 
-        var saved = localStorage.getItem("game-state"); 
-        if(saved && JSON.parse(saved)) {
-            this.gameState = JSON.parse(saved);
-        }
-        else {
-            this.gameState = dev_game_state;
-            playerName = prompt("Hail, and welcome to Iceland. What shall we call you?");
-            this.gameState.playerName = playerName;
-        }
         // this.gameState = {actionsUnlocked: [], reputation: 0};
 
         //var mapGenerator = new MapGenerator();
@@ -110,6 +124,21 @@ class Saga extends Game {
                 saga.setupMap(saga.root, map);
                 t.setup = true;
             });
+        });
+    }
+
+    initNewGameButton() {
+        var t = this;
+        document.getElementById("clear").addEventListener("click", function(){
+            localStorage.clear();
+            location.reload();
+        });
+        document.getElementById("save").addEventListener("click", function(){
+            t.gameState.floor = t.floor.position;
+            t.gameState.hero = t.hero.position;
+            var state = JSON.stringify(t.gameState);
+            localStorage.setItem("game-state", state);
+            alert("Game saved!");
         });
     }
 
@@ -151,7 +180,7 @@ class Saga extends Game {
         this.hero.position.y = this.gameState.hero.y;
 
         this.hero.maxhealth = 500;
-        this.hero.health = this.hero.maxhealth;
+        this.hero.health = this.gameState.health;
         this.toastManager.updateHUD();
     }
 
@@ -176,7 +205,8 @@ class Saga extends Game {
             var row = [];
             for (var y = 0; y < this.tileCount.y; y++) {
                 var bgTile = new Sprite("bg_(" + x + ", " + y + ")", map.background[x][y]);
-                var fgTile = new Sprite(map.foreground[x][y] + "_(" + x + ", " + y + ")", map.foreground[x][y]);
+                var fgId = map.foreground[x][y] + "_(" + x + ", " + y + ")"; 
+                var fgTile = new Sprite(fgId, map.foreground[x][y]);
                 bgTile.position = {
                     y: x * this.tileSize,
                     x: y * this.tileSize
@@ -201,6 +231,10 @@ class Saga extends Game {
                     bgTile.collisionDisable = false;
                     bgTile.softCollide = false;
                 }
+                if(this.gameState.hidden[fgId]) {
+                    fgTile.visible = false;
+                    fgTile.collisionDisable = true;
+                }
 
                 this.background.children.push(bgTile);
                 this.foreground.children.push(fgTile);
@@ -223,11 +257,13 @@ class Saga extends Game {
                 this.gameState.actionsUnlocked.push("rock");
             this.gameState.inventory[0].count++;
             this.gameState.reputation++;
+            this.gameState.hidden[object.id] = true;
 	    this.toastManager.updateHUD();
         });
 	this.actionManager.add("campfire", (campfire) => {
 	    if (this.gameState.fires > 0) {
 		this.hero.health += 200;
+                this.gameState.health = this.hero.health;
 		this.gameState.fires--;
 		this.toastManager.updateHUD();
 	    }
@@ -263,6 +299,9 @@ class Saga extends Game {
             this.toastManager.updateActionPrompt("You defeated the " + opponent.type + "!", ["Gained 5 reputation"]);
 	    this.gameState.reputation += 5;
 	    this.toastManager.updateHUD();
+
+            this.gameState.hidden[opponent.id] = true;
+            this.gameState.health = this.hero.health;
 
             // Quest Stuff!
             if (opponent.type == "bear") {
@@ -463,20 +502,8 @@ class Saga extends Game {
             this.inventoryManager.open(this.gameState.inventory);
         }
 
-        if (pressedKeys.includes(keycodes.space)) {
-            // prevent instantly performing multiple actions
-            if(!this.prevTime || this.actionTimeout == undefined){
-                this.prevTime = new Date();
-                this.actionTimeout = 0;
-            }
-            if(this.actionTimeout > 0){
-                var newtime = new Date();
-                this.actionTimeout -= newtime - this.prevTime;
-                this.prevTime = newtime;
-            } else {
-                this.actionManager.act();
-                this.actionTimeout = 250;
-            }
+        if (newKeys.includes(keycodes.space)) {
+            this.actionManager.act();
         }
 
         if (pressedKeys.length === 0) {
@@ -496,19 +523,6 @@ class Saga extends Game {
         });
         this.lastPressed = pressedKeys.slice(0);
         return newKeys;
-    }
-
-    saveState() {
-        if(!this.saving) {
-            this.saving = true;
-            this.gameState.floor = this.floor.position;
-            this.gameState.hero = this.hero.position;
-            var state = JSON.stringify(this.gameState);
-            localStorage.setItem("game-state", state);
-            setTimeout(() => {
-                this.saving = false;
-            }, 3000);
-        }
     }
 
     update(pressedKeys) {
@@ -532,7 +546,6 @@ class Saga extends Game {
             if (!this.gameState.gameOver)
                 this.move(pressedKeys, newKeys);
         }
-        this.saveState();
         this.root.updatePositions();
         this.toastManager.update();
         super.update(pressedKeys);

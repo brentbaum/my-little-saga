@@ -25,6 +25,7 @@ class CombatManager {
 
 	this.toastManager = new ToastManager();
 	this.phase = "prompt"; // || "action"
+	this.saga = Game.getInstance();
 
 	combatInstance = this;
 	this.inputBuffer = 0;
@@ -54,7 +55,7 @@ class CombatManager {
 
     getMessageText() {
 	var action = " activated Bear Form!";
-	return playerName + action;
+	return this.saga.gameState.playerName + action;
     }
 
     beginBattle(opponent, hero, actions, scene) {
@@ -66,7 +67,7 @@ class CombatManager {
 	this.active = true;
 	this.battle = new Battle(opponent.type, hero, actions);
 	this.turn = true;
-	this.updateCombatMessage("Prepare to Battle!", [playerName + " is battling " + opponent.type]);
+	this.updateCombatMessage("Prepare to Battle!", [this.saga.gameState.playerName + " is battling " + opponent.type]);
     }
 
     disableBattleMenu() {
@@ -93,13 +94,12 @@ class CombatManager {
     }
 
     concludeBattle() {
-	let saga = Game.getInstance();
 	this.active = false;
 	this.over = false;
 	this.toastManager.hide("combat_menu");
 	this.toastManager.hide("combat_message");
 	this.battle = {};
-	saga.concludeBattle(this.result, this.opponent);
+	this.saga.concludeBattle(this.result, this.opponent);
 	this.result = null;
     }
 
